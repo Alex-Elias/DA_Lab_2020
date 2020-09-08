@@ -2,7 +2,10 @@ public class Main {
     
     public static void main(String[] args) {
         // TODO code application logic here
-        
+
+        Filereader f = new Filereader("/home/alex/Downloads/maze512-32-0.map");
+        f.printline(20);
+
     }
     
 }
