@@ -4,7 +4,9 @@ public class Main {
         // TODO code application logic here
 
         Filereader f = new Filereader("/home/alex/Downloads/maze512-32-0.map");
-        f.printline(20);
+        GUI gui = new GUI();
+        gui.launchGUI();
+        
 
     }
     

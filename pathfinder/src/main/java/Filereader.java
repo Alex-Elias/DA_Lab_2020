@@ -12,7 +12,7 @@ public class Filereader {
         try{
             this.file = new File(file);
             this.sc = new Scanner(this.file);
-
+            
         }
         catch(Exception e){
             
@@ -27,6 +27,24 @@ public class Filereader {
         }
         
         
+        
+    }
+    public int[][] returnArray(){
+        printline(6);
+        int [][] array = new int[513][513];
+        int i = 0;
+        while (this.sc.hasNext()){
+            String temp = this.sc.next();
+            for (int j = 0; j <temp.length(); j++){
+                if(Character.toString(temp.charAt(j)).equals("@")){
+                    array[i][j] = 1;
+                }else{
+                    array[i][j] = 0;
+                }
+            }
+            i++;
+        }
+        return array;
         
     }
     
