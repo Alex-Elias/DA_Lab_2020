@@ -1,8 +1,11 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -54,7 +57,11 @@ public class GUI extends Application{
         hbox.getChildren().add(YOrigin);
         hbox.setSpacing(20);
         
-        
+        VBox stats_vbox = new VBox();
+        Label stats_title = new Label("States:");
+        Label stats_BFS = new Label("BFS:");
+        Label stats_BFS_Length = new Label("Length of path:");
+        Label stats_BFS_Time = new Label("Length of BFS in ms:");
         
         
         FlowPane pane = new FlowPane();
@@ -81,11 +88,12 @@ public class GUI extends Application{
                 setOrigin(new Tuple((int)Double.parseDouble(YOrigin.getText()) / this.maze_stretch,(int) Double.parseDouble(XOrigin.getText())/this.maze_stretch));
                 this.origin_set_already = true;
                 OriginCord.setText("Origin: X= " + this.origin.y*this.maze_stretch + ", Y= " + this.origin.x*this.maze_stretch);
-                
+                this.maze.getChildren().add(new Circle(this.origin.y*this.maze_stretch,this.origin.x*this.maze_stretch,4,Color.RED));
             }else if(!this.dest_set_already){
                 this.destination = new Tuple((int)Double.parseDouble(YOrigin.getText())/this.maze_stretch, (int)Double.parseDouble(XOrigin.getText())/this.maze_stretch);
                 DestCord.setText("Destination: X= "+ this.destination.y*this.maze_stretch + ", Y= " + this.destination.x*this.maze_stretch);
                 this.dest_set_already = true;
+                this.maze.getChildren().add(new Circle(this.destination.y*this.maze_stretch,this.destination.x*this.maze_stretch,4,Color.RED));
             }
              
                 
@@ -98,7 +106,9 @@ public class GUI extends Application{
         Button runBFS_Button = new Button("Run BFS");
         
         runBFS_Button.setOnAction((event) -> {
+            Long start_time = System.nanoTime();
             bfs.runBFS(this.origin);
+            Long end_time = System.nanoTime();
             bfs.shortestpath(this.destination);
             
             for(Tuple t: bfs.path){
@@ -106,11 +116,18 @@ public class GUI extends Application{
                 blueCircle.setFill(Color.BLUE);
                 this.maze.getChildren().add(blueCircle);
             }
+            long time_mil = (end_time-start_time)/1000000;
+            int temp = bfs.distance[this.destination.x][this.destination.y];
+            stats_BFS_Length.setText("Length of path: " + temp);
+            stats_BFS_Time.setText("Length of BFS in ms: " + time_mil);
             
         });
         
+        String maze_options_list_array[] = {"one pixel corridor", "four pixel corridor", "16 pixel corridor","32 pixel corridor"};
         
+        ComboBox maze_options = new ComboBox(FXCollections.observableArrayList(maze_options_list_array));
         
+        borderpane.setBottom(maze_options);
         //VBOX addition
         vbox.getChildren().add(pane);
         vbox.getChildren().add(DestCord);
@@ -119,8 +136,15 @@ public class GUI extends Application{
         vbox.getChildren().add(confirmOrigin);
         vbox.getChildren().add(new Label("Press the button below to run BFS algorithm"));
         vbox.getChildren().add(runBFS_Button);
-        borderpane.setLeft(vbox);
         
+        
+        
+        
+        
+        
+        stats_vbox.getChildren().addAll(stats_title,stats_BFS,stats_BFS_Length,stats_BFS_Time);
+        vbox.getChildren().add(stats_vbox);
+        borderpane.setLeft(vbox);
         Scene scene = new Scene(borderpane);
         stage.setScene(scene);
         stage.setTitle("Pathfinding");
@@ -150,9 +174,7 @@ public class GUI extends Application{
     private void setOrigin(Tuple T){
         this.origin = T;
     }
-    private int getStretch(){
-        return this.maze_stretch;
-    }
+    
     
     
     
