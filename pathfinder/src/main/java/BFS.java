@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -10,6 +11,8 @@ public class BFS {
     int [][] distance;
     int[][] maze;
     Tuple[][] predecessor;
+    ArrayList<Tuple> path;
+    
     public BFS(int[][] maze){
         this.visited = new boolean[maze.length][maze[1].length];
         this.distance = new int  [maze.length][maze[1].length];
@@ -29,7 +32,7 @@ public class BFS {
         this.visited[origin.x][origin.y] = true;
         this.distance[origin.x][origin.y] = 0;
         
-        Queue<Tuple> q = new PriorityQueue<>();
+        Queue<Tuple> q = new LinkedList<>();
         q.add(origin);
         while(!q.isEmpty()){
             Tuple v = q.poll();
@@ -69,4 +72,23 @@ public class BFS {
         return list;
         
     }
+    
+    public void shortestpath(Tuple end){
+        Tuple temp = end;
+        Queue<Tuple> Q = new LinkedList<>();
+        ArrayList<Tuple> Path = new ArrayList<>();
+        while(this.distance[this.predecessor[temp.x][temp.y].x][this.predecessor[temp.x][temp.y].y] != 0){
+            Q.add(temp);
+            temp = this.predecessor[temp.x][temp.y];
+        }
+        while(!Q.isEmpty()){
+            Path.add(Q.poll());
+        }
+        this.path = Path;
+    }
+    
+    public int [][] getDistanceMatrix(){
+        return this.distance;
+    }
+    
 }

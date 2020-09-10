@@ -31,11 +31,11 @@ public class Filereader {
     }
     public int[][] returnArray(){
         printline(6);
-        int [][] array = new int[513][513];
+        int [][] array = new int[513][512];
         int i = 0;
-        while (this.sc.hasNext()){
+        while (i < 513){
             String temp = this.sc.next();
-            for (int j = 0; j <temp.length(); j++){
+            for (int j = 0; j < temp.length(); j++){
                 if(Character.toString(temp.charAt(j)).equals("@")){
                     array[i][j] = 1;
                 }else{
