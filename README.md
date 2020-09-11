@@ -5,3 +5,4 @@
 
 ### Weekly Reports
 [Weekly report 1](https://github.com/Alex-Elias/DA_Lab_2020/blob/master/documentation/weeklyreport1.md)
+[Weekly report 2](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/weeklyreport2.md)
