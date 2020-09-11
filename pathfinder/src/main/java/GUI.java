@@ -30,6 +30,10 @@ import javafx.stage.Stage;
  *           a red dot will appear to confirming the location as well as the location coordinates will appear in the upper left of the page
  *           repeat the process to confirm the destination
  *           click on the button 'run BFS' to run the BFS algorithm,the algorithm will run and the shortest path will be displayed in blue
+ * NOTE:
+ *      this is a work in progress, the shortest path will only be displayed if the path is reachable
+ *      a wall can be selected as a coordinate, there is no shortest path and thus the algorithm will not work
+ * 
  * @author alex
  */
 public class GUI extends Application{
