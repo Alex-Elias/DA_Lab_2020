@@ -1,0 +1,3 @@
+I was away for most of this week and unable to work extensively on this class. I implemented Dijkstra's algorithm and started to create some test for it. I have not been able to figure out the test coverage for my project. The major problem maker for me this week has been with the tests, I am not sure how thorough they have to be and how to efficiently implement them. I am writing this report before I have recieved the feedback from the previous one so I hope that feedback has cleared up my other uncertainties. What I need to do next week has not changed much from the previous week, I still need to implement atleast one more shortest path algorithm as well as learn how to make the necessary tests.
+
+I spent around 4 hours working on this class this week. 
