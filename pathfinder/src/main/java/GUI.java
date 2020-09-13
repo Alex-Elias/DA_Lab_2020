@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -59,7 +60,9 @@ public class GUI extends Application{
         int[][] maze_array_read_from_file = f.returnArray();
         // sets the class variable maze
         createMaze(maze_array_read_from_file);
-         
+        
+        Dijkstra dijk = new Dijkstra(maze_array_read_from_file);
+        
         BFS bfs = new BFS(maze_array_read_from_file);
         //the main borderpane where all of the nodes are set
         BorderPane borderpane = new BorderPane();
@@ -83,7 +86,10 @@ public class GUI extends Application{
         Label stats_BFS = new Label("BFS:");
         Label stats_BFS_Length = new Label("Length of path:");
         Label stats_BFS_Time = new Label("Length of BFS in ms:");
-        stats_vbox.getChildren().addAll(stats_title,stats_BFS,stats_BFS_Length,stats_BFS_Time);
+        Label stats_dijk = new Label("Dijkstra: ");
+        Label stats_dijk_Length = new Label("Length of path: ");
+        Label stats_dijk_Time = new Label("Length of Dijkstra in ms:");
+        stats_vbox.getChildren().addAll(stats_title,stats_BFS,stats_BFS_Length,stats_BFS_Time,stats_dijk,stats_dijk_Length,stats_dijk_Time);
         
         FlowPane Direction_Origin_pane = new FlowPane();
         FlowPane Destination_pane = new FlowPane();
@@ -157,6 +163,28 @@ public class GUI extends Application{
             stats_BFS_Time.setText("Length of BFS in ms: " + time_mil);
             
         });
+        /**
+         * Runs Dijkstra algorithm
+         */
+        
+        Button runDijkstra_Button = new Button("Run Dijkstra");
+        runDijkstra_Button.setOnAction((event) -> {
+           Long start_time = System.nanoTime();
+           dijk.runDijkstra(this.origin);
+           
+           ArrayList<Tuple> dijk_shortestPath = dijk.getShortestPath(this.destination);
+           Long end_time = System.nanoTime();
+           for(Tuple t: dijk_shortestPath){
+                Circle redCircle = new Circle(this.maze_stretch *t.y,this.maze_stretch * t.x,1);
+                redCircle.setFill(Color.RED);
+                this.maze.getChildren().add(redCircle);
+            }
+            long time_mil = (end_time-start_time)/1000000;
+            double distance = dijk.getDistance(this.destination);
+            stats_dijk_Length.setText("Length of path: " + distance);
+            stats_dijk_Time.setText("Length of Dijkstra in ms: " + time_mil);
+        });
+        
         //UNFINISHED
         String maze_options_list_array[] = {"one pixel corridor", "four pixel corridor", "16 pixel corridor","32 pixel corridor"};
         
@@ -180,6 +208,7 @@ public class GUI extends Application{
         top_left_vbox.getChildren().add(confirmOrigin);
         top_left_vbox.getChildren().add(new Label("Press the button below to run BFS algorithm"));
         top_left_vbox.getChildren().add(runBFS_Button);
+        top_left_vbox.getChildren().add(runDijkstra_Button);
         top_left_vbox.getChildren().add(stats_vbox);
         
         
