@@ -1,6 +1,13 @@
 
 import java.util.Comparator;
-
+/**
+ * a class which stores the coordinates and weight of a Node
+ * The coordinates are stored in an integer tuple of length two
+ * the weight is a floating point number.
+ * this class has a compare override method which compares weight 
+ * this class has an equal override which compares the coordinates and weight
+ * @author alex
+ */
 public class Node implements Comparator<Node>{
     Tuple coordinate;
     double weight;
@@ -8,7 +15,11 @@ public class Node implements Comparator<Node>{
     public Node(){
         
     };
-    
+    /**
+     * the initializing method for this class
+     * @param coordinate a integer tuple of length two with the first value representing the row number and the second the column number
+     * @param weight the weight of the node stored as a floating point number
+     */
     public Node(Tuple coordinate, double weight){
         this.coordinate=coordinate;
         this.weight=weight;
