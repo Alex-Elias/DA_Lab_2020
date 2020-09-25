@@ -2,7 +2,12 @@
 import java.util.PriorityQueue;
 
 
-
+/**
+ * DOES NOT FUNCTION YET!
+ * has null point exception errors
+ * implementation of the Jump Point Search algorithm
+ * @author alex
+ */
 public class JPS {
 
     int[][] maze;

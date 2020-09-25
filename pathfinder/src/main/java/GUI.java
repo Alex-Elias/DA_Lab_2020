@@ -31,9 +31,17 @@ import javafx.stage.Stage;
  *           a red dot will appear to confirming the location as well as the location coordinates will appear in the upper left of the page
  *           repeat the process to confirm the destination
  *           click on the button 'run BFS' to run the BFS algorithm,the algorithm will run and the shortest path will be displayed in blue
+ *           click on the button 'run Dijkstra' to run the Dijkstra algorithm, the shortest path will be displayed in red
+ *           click on the button 'run A*' to run the A Star algorithm, the shortest path will be displayed in green
  * NOTE:
+ *      **YOU WILL NEED TO CHANGE THE PATH OF THE FILE ON YOUR COMPUTER FOR IT TO RUN**
+ * 
  *      this is a work in progress, the shortest path will only be displayed if the path is reachable
  *      a wall can be selected as a coordinate, there is no shortest path and thus the algorithm will not work
+ *      there is no way to reset the map or the coordinates, you just have to exit out of the window and rerun the program
+ *      BFS algorithm is for non-weighted graphs so there is only 4 directions of movement so the path will be longer than the other algorithms
+ * 
+ * 
  * 
  * @author alex
  */
@@ -55,7 +63,17 @@ public class GUI extends Application{
         
         //Create new Filereaderclass
         //it takes string input of the location of a .map maze file
+        /**
+         * the two tested mazes are:
+         *  /Pathfinder/Mazes/maze512-1-0.map
+         *  /Pathfinder/Mazes/maze512-32-0.map
+        
+        */
+        //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
         Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-1-0.map");
+        //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
+        
+
         //Filereader returns a 2d array of the maze
         int[][] maze_array_read_from_file = f.returnArray();
         // sets the class variable maze
@@ -194,7 +212,9 @@ public class GUI extends Application{
         });
         //button on press runs the A* algoithm
         Button runAStar_Button = new Button("Run A*");
-        
+        /**
+         * runs the A* algorithm
+         */
         runAStar_Button.setOnAction((event) -> {
             long start_time = System.nanoTime();
             Astar.run_AStar(new JPS_Node(new Tuple(this.origin.x,this.origin.y)), new JPS_Node(new Tuple(this.destination.x,this.destination.y)));

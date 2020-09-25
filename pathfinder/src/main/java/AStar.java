@@ -1,7 +1,11 @@
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
-
+/**
+ * A Star algorithm to find the shortest path in a weighted graph
+ * basically Dijkstra's but has a heuristic function
+ * @author alex
+ */
 public class AStar {
 
     int[][] maze;
@@ -11,7 +15,10 @@ public class AStar {
     
     //  test
     boolean[][] visited;
-    
+    /**
+     * initialized the A Star class
+     * @param maze the 2d integer array where ones are obstacles and zeros are free spaces
+     */
     public AStar(int[][] maze){
         this.distance = new double[maze.length][maze[0].length];
         this.maze=maze;
@@ -22,6 +29,11 @@ public class AStar {
         this.visited= new boolean[maze.length][maze[0].length];
         
     }
+    /**
+     * runs the A Star algorithm 
+     * @param start the starting node
+     * @param goal the goal node
+     */
     public void run_AStar(JPS_Node start, JPS_Node goal){
         start.f=0;
         this.queue.add(start);
@@ -68,7 +80,11 @@ public class AStar {
         }
     }
     
-    
+    /**
+     * finds the shortest path and returns a list of nodes in the shortest path
+     * @param goal the goal node
+     * @return list of nodes
+     */
     public ArrayList<JPS_Node> get_shortest_path(JPS_Node goal){
         ArrayList<JPS_Node> shortest_path_list = new ArrayList<>();
         JPS_Node last = goal;
@@ -79,6 +95,13 @@ public class AStar {
         shortest_path_list.add(last);
         return shortest_path_list;
     }
+    
+    /**
+     * a method which finds the heuristic value between two points
+     * @param location the node from where one wants to find the heuristic value
+     * @param location2 the goal location as a JPS_Node
+     * @return a double value of the heuristic value
+     */
     //Theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
     public double heuristic(JPS_Node location, JPS_Node location2){
         double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
@@ -87,7 +110,11 @@ public class AStar {
         return dx+dy +(1.4142135 - 2) * Math.min(dx, dy);
         
     }
-    
+    /**
+     * the method finds all the available neighbors from the location T
+     * @param T the tuple of coordinates where one wants to find the available spaces
+     * @return a list of available spaces as JPS_Nodes
+     */
     public ArrayList<JPS_Node> adjacencyList(Tuple T){
         ArrayList<JPS_Node> list = new ArrayList();
         if (T.x +1 < this.maze.length){

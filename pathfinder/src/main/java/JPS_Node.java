@@ -1,7 +1,11 @@
 
 import java.util.Comparator;
 
-
+/**
+ * another node class
+ * I will combine both to make a common class.
+ * @author alex
+ */
 public class JPS_Node implements Comparator<JPS_Node>{
     Tuple coordinates;
     JPS_Node parent;
