@@ -11,6 +11,7 @@ public class JPS {
     PriorityQueue<JPS_Node> queue;
     double[][] distance;
     JPS_Node[][] predecessor;
+    double weight;
     
     
     public JPS(int[][] maze){
@@ -22,6 +23,7 @@ public class JPS {
     }
     public void run_JPS( JPS_Node start, JPS_Node goal){
         start.f=0;
+        start.parent=start;
         this.queue.add(start);
         this.predecessor[start.coordinates.x][start.coordinates.y] = start;
         
@@ -42,9 +44,17 @@ public class JPS {
             
             
             if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){
+                this.weight = current.weight;
                 break;
             }
-
+            JPS_Node[] next = get_successors(current,start,goal);
+            for(int i = 0; i< next.length; i++){
+                if(next[i]== null){
+                    continue;
+                }
+                next[i].f = next[i].weight + heuristic(next[i],goal);
+                this.queue.add(next[i]);
+            }
 
 
             
@@ -70,7 +80,7 @@ public class JPS {
             }
             JPS_Node jump = jump(node, get_direction(neighbors[i]),start,goal);
             if(jump != null){
-                //need to implement distance and heuristics here or maybe in the jump method
+                //need to implement distance and heuristics here or possibly in the jump method
             }
             successors[i]= jump;
             if(jump!= null){
@@ -135,7 +145,13 @@ public class JPS {
         return jump(n,direction,start,goal);
     }
     public JPS_Node step(JPS_Node node, int direction){
-        return get_neighbors(node)[direction];
+        JPS_Node temp = get_neighbors(node)[direction];
+        if(direction %2 ==0){
+            temp.weight = node.weight +1;
+        }else{
+            temp.weight = node.weight + 1.4142135;
+        }
+        return temp;
     }
     
     public JPS_Node[] get_neighbors(JPS_Node node){
