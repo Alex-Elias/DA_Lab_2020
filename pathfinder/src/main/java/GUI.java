@@ -63,6 +63,8 @@ public class GUI extends Application{
         
         Dijkstra dijk = new Dijkstra(maze_array_read_from_file);
         
+        AStar Astar = new AStar(maze_array_read_from_file);
+        
         BFS bfs = new BFS(maze_array_read_from_file);
         //the main borderpane where all of the nodes are set
         BorderPane borderpane = new BorderPane();
@@ -89,7 +91,11 @@ public class GUI extends Application{
         Label stats_dijk = new Label("Dijkstra: ");
         Label stats_dijk_Length = new Label("Length of path: ");
         Label stats_dijk_Time = new Label("Length of Dijkstra in ms:");
+        Label stats_AStar = new Label("A*: ");
+        Label stats_AStar_Length = new Label("Length of path: ");
+        Label stats_AStar_Time = new Label("Length of A* in ms: ");
         stats_vbox.getChildren().addAll(stats_title,stats_BFS,stats_BFS_Length,stats_BFS_Time,stats_dijk,stats_dijk_Length,stats_dijk_Time);
+        stats_vbox.getChildren().addAll(stats_AStar,stats_AStar_Length,stats_AStar_Time);
         
         FlowPane Direction_Origin_pane = new FlowPane();
         FlowPane Destination_pane = new FlowPane();
@@ -141,6 +147,8 @@ public class GUI extends Application{
         
         // button on press runs the BFS algorithm
         Button runBFS_Button = new Button("Run BFS");
+        
+        
         /**
          * runs the BFS algorithm and sets the shortest path in the maze in blue
          * records the length of time the algorithm takes
@@ -169,11 +177,11 @@ public class GUI extends Application{
         
         Button runDijkstra_Button = new Button("Run Dijkstra");
         runDijkstra_Button.setOnAction((event) -> {
-           Long start_time = System.nanoTime();
+           long start_time = System.nanoTime();
            dijk.runDijkstra(this.origin);
            
            ArrayList<Tuple> dijk_shortestPath = dijk.getShortestPath(this.destination);
-           Long end_time = System.nanoTime();
+           long end_time = System.nanoTime();
            for(Tuple t: dijk_shortestPath){
                 Circle redCircle = new Circle(this.maze_stretch *t.y,this.maze_stretch * t.x,1);
                 redCircle.setFill(Color.RED);
@@ -183,6 +191,25 @@ public class GUI extends Application{
             double distance = dijk.getDistance(this.destination);
             stats_dijk_Length.setText("Length of path: " + distance);
             stats_dijk_Time.setText("Length of Dijkstra in ms: " + time_mil);
+        });
+        //button on press runs the A* algoithm
+        Button runAStar_Button = new Button("Run A*");
+        
+        runAStar_Button.setOnAction((event) -> {
+            long start_time = System.nanoTime();
+            Astar.run_AStar(new JPS_Node(new Tuple(this.origin.x,this.origin.y)), new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
+            ArrayList<JPS_Node> AStar_shortestPath = Astar.get_shortest_path(new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
+            long end_time = System.nanoTime();
+            for(JPS_Node node : AStar_shortestPath){
+                Circle greenCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
+                greenCircle.setFill(Color.GREEN);
+                this.maze.getChildren().add(greenCircle);
+            }
+            long time_mil = (end_time-start_time)/1000000;
+            double distance = Astar.distance[this.destination.x][this.destination.y];
+            stats_AStar_Length.setText("Length of path: " + distance);
+            stats_AStar_Time.setText("Length of A* in ms: " + time_mil);
+            
         });
         
         //UNFINISHED
@@ -208,6 +235,7 @@ public class GUI extends Application{
         top_left_vbox.getChildren().add(confirmOrigin);
         top_left_vbox.getChildren().add(new Label("Press the button below to run BFS algorithm"));
         top_left_vbox.getChildren().add(runBFS_Button);
+        top_left_vbox.getChildren().add(runAStar_Button);
         top_left_vbox.getChildren().add(runDijkstra_Button);
         top_left_vbox.getChildren().add(stats_vbox);
         

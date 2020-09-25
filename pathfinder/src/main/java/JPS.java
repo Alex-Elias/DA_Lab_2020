@@ -1,0 +1,290 @@
+
+
+public class JPS {
+
+    int[][] maze;
+    JPS_Node start;
+    JPS_Node goal;
+    
+    
+    public JPS(int[][] maze, JPS_Node start, JPS_Node goal){
+        this.maze = maze;
+        this.start = start;
+        this.goal = goal;
+    }
+    
+    public JPS_Node[] get_successors(JPS_Node node, JPS_Node start, JPS_Node goal){
+        JPS_Node[] successors = new JPS_Node[8];
+        JPS_Node[] neighbors = get_neighbors_pruned(node);
+        for(int i = 0; i < neighbors.length; i++){
+            JPS_Node jump = jump(node, get_direction(neighbors[i]),start,goal);
+            if(jump != null){
+                //need to implement distance and heuristics here or maybe in the jump method
+            }
+            successors[i]= jump;
+        }
+        return successors;
+    }
+    public JPS_Node jump(JPS_Node node, int direction, JPS_Node start, JPS_Node goal){
+        
+        JPS_Node n = step(node,direction);
+        
+        if(n == null){
+            return null;
+        }
+        if(n.coordinates.x == goal.coordinates.x && n.coordinates.y == goal.coordinates.y){
+            return n;
+        }
+        JPS_Node[] neighbors = get_neighbors_pruned(n);
+        for(int i = 0; i< neighbors.length;i++){
+            if(neighbors[i]== null){
+                continue;
+            }
+            if(neighbors[i].forced){
+                return n;
+            }
+        }
+        if (direction%2==1){
+            switch (direction) {
+                case 3:
+                    if (jump(n,2,start,goal) !=null){
+                        return n;
+                    }   if (jump(n,4,start,goal) !=null){
+                        return n;
+                    }   break;
+                case 1:
+                    if (jump(n,2,start,goal) !=null){
+                        return n;
+                    }   if (jump(n,8,start,goal) !=null){
+                        return n;
+                    }   break;
+                case 7:
+                    if (jump(n,6,start,goal) !=null){
+                        return n;
+                    }   if (jump(n,8,start,goal) !=null){
+                        return n;
+                    }   break;
+                case 5:
+                    if (jump(n,4,start,goal) !=null){
+                        return n;
+                    }   if (jump(n,6,start,goal) !=null){
+                        return n;
+                    }   break;
+                default:
+                    break;
+            }
+        }
+        
+        
+        return jump(n,direction,start,goal);
+    }
+    public JPS_Node step(JPS_Node node, int direction){
+        return get_neighbors(node)[direction];
+    }
+    
+    public JPS_Node[] get_neighbors(JPS_Node node){
+        JPS_Node[] neighbors = new JPS_Node[9];
+        if (node.coordinates.x +1 < this.maze.length){
+            if(this.maze[node.coordinates.x + 1][node.coordinates.y] ==0){
+                neighbors[6] = (new JPS_Node(new Tuple(node.coordinates.x+1,node.coordinates.y)));
+                neighbors[6].parent = node;
+            }
+        }
+        if (node.coordinates.y +1 < this.maze[0].length){
+            if(this.maze[node.coordinates.x][node.coordinates.y +1] == 0){
+                neighbors[4] = (new JPS_Node (new Tuple(node.coordinates.x,node.coordinates.y+1)));
+                neighbors[4].parent = node;
+            }
+        }
+        if (node.coordinates.x -1 >= 0){
+            if (this.maze[node.coordinates.x -1][node.coordinates.y] == 0){
+                neighbors[2]=(new JPS_Node (new Tuple(node.coordinates.x-1,node.coordinates.y)));
+                neighbors[2].parent = node;
+            }
+        }
+        if (node.coordinates.y -1 >= 0){
+            if (this.maze[node.coordinates.x][node.coordinates.y-1] == 0){
+                neighbors[8]=(new JPS_Node (new Tuple(node.coordinates.x,node.coordinates.y-1)));
+                neighbors[8].parent = node;
+            }
+        }
+        if (node.coordinates.x +1 < this.maze.length && node.coordinates.y +1 < this.maze[0].length){
+            if(this.maze[node.coordinates.x + 1][node.coordinates.y+1] ==0){
+                neighbors[5]=(new JPS_Node(new Tuple(node.coordinates.x+1,node.coordinates.y+1)));
+                neighbors[5].parent = node;
+            }
+        }
+        if (node.coordinates.x -1 >=0 && node.coordinates.y +1 < this.maze[0].length){
+            if(this.maze[node.coordinates.x - 1][node.coordinates.y+1] ==0){
+                neighbors[3]=(new JPS_Node(new Tuple(node.coordinates.x-1,node.coordinates.y+1)));
+                neighbors[3].parent = node;
+            }
+        }
+        if (node.coordinates.x +1 < this.maze.length && node.coordinates.y -1 >=0){
+            if(this.maze[node.coordinates.x + 1][node.coordinates.y-1] ==0){
+                neighbors[1]=(new JPS_Node(new Tuple(node.coordinates.x+1,node.coordinates.y-1)));
+                neighbors[1].parent = node;
+            }
+        }
+        if (node.coordinates.x -1 >=0 && node.coordinates.y-1 >=0){
+            if(this.maze[node.coordinates.x - 1][node.coordinates.y-1] ==0){
+                neighbors[7]=(new JPS_Node(new Tuple(node.coordinates.x-1,node.coordinates.y-1)));
+                neighbors[7].parent = node;
+            }
+        }
+        return neighbors;
+    }
+    public JPS_Node[] get_neighbors_pruned(JPS_Node node){
+        
+        JPS_Node[] neighbors = get_neighbors(node);
+        JPS_Node[] pruned = new JPS_Node[5];
+        int direction = get_direction(node);
+        if(direction == 0){
+            return neighbors;
+        }
+        if (direction%2 ==0){
+            if (direction == 4){
+                if(neighbors[2] == null){
+                    pruned[1] = neighbors[3];
+                    pruned[1].forced=true;
+                }
+                if(neighbors[6] == null){
+                    pruned[2] = neighbors[5];
+                    pruned[2].forced=true;
+                }
+                pruned[3] = neighbors[4];
+            }
+            if (direction == 6){
+                if(neighbors[8] == null){
+                    pruned[1] = neighbors[7];
+                    pruned[1].forced=true;
+                }
+                if(neighbors[4] == null){
+                    pruned[2] = neighbors[5];
+                    pruned[2].forced=true;
+                }
+                pruned[3] = neighbors[6];
+            }
+            if (direction == 8){
+                if(neighbors[2] == null){
+                    pruned[1] = neighbors[1];
+                    pruned[1].forced=true;
+                }
+                if(neighbors[6] == null){
+                    pruned[2] = neighbors[7];
+                    pruned[2].forced=true;
+                }
+                pruned[3] = neighbors[8];
+            }
+            if (direction == 2){
+                if(neighbors[8] == null){
+                    pruned[1] = neighbors[1];
+                    pruned[1].forced=true;
+                }
+                if(neighbors[4] == null){
+                    pruned[2] = neighbors[3];
+                    pruned[2].forced=true;
+                }
+                pruned[3] = neighbors[6];
+            }
+        }else{
+            if(direction==3){
+                if(neighbors[6]==null){
+                    pruned[0]= neighbors[5];
+                    pruned[0].forced=true;
+                }
+                if(neighbors[8]==null){
+                    pruned[1]=neighbors[1];
+                    pruned[1].forced=true;
+                }
+                pruned[2]=neighbors[2];
+                pruned[3]=neighbors[3];
+                pruned[4]=neighbors[4];
+            }
+            if(direction==7){
+                if(neighbors[2]==null){
+                    pruned[0]= neighbors[1];
+                    pruned[0].forced=true;
+                }
+                if(neighbors[4]==null){
+                    pruned[1]=neighbors[5];
+                    pruned[1].forced=true;
+                }
+                pruned[2]=neighbors[6];
+                pruned[3]=neighbors[7];
+                pruned[4]=neighbors[8];
+            }
+            if(direction==5){
+                if(neighbors[2]==null){
+                    pruned[0]= neighbors[3];
+                    pruned[0].forced=true;
+                }
+                if(neighbors[8]==null){
+                    pruned[1]=neighbors[7];
+                    pruned[1].forced=true;
+                }
+                pruned[2]=neighbors[6];
+                pruned[3]=neighbors[5];
+                pruned[4]=neighbors[4];
+            }
+            if(direction==1){
+                if(neighbors[6]==null){
+                    pruned[0]= neighbors[7];
+                    pruned[0].forced=true;
+                }
+                if(neighbors[4]==null){
+                    pruned[1]=neighbors[3];
+                    pruned[1].forced=true;
+                }
+                pruned[2]=neighbors[8];
+                pruned[3]=neighbors[1];
+                pruned[4]=neighbors[2];
+            }
+        }
+        return pruned;
+        
+    }
+    
+    
+    
+    
+    public int get_direction(JPS_Node node){
+        int x = node.coordinates.x -node.parent.coordinates.x;
+        int y = node.coordinates.y -node.parent.coordinates.y;
+        
+        if(x == 1){
+            if(y==-1){
+                return 7;
+            }
+            if(y==0){
+                return 6;
+            }
+            if (y==1){
+                return 5;
+            }
+        }
+        if(x == -1){
+            if(y==-1){
+                return 1;
+            }
+            if(y==0){
+                return 2;
+            }
+            if (y==1){
+                return 3;
+            }
+        }
+        if(x==0){
+            if(y==1){
+                return 4;
+            }
+            if(y==-1){
+                return 8;
+            }
+        }
+        return 0;
+    }
+
+
+    
+}
