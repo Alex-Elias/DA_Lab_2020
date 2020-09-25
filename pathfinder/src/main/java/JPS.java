@@ -1,33 +1,89 @@
 
+import java.util.PriorityQueue;
+
+
 
 public class JPS {
 
     int[][] maze;
     JPS_Node start;
     JPS_Node goal;
+    PriorityQueue<JPS_Node> queue;
+    double[][] distance;
+    JPS_Node[][] predecessor;
     
     
-    public JPS(int[][] maze, JPS_Node start, JPS_Node goal){
+    public JPS(int[][] maze){
         this.maze = maze;
-        this.start = start;
-        this.goal = goal;
+        this.queue= new PriorityQueue<JPS_Node>(new JPS_Node());
+        this.predecessor = new JPS_Node[maze.length][maze[0].length];
+        this.distance = new double[maze.length][maze[0].length];
+        
+    }
+    public void run_JPS( JPS_Node start, JPS_Node goal){
+        start.f=0;
+        this.queue.add(start);
+        this.predecessor[start.coordinates.x][start.coordinates.y] = start;
+        
+        for (int i = 0; i< this.maze.length; i++){
+            for (int j = 0; j<this.maze[0].length; j++){
+                this.distance[i][j] = 2147483647;
+                
+                
+            }
+            
+        }
+        this.distance[start.coordinates.x][start.coordinates.y] = 0;
+        
+        while(!this.queue.isEmpty()){
+            
+            
+            JPS_Node current = this.queue.poll();
+            
+            
+            if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){
+                break;
+            }
+
+
+
+            
+            
+        }
+        
+        
+    }
+    public double heuristic(JPS_Node location, JPS_Node location2){
+        double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
+        double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
+        
+        return dx+dy +(1.4142135 - 2) * Math.min(dx, dy);
+        
     }
     
     public JPS_Node[] get_successors(JPS_Node node, JPS_Node start, JPS_Node goal){
         JPS_Node[] successors = new JPS_Node[8];
         JPS_Node[] neighbors = get_neighbors_pruned(node);
         for(int i = 0; i < neighbors.length; i++){
+            if(neighbors[i]== null){
+                continue;
+            }
             JPS_Node jump = jump(node, get_direction(neighbors[i]),start,goal);
             if(jump != null){
                 //need to implement distance and heuristics here or maybe in the jump method
             }
             successors[i]= jump;
+            if(jump!= null){
+                this.predecessor[jump.coordinates.x][jump.coordinates.y] = node;
+
+            }
         }
         return successors;
     }
     public JPS_Node jump(JPS_Node node, int direction, JPS_Node start, JPS_Node goal){
         
         JPS_Node n = step(node,direction);
+        
         
         if(n == null){
             return null;

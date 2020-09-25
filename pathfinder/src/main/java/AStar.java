@@ -9,11 +9,17 @@ public class AStar {
     PriorityQueue<JPS_Node> queue;
     JPS_Node[][] predecessor;
     
+    //  test
+    boolean[][] visited;
+    
     public AStar(int[][] maze){
         this.distance = new double[maze.length][maze[0].length];
         this.maze=maze;
         this.queue = new PriorityQueue<JPS_Node>(new JPS_Node());
         this.predecessor = new JPS_Node[maze.length][maze[0].length];
+        
+        //test
+        this.visited= new boolean[maze.length][maze[0].length];
         
     }
     public void run_AStar(JPS_Node start, JPS_Node goal){
@@ -24,29 +30,40 @@ public class AStar {
         for (int i = 0; i< this.maze.length; i++){
             for (int j = 0; j<this.maze[0].length; j++){
                 this.distance[i][j] = 2147483647;
+                this.visited[i][j] = false;
                 
             }
             
         }
         this.distance[start.coordinates.x][start.coordinates.y] = 0;
+        
 
         
         while(!this.queue.isEmpty()){
-            JPS_Node current = this.queue.poll();
             
-            if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){
-                break;
-            }
-            for(JPS_Node next : adjacencyList(current.coordinates)){
-                double new_weight = this.distance[current.coordinates.x][current.coordinates.y] + next.weight;
-                if (new_weight < this.distance[next.coordinates.x][next.coordinates.y]){
-                    this.distance[next.coordinates.x][next.coordinates.y]= new_weight;
-                    double priority = new_weight + heuristic(next,goal);
-                    next.f = priority;
-                    this.queue.add(next);
-                    this.predecessor[next.coordinates.x][next.coordinates.y] = current;
+            
+            JPS_Node current = this.queue.poll();
+            if(!this.visited[current.coordinates.x][current.coordinates.y]){
+                this.visited[current.coordinates.x][current.coordinates.y] = true;
+            
+                if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){
+                    break;
                 }
-                
+            
+            
+            
+                for(JPS_Node next : adjacencyList(current.coordinates)){
+                    double new_weight = this.distance[current.coordinates.x][current.coordinates.y] + next.weight;
+
+                    if (new_weight < this.distance[next.coordinates.x][next.coordinates.y]){
+                        this.distance[next.coordinates.x][next.coordinates.y]= new_weight;
+                        double priority = new_weight + heuristic(next,goal);
+                        next.f = priority;
+                        this.queue.add(next);
+                        this.predecessor[next.coordinates.x][next.coordinates.y] = current;
+                    }
+
+                }
             }
         }
     }
