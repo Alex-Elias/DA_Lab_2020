@@ -70,7 +70,7 @@ public class GUI extends Application{
         
         */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
-        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-1-0.map");
+        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-32-0.map");
         //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
         
 
@@ -82,6 +82,8 @@ public class GUI extends Application{
         Dijkstra dijk = new Dijkstra(maze_array_read_from_file);
         
         AStar Astar = new AStar(maze_array_read_from_file);
+        
+        JPS jps = new JPS(maze_array_read_from_file);
         
         BFS bfs = new BFS(maze_array_read_from_file);
         //the main borderpane where all of the nodes are set
@@ -112,8 +114,11 @@ public class GUI extends Application{
         Label stats_AStar = new Label("A*: ");
         Label stats_AStar_Length = new Label("Length of path: ");
         Label stats_AStar_Time = new Label("Length of A* in ms: ");
+        Label stats_JPS = new Label("JPS: ");
+        Label stats_JPS_Length = new Label("Length of path: ");
+        Label stats_JPS_Time = new Label("Length of JPS in ms: ");
         stats_vbox.getChildren().addAll(stats_title,stats_BFS,stats_BFS_Length,stats_BFS_Time,stats_dijk,stats_dijk_Length,stats_dijk_Time);
-        stats_vbox.getChildren().addAll(stats_AStar,stats_AStar_Length,stats_AStar_Time);
+        stats_vbox.getChildren().addAll(stats_AStar,stats_AStar_Length,stats_AStar_Time,stats_JPS,stats_JPS_Length,stats_JPS_Time);
         
         FlowPane Direction_Origin_pane = new FlowPane();
         FlowPane Destination_pane = new FlowPane();
@@ -232,6 +237,28 @@ public class GUI extends Application{
             
         });
         
+        Button runJPS_button = new Button("Run JPS");
+        
+        runJPS_button.setOnAction((event) ->{
+            long start_time = System.nanoTime();
+            jps.run_JPS(new JPS_Node(new Tuple(this.origin.x,this.origin.y)), new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
+            long end_time = System.nanoTime();
+            for(int i = 0; i < jps.maze.length; i++){
+                for (int j = 0; j < jps.maze[0].length; j++){
+                    if(jps.jump_point[i][j]==1){
+                        Circle purpleCircle = new Circle(this.maze_stretch* j, this.maze_stretch * i, 3);
+                        purpleCircle.setFill(Color.PURPLE);
+                        this.maze.getChildren().add(purpleCircle);
+
+                    }
+                }
+            }
+            
+            long time_mil = (end_time-start_time)/1000000;
+            stats_JPS_Length.setText("Length of path: " + jps.weight);
+            stats_JPS_Time.setText("Length of JPS in ms: " + time_mil);
+        });
+        
         //UNFINISHED
         String maze_options_list_array[] = {"one pixel corridor", "four pixel corridor", "16 pixel corridor","32 pixel corridor"};
         
@@ -257,6 +284,7 @@ public class GUI extends Application{
         top_left_vbox.getChildren().add(runBFS_Button);
         top_left_vbox.getChildren().add(runAStar_Button);
         top_left_vbox.getChildren().add(runDijkstra_Button);
+        top_left_vbox.getChildren().add(runJPS_button);
         top_left_vbox.getChildren().add(stats_vbox);
         
         

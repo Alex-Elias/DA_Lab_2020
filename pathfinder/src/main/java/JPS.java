@@ -16,6 +16,7 @@ public class JPS {
     PriorityQueue<JPS_Node> queue;
     double[][] distance;
     JPS_Node[][] predecessor;
+    int[][] jump_point;
     double weight;
     
     
@@ -24,6 +25,7 @@ public class JPS {
         this.queue= new PriorityQueue<JPS_Node>(new JPS_Node());
         this.predecessor = new JPS_Node[maze.length][maze[0].length];
         this.distance = new double[maze.length][maze[0].length];
+        this.jump_point = new int[maze.length][maze[0].length];
         
     }
     public void run_JPS( JPS_Node start, JPS_Node goal){
@@ -35,6 +37,7 @@ public class JPS {
         for (int i = 0; i< this.maze.length; i++){
             for (int j = 0; j<this.maze[0].length; j++){
                 this.distance[i][j] = 2147483647;
+                this.jump_point[i][j] = 0;
                 
                 
             }
@@ -57,6 +60,7 @@ public class JPS {
                 if(next[i]== null){
                     continue;
                 }
+                this.jump_point[next[i].coordinates.x][next[i].coordinates.y] = 1;
                 next[i].f = next[i].weight + heuristic(next[i],goal);
                 this.queue.add(next[i]);
             }
@@ -77,7 +81,7 @@ public class JPS {
     }
     
     public JPS_Node[] get_successors(JPS_Node node, JPS_Node start, JPS_Node goal){
-        JPS_Node[] successors = new JPS_Node[8];
+        JPS_Node[] successors = new JPS_Node[9];
         JPS_Node[] neighbors = get_neighbors_pruned(node);
         for(int i = 0; i < neighbors.length; i++){
             if(neighbors[i]== null){
@@ -151,6 +155,9 @@ public class JPS {
     }
     public JPS_Node step(JPS_Node node, int direction){
         JPS_Node temp = get_neighbors(node)[direction];
+        if(temp==null){
+            return null;
+        }
         if(direction %2 ==0){
             temp.weight = node.weight +1;
         }else{
@@ -222,45 +229,62 @@ public class JPS {
         if (direction%2 ==0){
             if (direction == 4){
                 if(neighbors[2] == null){
+                    
                     pruned[1] = neighbors[3];
-                    pruned[1].forced=true;
+                    if(pruned[1]!=null){
+                        pruned[1].forced=true;
+                    }
                 }
                 if(neighbors[6] == null){
                     pruned[2] = neighbors[5];
-                    pruned[2].forced=true;
+                    if(pruned[2]!=null){
+                        pruned[2].forced=true;
+                    }
                 }
                 pruned[3] = neighbors[4];
             }
             if (direction == 6){
                 if(neighbors[8] == null){
                     pruned[1] = neighbors[7];
-                    pruned[1].forced=true;
+                    if(pruned[1]!=null){
+                        pruned[1].forced=true;
+                    }
                 }
                 if(neighbors[4] == null){
                     pruned[2] = neighbors[5];
-                    pruned[2].forced=true;
+                    if(pruned[2]!=null){
+                        pruned[2].forced=true;
+                    }
                 }
                 pruned[3] = neighbors[6];
             }
             if (direction == 8){
                 if(neighbors[2] == null){
                     pruned[1] = neighbors[1];
-                    pruned[1].forced=true;
+                    if(pruned[1]!=null){
+                        pruned[1].forced=true;
+                    }
                 }
                 if(neighbors[6] == null){
                     pruned[2] = neighbors[7];
-                    pruned[2].forced=true;
+                    if(pruned[2]!=null){
+                        pruned[2].forced=true;
+                    }
                 }
                 pruned[3] = neighbors[8];
             }
             if (direction == 2){
                 if(neighbors[8] == null){
                     pruned[1] = neighbors[1];
-                    pruned[1].forced=true;
+                    if(pruned[1]!=null){
+                        pruned[1].forced=true;
+                    }
                 }
                 if(neighbors[4] == null){
                     pruned[2] = neighbors[3];
-                    pruned[2].forced=true;
+                    if(pruned[2]!=null){
+                        pruned[2].forced=true;
+                    }
                 }
                 pruned[3] = neighbors[6];
             }
@@ -268,11 +292,15 @@ public class JPS {
             if(direction==3){
                 if(neighbors[6]==null){
                     pruned[0]= neighbors[5];
-                    pruned[0].forced=true;
+                    if(pruned[0]!=null){
+                        pruned[0].forced=true;
+                    }
                 }
                 if(neighbors[8]==null){
                     pruned[1]=neighbors[1];
-                    pruned[1].forced=true;
+                    if(pruned[1]!=null){
+                        pruned[1].forced=true;
+                    }
                 }
                 pruned[2]=neighbors[2];
                 pruned[3]=neighbors[3];
@@ -281,11 +309,15 @@ public class JPS {
             if(direction==7){
                 if(neighbors[2]==null){
                     pruned[0]= neighbors[1];
-                    pruned[0].forced=true;
+                    if(pruned[0]!=null){
+                        pruned[0].forced=true;
+                    }
                 }
                 if(neighbors[4]==null){
                     pruned[1]=neighbors[5];
-                    pruned[1].forced=true;
+                    if(pruned[1]!=null){
+                        pruned[1].forced=true;
+                    }
                 }
                 pruned[2]=neighbors[6];
                 pruned[3]=neighbors[7];
@@ -294,11 +326,15 @@ public class JPS {
             if(direction==5){
                 if(neighbors[2]==null){
                     pruned[0]= neighbors[3];
-                    pruned[0].forced=true;
+                    if(pruned[0]!=null){
+                        pruned[0].forced=true;
+                    }
                 }
                 if(neighbors[8]==null){
                     pruned[1]=neighbors[7];
-                    pruned[1].forced=true;
+                    if(pruned[1]!=null){
+                        pruned[1].forced=true;
+                    }
                 }
                 pruned[2]=neighbors[6];
                 pruned[3]=neighbors[5];
@@ -307,11 +343,15 @@ public class JPS {
             if(direction==1){
                 if(neighbors[6]==null){
                     pruned[0]= neighbors[7];
-                    pruned[0].forced=true;
+                    if(pruned[0]!=null){
+                        pruned[0].forced=true;
+                    }
                 }
                 if(neighbors[4]==null){
                     pruned[1]=neighbors[3];
-                    pruned[1].forced=true;
+                    if(pruned[1]!=null){
+                        pruned[1].forced=true;
+                    }
                 }
                 pruned[2]=neighbors[8];
                 pruned[3]=neighbors[1];
