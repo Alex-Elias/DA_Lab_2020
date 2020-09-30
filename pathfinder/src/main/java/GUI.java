@@ -64,10 +64,13 @@ public class GUI extends Application{
         //Create new Filereaderclass
         //it takes string input of the location of a .map maze file
         /**
-         * the two tested mazes are:
+         * the tested mazes are:
          *  /Pathfinder/Mazes/maze512-1-0.map
-         *  /Pathfinder/Mazes/maze512-32-0.map
+         *  /Pathfinder/Mazes/maze512-32-0.map -JPS prohibitively slow
          *  /Pathfinder/Mazes/maze512-8-0.map
+         *  /Pathfinder/Mazes/random512-10-0.map - JPS prohibitively slow
+         *  /Pathfinder/Mazes/brc101d.map - JPS prohibitively slow
+         *  //Pathfinder/Mazes/random512-40-7.map - JPS prohibitively slow 
         
         */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------

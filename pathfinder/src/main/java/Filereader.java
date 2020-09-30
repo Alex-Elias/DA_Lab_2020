@@ -49,7 +49,7 @@ public class Filereader {
         while (i < 513){
             String temp = this.sc.next();
             for (int j = 0; j < temp.length(); j++){
-                if(Character.toString(temp.charAt(j)).equals("@")){
+                if(Character.toString(temp.charAt(j)).equals("@") ||Character.toString(temp.charAt(j)).equals("T")){
                     array[i][j] = 1;
                 }else{
                     array[i][j] = 0;
