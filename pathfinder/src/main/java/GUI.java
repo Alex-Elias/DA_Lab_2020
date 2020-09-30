@@ -65,16 +65,16 @@ public class GUI extends Application{
         //it takes string input of the location of a .map maze file
         /**
          * the tested mazes are:
-         *  /Pathfinder/Mazes/maze512-1-0.map
-         *  /Pathfinder/Mazes/maze512-32-0.map -JPS prohibitively slow
+         *  /Pathfinder/Mazes/maze512-1-0.map ----JPS does not work on this map
+         *  /Pathfinder/Mazes/maze512-32-0.map 
          *  /Pathfinder/Mazes/maze512-8-0.map
-         *  /Pathfinder/Mazes/random512-10-0.map - JPS prohibitively slow
-         *  /Pathfinder/Mazes/brc101d.map - JPS prohibitively slow
-         *  //Pathfinder/Mazes/random512-40-7.map - JPS prohibitively slow 
+         *  /Pathfinder/Mazes/random512-10-0.map  
+         *  /Pathfinder/Mazes/brc101d.map - 
+         *  //Pathfinder/Mazes/random512-40-7.map 
         
         */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
-        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-8-0.map");
+        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-1-0.map");
         //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
         
 
@@ -205,7 +205,7 @@ public class GUI extends Application{
         Button runDijkstra_Button = new Button("Run Dijkstra");
         runDijkstra_Button.setOnAction((event) -> {
            long start_time = System.nanoTime();
-           dijk.runDijkstra(this.origin);
+           dijk.runDijkstra(this.origin,this.destination);
            
            ArrayList<Tuple> dijk_shortestPath = dijk.getShortestPath(this.destination);
            long end_time = System.nanoTime();

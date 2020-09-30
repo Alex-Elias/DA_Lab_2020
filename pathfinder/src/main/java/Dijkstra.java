@@ -32,7 +32,7 @@ public class Dijkstra{
      * the method that runs the Dijkstra's algorithm
      * @param origin a two integer tuple that contains the x and y values of the origin the first value represents the row number and the second value represents the number of columns starting from 0
      */
-    public void runDijkstra(Tuple origin){
+    public void runDijkstra(Tuple origin, Tuple goal){
         for (int i = 0; i< this.maze.length; i++){
             for (int j = 0; j<this.maze[0].length; j++){
                 this.distance[i][j] = 2147483647;
@@ -47,6 +47,9 @@ public class Dijkstra{
             while(!queue.isEmpty()){
                 Node next = queue.poll();
                 Tuple u = next.coordinate;
+                if(u == goal){
+                    break;
+                }
                 if(!this.processed[u.x][u.y]){
                     this.processed[u.x][u.y] = true;
                     for(Node edge: this.adjacencyList(u)){
