@@ -18,6 +18,7 @@ public class JPS {
     JPS_Node[][] predecessor;
     int[][] jump_point;
     double weight;
+    boolean[][] visited;
     
     
     public JPS(int[][] maze){
@@ -26,6 +27,7 @@ public class JPS {
         this.predecessor = new JPS_Node[maze.length][maze[0].length];
         this.distance = new double[maze.length][maze[0].length];
         this.jump_point = new int[maze.length][maze[0].length];
+        this.visited = new boolean[maze.length][maze[0].length];
         
     }
     public void run_JPS( JPS_Node start, JPS_Node goal){
@@ -34,21 +36,25 @@ public class JPS {
         this.queue.add(start);
         this.predecessor[start.coordinates.x][start.coordinates.y] = start;
         
-        for (int i = 0; i< this.maze.length; i++){
-            for (int j = 0; j<this.maze[0].length; j++){
-                this.distance[i][j] = 2147483647;
-                this.jump_point[i][j] = 0;
-                
-                
-            }
-            
-        }
-        this.distance[start.coordinates.x][start.coordinates.y] = 0;
+//        for (int i = 0; i< this.maze.length; i++){
+//            for (int j = 0; j<this.maze[0].length; j++){
+//                this.distance[i][j] = 2147483647;
+//                this.jump_point[i][j] = 0;
+//                
+//                
+//            }
+//            
+//        }
+        //this.distance[start.coordinates.x][start.coordinates.y] = 0;
         
         while(!this.queue.isEmpty()){
             
             
             JPS_Node current = this.queue.poll();
+            if(this.visited[current.coordinates.x][current.coordinates.y]){
+               continue; 
+            }
+            this.visited[current.coordinates.x][current.coordinates.y] = true;
             
             
             if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){

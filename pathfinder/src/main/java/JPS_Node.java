@@ -12,7 +12,7 @@ public class JPS_Node implements Comparator<JPS_Node>{
     double f,g,h;
     boolean forced;
     double weight;
-    
+        
     public JPS_Node(Tuple coordinates){
         this.coordinates = coordinates;
     }
