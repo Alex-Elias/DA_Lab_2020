@@ -67,10 +67,11 @@ public class GUI extends Application{
          * the two tested mazes are:
          *  /Pathfinder/Mazes/maze512-1-0.map
          *  /Pathfinder/Mazes/maze512-32-0.map
+         *  /Pathfinder/Mazes/maze512-8-0.map
         
         */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
-        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-32-0.map");
+        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-8-0.map");
         //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
         
 

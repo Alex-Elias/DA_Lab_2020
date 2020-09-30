@@ -206,14 +206,14 @@ public class JPS {
         }
         if (node.coordinates.x +1 < this.maze.length && node.coordinates.y -1 >=0){
             if(this.maze[node.coordinates.x + 1][node.coordinates.y-1] ==0){
-                neighbors[1]=(new JPS_Node(new Tuple(node.coordinates.x+1,node.coordinates.y-1)));
-                neighbors[1].parent = node;
+                neighbors[7]=(new JPS_Node(new Tuple(node.coordinates.x+1,node.coordinates.y-1)));
+                neighbors[7].parent = node;
             }
         }
         if (node.coordinates.x -1 >=0 && node.coordinates.y-1 >=0){
             if(this.maze[node.coordinates.x - 1][node.coordinates.y-1] ==0){
-                neighbors[7]=(new JPS_Node(new Tuple(node.coordinates.x-1,node.coordinates.y-1)));
-                neighbors[7].parent = node;
+                neighbors[1]=(new JPS_Node(new Tuple(node.coordinates.x-1,node.coordinates.y-1)));
+                neighbors[1].parent = node;
             }
         }
         return neighbors;
