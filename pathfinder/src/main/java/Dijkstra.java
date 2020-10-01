@@ -47,7 +47,7 @@ public class Dijkstra{
             while(!queue.isEmpty()){
                 Node next = queue.poll();
                 Tuple u = next.coordinate;
-                if(u == goal){
+                if(u.x == goal.x && u.y == goal.y){
                     break;
                 }
                 if(!this.processed[u.x][u.y]){

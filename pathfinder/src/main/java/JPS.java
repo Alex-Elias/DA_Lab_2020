@@ -3,8 +3,8 @@ import java.util.PriorityQueue;
 
 
 /**
- * DOES NOT FUNCTION YET!
- * has null point exception errors
+ * Functions poorly and not on all maps yet
+ * 
  * implementation of the Jump Point Search algorithm
  * @author alex
  */
@@ -82,9 +82,16 @@ public class JPS {
         double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
         double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
         
-        return dx+dy +(1.4142135 - 2) * Math.min(dx, dy);
+        return dx+dy +(1.4142135 -2) * Math.min(dx, dy);
         
     }
+//    public double heuristic(JPS_Node location, JPS_Node location2){
+//        double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
+//        double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
+//        
+//        return dx+dy;
+//        
+//    }
     
     public JPS_Node[] get_successors(JPS_Node node, JPS_Node start, JPS_Node goal){
         JPS_Node[] successors = new JPS_Node[9];

@@ -74,7 +74,7 @@ public class GUI extends Application{
         
         */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
-        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-1-0.map");
+        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/random512-10-0.map");
         //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
         
 
@@ -250,7 +250,7 @@ public class GUI extends Application{
             for(int i = 0; i < jps.maze.length; i++){
                 for (int j = 0; j < jps.maze[0].length; j++){
                     if(jps.jump_point[i][j]==1){
-                        Circle purpleCircle = new Circle(this.maze_stretch* j, this.maze_stretch * i, 3);
+                        Circle purpleCircle = new Circle(this.maze_stretch* j, this.maze_stretch * i, 1);
                         purpleCircle.setFill(Color.PURPLE);
                         this.maze.getChildren().add(purpleCircle);
 
