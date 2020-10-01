@@ -5,7 +5,7 @@ import java.util.PriorityQueue;
 /**
  * Functions poorly and not on all maps yet
  * 
- * implementation of the Jump Point Search algorithm
+ * poor implementation of the Jump Point Search algorithm
  * @author alex
  */
 public class JPS {
@@ -14,7 +14,7 @@ public class JPS {
     JPS_Node start;
     JPS_Node goal;
     PriorityQueue<JPS_Node> queue;
-    double[][] distance;
+    
     JPS_Node[][] predecessor;
     int[][] jump_point;
     double weight;
@@ -25,7 +25,7 @@ public class JPS {
         this.maze = maze;
         this.queue= new PriorityQueue<JPS_Node>(new JPS_Node());
         this.predecessor = new JPS_Node[maze.length][maze[0].length];
-        this.distance = new double[maze.length][maze[0].length];
+        
         this.jump_point = new int[maze.length][maze[0].length];
         this.visited = new boolean[maze.length][maze[0].length];
         
@@ -59,6 +59,7 @@ public class JPS {
             
             if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){
                 this.weight = current.weight;
+                this.goal = current;
                 break;
             }
             JPS_Node[] next = get_successors(current,start,goal);
@@ -78,6 +79,32 @@ public class JPS {
         
         
     }
+    
+    public JPS_Node is_valid_place(Tuple T){
+        if(T.x< 0 || T.y < 0){
+            return null;
+        }
+        if(T.x>=this.maze.length || T.y >= this.maze[0].length){
+            return null;
+        }
+        if(this.maze[T.x][T.y] == 1){
+            return null;
+        }
+        return new JPS_Node(T);
+    }
+    public boolean is_valid(int x, int y){
+        if(x< 0 || y < 0){
+            return false;
+        }
+        if(x>=this.maze.length || y >= this.maze[0].length){
+            return false;
+        }
+        if(this.maze[x][y] == 1){
+            return false;
+        }
+        return true;
+    }
+    
     public double heuristic(JPS_Node location, JPS_Node location2){
         double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
         double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
@@ -85,22 +112,16 @@ public class JPS {
         return dx+dy +(1.4142135 -2) * Math.min(dx, dy);
         
     }
-//    public double heuristic(JPS_Node location, JPS_Node location2){
-//        double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
-//        double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
-//        
-//        return dx+dy;
-//        
-//    }
+
     
     public JPS_Node[] get_successors(JPS_Node node, JPS_Node start, JPS_Node goal){
         JPS_Node[] successors = new JPS_Node[9];
-        JPS_Node[] neighbors = get_neighbors_pruned(node);
+        JPS_Node[] neighbors = get_neighbor_pruned(node);
         for(int i = 0; i < neighbors.length; i++){
             if(neighbors[i]== null){
                 continue;
             }
-            JPS_Node jump = jump(node, get_direction(neighbors[i]),start,goal);
+            JPS_Node jump = jump(node, get_directions(neighbors[i]),start,goal);
             if(jump != null){
                 //need to implement distance and heuristics here or possibly in the jump method
             }
@@ -112,18 +133,26 @@ public class JPS {
         }
         return successors;
     }
-    public JPS_Node jump(JPS_Node node, int direction, JPS_Node start, JPS_Node goal){
+    public JPS_Node jump(JPS_Node node, Tuple direction, JPS_Node start, JPS_Node goal){
         
-        JPS_Node n = step(node,direction);
-        
+        Tuple next = new Tuple(node.coordinates.x + direction.x, node.coordinates.y + direction.y);
+        JPS_Node n = is_valid_place(next);
         
         if(n == null){
             return null;
         }
+        n.parent = node;
+        if(direction.x !=0 && direction.y !=0){
+            n.weight = n.parent.weight + 1.4142135;
+        }else{
+            n.weight = n.parent.weight + 1;
+        }
+        
         if(n.coordinates.x == goal.coordinates.x && n.coordinates.y == goal.coordinates.y){
+            this.goal = n;
             return n;
         }
-        JPS_Node[] neighbors = get_neighbors_pruned(n);
+        JPS_Node[] neighbors = get_neighbor_pruned(n);
         for(int i = 0; i< neighbors.length;i++){
             if(neighbors[i]== null){
                 continue;
@@ -132,52 +161,19 @@ public class JPS {
                 return n;
             }
         }
-        if (direction%2==1){
-            switch (direction) {
-                case 3:
-                    if (jump(n,2,start,goal) !=null){
-                        return n;
-                    }   if (jump(n,4,start,goal) !=null){
-                        return n;
-                    }   break;
-                case 1:
-                    if (jump(n,2,start,goal) !=null){
-                        return n;
-                    }   if (jump(n,8,start,goal) !=null){
-                        return n;
-                    }   break;
-                case 7:
-                    if (jump(n,6,start,goal) !=null){
-                        return n;
-                    }   if (jump(n,8,start,goal) !=null){
-                        return n;
-                    }   break;
-                case 5:
-                    if (jump(n,4,start,goal) !=null){
-                        return n;
-                    }   if (jump(n,6,start,goal) !=null){
-                        return n;
-                    }   break;
-                default:
-                    break;
-            }
+        if(direction.x !=0 && direction.y !=0){
+            if( jump(n, new Tuple(direction.x,0),start,goal) != null || jump(n, new Tuple(0,direction.y),start,goal) != null){
+                return n;
+            } 
         }
+        
+        
+        
         
         
         return jump(n,direction,start,goal);
     }
-    public JPS_Node step(JPS_Node node, int direction){
-        JPS_Node temp = get_neighbors(node)[direction];
-        if(temp==null){
-            return null;
-        }
-        if(direction %2 ==0){
-            temp.weight = node.weight +1;
-        }else{
-            temp.weight = node.weight + 1.4142135;
-        }
-        return temp;
-    }
+    
     
     public JPS_Node[] get_neighbors(JPS_Node node){
         JPS_Node[] neighbors = new JPS_Node[9];
@@ -231,145 +227,95 @@ public class JPS {
         }
         return neighbors;
     }
-    public JPS_Node[] get_neighbors_pruned(JPS_Node node){
-        
-        JPS_Node[] neighbors = get_neighbors(node);
+    public JPS_Node[] get_neighbor_pruned(JPS_Node node){
+        int dx = node.coordinates.x - node.parent.coordinates.x;
+        int dy = node.coordinates.y - node.parent.coordinates.y;
         JPS_Node[] pruned = new JPS_Node[5];
-        int direction = get_direction(node);
-        if(direction == 0){
-            return neighbors;
+        if(dx==0 && dy == 0){
+            return get_neighbors(node);
         }
-        if (direction%2 ==0){
-            if (direction == 4){
-                if(neighbors[2] == null){
-                    
-                    pruned[1] = neighbors[3];
-                    if(pruned[1]!=null){
-                        pruned[1].forced=true;
+        
+        if(dx == 0){
+            if (is_valid(node.coordinates.x, node.coordinates.y + dy)){
+                if(!is_valid(node.coordinates.x +1, node.coordinates.y)){
+                    JPS_Node forced = is_valid_place(new Tuple(node.coordinates.x +1, node.coordinates.y + dy));
+                    if(forced != null){
+                        forced.parent = node;
+                        forced.forced =true;
+                        pruned[1] = forced;
                     }
                 }
-                if(neighbors[6] == null){
-                    pruned[2] = neighbors[5];
-                    if(pruned[2]!=null){
-                        pruned[2].forced=true;
+                if(!is_valid(node.coordinates.x -1, node.coordinates.y)){
+                    JPS_Node forced = is_valid_place(new Tuple(node.coordinates.x -1, node.coordinates.y + dy));
+                    if(forced != null){
+                        forced.parent = node;
+                        forced.forced=true;
+                        pruned[2] = forced;
                     }
                 }
-                pruned[3] = neighbors[4];
+                JPS_Node forced = is_valid_place(new Tuple(node.coordinates.x, node.coordinates.y + dy));
+                forced.parent = node;
+                pruned[3]= forced;
             }
-            if (direction == 6){
-                if(neighbors[8] == null){
-                    pruned[1] = neighbors[7];
-                    if(pruned[1]!=null){
-                        pruned[1].forced=true;
+        }
+        if( dy==0){
+            if (is_valid(node.coordinates.x + dx, node.coordinates.y)){
+                if(!is_valid(node.coordinates.x, node.coordinates.y + 1)){
+                    JPS_Node forced = is_valid_place(new Tuple(node.coordinates.x +dx, node.coordinates.y + 1));
+                    if(forced != null){
+                        forced.parent = node;
+                        forced.forced =true;
+                        pruned[1] = forced;
                     }
                 }
-                if(neighbors[4] == null){
-                    pruned[2] = neighbors[5];
-                    if(pruned[2]!=null){
-                        pruned[2].forced=true;
+                if(!is_valid(node.coordinates.x, node.coordinates.y - 1)){
+                    JPS_Node forced = is_valid_place(new Tuple(node.coordinates.x +dx, node.coordinates.y -1));
+                    if(forced != null){
+                        forced.parent = node;
+                        forced.forced=true;
+                        pruned[2] = forced;
                     }
                 }
-                pruned[3] = neighbors[6];
+                JPS_Node forced = is_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y ));
+                forced.parent = node;
+                pruned[3]= forced;
             }
-            if (direction == 8){
-                if(neighbors[2] == null){
-                    pruned[1] = neighbors[1];
-                    if(pruned[1]!=null){
-                        pruned[1].forced=true;
-                    }
+        }
+        if(dx != 0 && dy != 0){
+            if(!is_valid(node.coordinates.x, node.coordinates.y + (dy * -1))){
+                JPS_Node forced = is_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y + (dy*-1)));
+                if(forced !=null){
+                    forced.parent = node;
+                    forced.forced=true;
+                    pruned[0] = forced;
                 }
-                if(neighbors[6] == null){
-                    pruned[2] = neighbors[7];
-                    if(pruned[2]!=null){
-                        pruned[2].forced=true;
-                    }
-                }
-                pruned[3] = neighbors[8];
             }
-            if (direction == 2){
-                if(neighbors[8] == null){
-                    pruned[1] = neighbors[1];
-                    if(pruned[1]!=null){
-                        pruned[1].forced=true;
-                    }
+            if(!is_valid(node.coordinates.x + (dx*-1),node.coordinates.y)){
+                JPS_Node forced = is_valid_place(new Tuple(node.coordinates.x + (dx*-1), node.coordinates.y + dy));
+                if(forced != null){
+                    forced.parent=node;
+                    forced.forced=true;
+                    pruned[1]=forced;
                 }
-                if(neighbors[4] == null){
-                    pruned[2] = neighbors[3];
-                    if(pruned[2]!=null){
-                        pruned[2].forced=true;
-                    }
-                }
-                pruned[3] = neighbors[6];
             }
-        }else{
-            if(direction==3){
-                if(neighbors[6]==null){
-                    pruned[0]= neighbors[5];
-                    if(pruned[0]!=null){
-                        pruned[0].forced=true;
-                    }
-                }
-                if(neighbors[8]==null){
-                    pruned[1]=neighbors[1];
-                    if(pruned[1]!=null){
-                        pruned[1].forced=true;
-                    }
-                }
-                pruned[2]=neighbors[2];
-                pruned[3]=neighbors[3];
-                pruned[4]=neighbors[4];
+            JPS_Node temp = is_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y+dy));
+            if(temp!=null){
+            temp.parent=node;
+            pruned[2]=temp;
             }
-            if(direction==7){
-                if(neighbors[2]==null){
-                    pruned[0]= neighbors[1];
-                    if(pruned[0]!=null){
-                        pruned[0].forced=true;
-                    }
-                }
-                if(neighbors[4]==null){
-                    pruned[1]=neighbors[5];
-                    if(pruned[1]!=null){
-                        pruned[1].forced=true;
-                    }
-                }
-                pruned[2]=neighbors[6];
-                pruned[3]=neighbors[7];
-                pruned[4]=neighbors[8];
+            
+            JPS_Node temp1 = is_valid_place(new Tuple(node.coordinates.x, node.coordinates.y+dy));
+            if(temp1!=null){
+            temp1.parent=node; 
+            pruned[3]=temp1;
             }
-            if(direction==5){
-                if(neighbors[2]==null){
-                    pruned[0]= neighbors[3];
-                    if(pruned[0]!=null){
-                        pruned[0].forced=true;
-                    }
-                }
-                if(neighbors[8]==null){
-                    pruned[1]=neighbors[7];
-                    if(pruned[1]!=null){
-                        pruned[1].forced=true;
-                    }
-                }
-                pruned[2]=neighbors[6];
-                pruned[3]=neighbors[5];
-                pruned[4]=neighbors[4];
+            
+            JPS_Node temp2 = is_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y));
+            if(temp2!=null){
+            temp2.parent=node; 
+            pruned[4]=temp2;
             }
-            if(direction==1){
-                if(neighbors[6]==null){
-                    pruned[0]= neighbors[7];
-                    if(pruned[0]!=null){
-                        pruned[0].forced=true;
-                    }
-                }
-                if(neighbors[4]==null){
-                    pruned[1]=neighbors[3];
-                    if(pruned[1]!=null){
-                        pruned[1].forced=true;
-                    }
-                }
-                pruned[2]=neighbors[8];
-                pruned[3]=neighbors[1];
-                pruned[4]=neighbors[2];
-            }
+            
         }
         return pruned;
         
@@ -378,42 +324,13 @@ public class JPS {
     
     
     
-    public int get_direction(JPS_Node node){
+    public Tuple get_directions(JPS_Node node){
         int x = node.coordinates.x -node.parent.coordinates.x;
         int y = node.coordinates.y -node.parent.coordinates.y;
-        
-        if(x == 1){
-            if(y==-1){
-                return 7;
-            }
-            if(y==0){
-                return 6;
-            }
-            if (y==1){
-                return 5;
-            }
-        }
-        if(x == -1){
-            if(y==-1){
-                return 1;
-            }
-            if(y==0){
-                return 2;
-            }
-            if (y==1){
-                return 3;
-            }
-        }
-        if(x==0){
-            if(y==1){
-                return 4;
-            }
-            if(y==-1){
-                return 8;
-            }
-        }
-        return 0;
+        return new Tuple(x,y);
     }
+    
+    
 
 
     

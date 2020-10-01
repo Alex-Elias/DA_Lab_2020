@@ -65,7 +65,7 @@ public class GUI extends Application{
         //it takes string input of the location of a .map maze file
         /**
          * the tested mazes are:
-         *  /Pathfinder/Mazes/maze512-1-0.map ----JPS does not work on this map
+         *  /Pathfinder/Mazes/maze512-1-0.map 
          *  /Pathfinder/Mazes/maze512-32-0.map 
          *  /Pathfinder/Mazes/maze512-8-0.map
          *  /Pathfinder/Mazes/random512-10-0.map  
@@ -226,9 +226,11 @@ public class GUI extends Application{
          */
         runAStar_Button.setOnAction((event) -> {
             long start_time = System.nanoTime();
+            
             Astar.run_AStar(new JPS_Node(new Tuple(this.origin.x,this.origin.y)), new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
-            ArrayList<JPS_Node> AStar_shortestPath = Astar.get_shortest_path(new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
             long end_time = System.nanoTime();
+            ArrayList<JPS_Node> AStar_shortestPath = Astar.get_shortest_path(new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
+            
             for(JPS_Node node : AStar_shortestPath){
                 Circle greenCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
                 greenCircle.setFill(Color.GREEN);
@@ -256,6 +258,13 @@ public class GUI extends Application{
 
                     }
                 }
+            }
+            JPS_Node last = jps.goal;
+            while(last.parent.coordinates != last.coordinates){
+                Circle brownCircle = new Circle(this.maze_stretch * last.coordinates.y, this.maze_stretch * last.coordinates.x,1);
+                brownCircle.setFill(Color.YELLOW);
+                this.maze.getChildren().add(brownCircle);
+                last = last.parent;
             }
             
             long time_mil = (end_time-start_time)/1000000;
