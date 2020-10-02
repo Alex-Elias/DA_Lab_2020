@@ -11,3 +11,5 @@
 [Weekly report 3](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/weeklyreport3.md)
 
 [Weekly report 4](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/weeklyreport4.md)
+
+[Weekly report 5](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/weeklyreport5.md)
