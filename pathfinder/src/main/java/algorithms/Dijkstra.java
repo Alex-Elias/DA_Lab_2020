@@ -2,10 +2,10 @@ package algorithms;
 
 
 import datastructures.Tuple;
+
 import datastructures.Node;
-import datastructures.JPS_Node;
 import java.util.ArrayList;
-import java.util.Comparator;
+
 import datastructures.PriorityQueue;
 
 
@@ -50,20 +50,20 @@ public class Dijkstra{
         
             this.distance[origin.x][origin.y]= 0;
             this.predecessor[origin.x][origin.y]= origin;
-            this.queue.insert(new JPS_Node(origin,0),0);
+            this.queue.insert(new Node(origin,0),0);
             while(!queue.isEmpty()){
-                JPS_Node next = queue.deleteMin();
+                Node next = queue.deleteMin();
                 Tuple u = next.coordinates;
                 if(u.x == goal.x && u.y == goal.y){
                     break;
                 }
                 if(!this.processed[u.x][u.y]){
                     this.processed[u.x][u.y] = true;
-                    for(JPS_Node edge: this.adjacencyList(u)){
+                    for(Node edge: this.adjacencyList(u)){
                         Tuple v = edge.coordinates;
                         if(this.distance[v.x][v.y] > this.distance[u.x][u.y] + edge.weight){
                             this.distance[v.x][v.y] = this.distance[u.x][u.y] + edge.weight;
-                            this.queue.insert(new JPS_Node(v),this.distance[v.x][v.y]);
+                            this.queue.insert(new Node(v),this.distance[v.x][v.y]);
                             this.predecessor[v.x][v.y]= u;
                         }
                     }
@@ -75,46 +75,46 @@ public class Dijkstra{
      * @param T the tuple coordinate which is used to find the adjacent nodes
      * @return an ArrayList of Class Node of the adjacent nodes
      */
-    public ArrayList<JPS_Node> adjacencyList(Tuple T){
-        ArrayList<JPS_Node> list = new ArrayList();
+    public ArrayList<Node> adjacencyList(Tuple T){
+        ArrayList<Node> list = new ArrayList();
         if (T.x +1 < this.maze.length){
             if(this.maze[T.x + 1][T.y] ==0){
-                list.add(new JPS_Node(new Tuple(T.x+1,T.y),1));
+                list.add(new Node(new Tuple(T.x+1,T.y),1));
             }
         }
         if (T.y +1 < this.maze[0].length){
             if(this.maze[T.x][T.y +1] == 0){
-                list.add(new JPS_Node (new Tuple(T.x,T.y+1),1));
+                list.add(new Node (new Tuple(T.x,T.y+1),1));
             }
         }
         if (T.x -1 >= 0){
             if (this.maze[T.x -1][T.y] == 0){
-                list.add(new JPS_Node (new Tuple(T.x-1,T.y),1));
+                list.add(new Node (new Tuple(T.x-1,T.y),1));
             }
         }
         if (T.y -1 >= 0){
             if (this.maze[T.x][T.y-1] == 0){
-                list.add(new JPS_Node (new Tuple(T.x,T.y-1),1));
+                list.add(new Node (new Tuple(T.x,T.y-1),1));
             }
         }
         if (T.x +1 < this.maze.length && T.y +1 < this.maze[0].length){
             if(this.maze[T.x + 1][T.y+1] ==0){
-                list.add(new JPS_Node(new Tuple(T.x+1,T.y+1),1.4142135));
+                list.add(new Node(new Tuple(T.x+1,T.y+1),1.4142135));
             }
         }
         if (T.x -1 >=0 && T.y +1 < this.maze[0].length){
             if(this.maze[T.x - 1][T.y+1] ==0){
-                list.add(new JPS_Node(new Tuple(T.x-1,T.y+1),1.4142135));
+                list.add(new Node(new Tuple(T.x-1,T.y+1),1.4142135));
             }
         }
         if (T.x +1 < this.maze.length && T.y -1 >=0){
             if(this.maze[T.x + 1][T.y-1] ==0){
-                list.add(new JPS_Node(new Tuple(T.x+1,T.y-1),1.4142135));
+                list.add(new Node(new Tuple(T.x+1,T.y-1),1.4142135));
             }
         }
         if (T.x -1 >=0 && T.y-1 >=0){
             if(this.maze[T.x - 1][T.y-1] ==0){
-                list.add(new JPS_Node(new Tuple(T.x-1,T.y-1),1.4142135));
+                list.add(new Node(new Tuple(T.x-1,T.y-1),1.4142135));
             }
         }
         return list;

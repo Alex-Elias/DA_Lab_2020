@@ -1,7 +1,7 @@
 package algorithms;
 
 
-import datastructures.JPS_Node;
+import datastructures.Node;
 import datastructures.Tuple;
 import java.util.ArrayList;
 import datastructures.PriorityQueue;
@@ -15,7 +15,7 @@ public class AStar {
     int[][] maze;
     public double[][] distance;
     PriorityQueue queue;
-    public JPS_Node[][] predecessor;
+    public Node[][] predecessor;
     
     //  test
     boolean[][] visited;
@@ -27,7 +27,7 @@ public class AStar {
         this.distance = new double[maze.length][maze[0].length];
         this.maze=maze;
         this.queue = new PriorityQueue();
-        this.predecessor = new JPS_Node[maze.length][maze[0].length];
+        this.predecessor = new Node[maze.length][maze[0].length];
         
         //test
         this.visited= new boolean[maze.length][maze[0].length];
@@ -38,7 +38,7 @@ public class AStar {
      * @param start the starting node
      * @param goal the goal node
      */
-    public void run_AStar(JPS_Node start, JPS_Node goal){
+    public void run_AStar(Node start, Node goal){
         start.f=0;
         this.queue.insert(start,start.f);
         this.predecessor[start.coordinates.x][start.coordinates.y] = start;
@@ -58,7 +58,7 @@ public class AStar {
         while(!this.queue.isEmpty()){
             
             
-            JPS_Node current = this.queue.deleteMin();
+            Node current = this.queue.deleteMin();
             if(!this.visited[current.coordinates.x][current.coordinates.y]){
                 this.visited[current.coordinates.x][current.coordinates.y] = true;
             
@@ -68,7 +68,7 @@ public class AStar {
             
             
             
-                for(JPS_Node next : adjacencyList(current.coordinates)){
+                for(Node next : adjacencyList(current.coordinates)){
                     double new_weight = this.distance[current.coordinates.x][current.coordinates.y] + next.weight;
 
                     if (new_weight < this.distance[next.coordinates.x][next.coordinates.y]){
@@ -89,9 +89,9 @@ public class AStar {
      * @param goal the goal node
      * @return list of nodes
      */
-    public ArrayList<JPS_Node> get_shortest_path(JPS_Node goal){
-        ArrayList<JPS_Node> shortest_path_list = new ArrayList<>();
-        JPS_Node last = goal;
+    public ArrayList<Node> get_shortest_path(Node goal){
+        ArrayList<Node> shortest_path_list = new ArrayList<>();
+        Node last = goal;
         while(this.predecessor[last.coordinates.x][last.coordinates.y].coordinates != last.coordinates){
             shortest_path_list.add(last);
             last = this.predecessor[last.coordinates.x][last.coordinates.y];
@@ -107,7 +107,7 @@ public class AStar {
      * @return a double value of the heuristic value
      */
     //Theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
-    public double heuristic(JPS_Node location, JPS_Node location2){
+    public double heuristic(Node location, Node location2){
         double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
         double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
         
@@ -119,46 +119,46 @@ public class AStar {
      * @param T the tuple of coordinates where one wants to find the available spaces
      * @return a list of available spaces as JPS_Nodes
      */
-    public ArrayList<JPS_Node> adjacencyList(Tuple T){
-        ArrayList<JPS_Node> list = new ArrayList();
+    public ArrayList<Node> adjacencyList(Tuple T){
+        ArrayList<Node> list = new ArrayList();
         if (T.x +1 < this.maze.length){
             if(this.maze[T.x + 1][T.y] ==0){
-                list.add(new JPS_Node(new Tuple(T.x+1,T.y),1));
+                list.add(new Node(new Tuple(T.x+1,T.y),1));
             }
         }
         if (T.y +1 < this.maze[0].length){
             if(this.maze[T.x][T.y +1] == 0){
-                list.add(new JPS_Node (new Tuple(T.x,T.y+1),1));
+                list.add(new Node (new Tuple(T.x,T.y+1),1));
             }
         }
         if (T.x -1 >= 0){
             if (this.maze[T.x -1][T.y] == 0){
-                list.add(new JPS_Node (new Tuple(T.x-1,T.y),1));
+                list.add(new Node (new Tuple(T.x-1,T.y),1));
             }
         }
         if (T.y -1 >= 0){
             if (this.maze[T.x][T.y-1] == 0){
-                list.add(new JPS_Node (new Tuple(T.x,T.y-1),1));
+                list.add(new Node (new Tuple(T.x,T.y-1),1));
             }
         }
         if (T.x +1 < this.maze.length && T.y +1 < this.maze[0].length){
             if(this.maze[T.x + 1][T.y+1] ==0){
-                list.add(new JPS_Node(new Tuple(T.x+1,T.y+1),1.4142135));
+                list.add(new Node(new Tuple(T.x+1,T.y+1),1.4142135));
             }
         }
         if (T.x -1 >=0 && T.y +1 < this.maze[0].length){
             if(this.maze[T.x - 1][T.y+1] ==0){
-                list.add(new JPS_Node(new Tuple(T.x-1,T.y+1),1.4142135));
+                list.add(new Node(new Tuple(T.x-1,T.y+1),1.4142135));
             }
         }
         if (T.x +1 < this.maze.length && T.y -1 >=0){
             if(this.maze[T.x + 1][T.y-1] ==0){
-                list.add(new JPS_Node(new Tuple(T.x+1,T.y-1),1.4142135));
+                list.add(new Node(new Tuple(T.x+1,T.y-1),1.4142135));
             }
         }
         if (T.x -1 >=0 && T.y-1 >=0){
             if(this.maze[T.x - 1][T.y-1] ==0){
-                list.add(new JPS_Node(new Tuple(T.x-1,T.y-1),1.4142135));
+                list.add(new Node(new Tuple(T.x-1,T.y-1),1.4142135));
             }
         }
         return list;

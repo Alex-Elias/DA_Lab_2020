@@ -5,7 +5,7 @@ import algorithms.AStar;
 import algorithms.Dijkstra;
 import algorithms.JPS;
 import algorithms.BFS;
-import datastructures.JPS_Node;
+import datastructures.Node;
 import datastructures.Tuple;
 import java.util.ArrayList;
 import javafx.application.Application;
@@ -85,7 +85,7 @@ public class GUI extends Application{
         
         */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
-        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-32-0.map");
+        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-1-0.map");
         //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
         
 
@@ -238,11 +238,11 @@ public class GUI extends Application{
         runAStar_Button.setOnAction((event) -> {
             long start_time = System.nanoTime();
             
-            Astar.run_AStar(new JPS_Node(new Tuple(this.origin.x,this.origin.y)), new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
+            Astar.run_AStar(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
             long end_time = System.nanoTime();
-            ArrayList<JPS_Node> AStar_shortestPath = Astar.get_shortest_path(new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
+            ArrayList<Node> AStar_shortestPath = Astar.get_shortest_path(new Node(new Tuple(this.destination.x,this.destination.y)));
             
-            for(JPS_Node node : AStar_shortestPath){
+            for(Node node : AStar_shortestPath){
                 Circle greenCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
                 greenCircle.setFill(Color.GREEN);
                 this.maze.getChildren().add(greenCircle);
@@ -258,7 +258,7 @@ public class GUI extends Application{
         
         runJPS_button.setOnAction((event) ->{
             long start_time = System.nanoTime();
-            jps.run_JPS(new JPS_Node(new Tuple(this.origin.x,this.origin.y)), new JPS_Node(new Tuple(this.destination.x,this.destination.y)));
+            jps.run_JPS(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
             long end_time = System.nanoTime();
             for(int i = 0; i < jps.maze.length; i++){
                 for (int j = 0; j < jps.maze[0].length; j++){
@@ -270,7 +270,7 @@ public class GUI extends Application{
                     }
                 }
             }
-            JPS_Node last = jps.goal;
+            Node last = jps.goal;
             while(last.parent.coordinates != last.coordinates){
                 Circle brownCircle = new Circle(this.maze_stretch * last.coordinates.y, this.maze_stretch * last.coordinates.x,1);
                 brownCircle.setFill(Color.YELLOW);

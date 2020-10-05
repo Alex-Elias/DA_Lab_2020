@@ -1,11 +1,11 @@
 package datastructures;
 
 public class PriorityQueue {
-    private JPS_Node[] heap;
+    private Node[] heap;
     private int last;
     
     public PriorityQueue(){
-        this.heap = new JPS_Node[64];
+        this.heap = new Node[64];
         this.last = 0;
     }
     private int left(int p){
@@ -24,11 +24,11 @@ public class PriorityQueue {
         return Math.floorDiv(p, 2);
     }
     
-    public JPS_Node min(){
+    public Node min(){
         return this.heap[1];
     }
     
-    public void insert(JPS_Node node, double priority){
+    public void insert(Node node, double priority){
         this.last = last +1;
         node.priority = priority;
         int p = last;
@@ -43,8 +43,8 @@ public class PriorityQueue {
         }
     }
     
-    public JPS_Node deleteMin(){
-        JPS_Node element = this.heap[1];
+    public Node deleteMin(){
+        Node element = this.heap[1];
         this.heap[1] = this.heap[this.last];
         this.last = this.last -1;
         this.pushDown(1);
@@ -86,19 +86,19 @@ public class PriorityQueue {
     }
     
     private void swap(int a, int b){
-        JPS_Node temp = this.heap[a];
+        Node temp = this.heap[a];
         this.heap[a] = this.heap[b];
         this.heap[b] = temp;
     }
     private void increaseSize(){
-        JPS_Node[] temp = new JPS_Node[this.heap.length * 2];
+        Node[] temp = new Node[this.heap.length * 2];
         for(int i = 1; i< this.heap.length; i++){
             temp[i]= this.heap[i];
         }
         this.heap = temp;
     }
     private void decreaseSize(){
-        JPS_Node[] temp = new JPS_Node[Math.floorDiv(this.heap.length, 2)];
+        Node[] temp = new Node[Math.floorDiv(this.heap.length, 2)];
         for(int i = 1; i <= temp.length/2 +1; i++){
             temp[i] = this.heap[i];
         }

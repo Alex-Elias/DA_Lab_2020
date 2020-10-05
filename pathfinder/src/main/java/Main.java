@@ -1,6 +1,6 @@
 
 import GUI.GUI;
-import datastructures.JPS_Node;
+import datastructures.Node;
 import datastructures.PriorityQueue;
 import datastructures.Tuple;
 
