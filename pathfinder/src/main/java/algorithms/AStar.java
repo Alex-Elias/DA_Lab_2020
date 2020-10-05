@@ -1,4 +1,8 @@
+package algorithms;
 
+
+import datastructures.JPS_Node;
+import datastructures.Tuple;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 /**
@@ -9,9 +13,9 @@ import java.util.PriorityQueue;
 public class AStar {
 
     int[][] maze;
-    double[][] distance;
+    public double[][] distance;
     PriorityQueue<JPS_Node> queue;
-    JPS_Node[][] predecessor;
+    public JPS_Node[][] predecessor;
     
     //  test
     boolean[][] visited;

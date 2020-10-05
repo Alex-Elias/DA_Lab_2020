@@ -23,12 +23,12 @@
             <artifactId>javafx-controls</artifactId>
             <version>11</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
             <version>3.1.1</version>
             <type>maven-plugin</type>
-        </dependency>  
+        </dependency>  -->
     </dependencies>
 
     <build>
@@ -63,25 +63,25 @@
                     <mainClass>HelloFX</mainClass>
                 </configuration>
             </plugin>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.1.1</version>
                 <configuration>
                     <configLocation>checkstyle.xml</configLocation>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
     <reporting>
         <plugins>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
                     <configLocation>checkstyle.xml</configLocation>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </reporting>
 </project>

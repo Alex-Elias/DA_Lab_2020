@@ -1,3 +1,5 @@
+package datastructures;
+
 /**
  * A basic two integer Tuple class
  * the parameters of this class must be int

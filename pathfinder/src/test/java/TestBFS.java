@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import algorithms.BFS;
+import datastructures.Tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.After;

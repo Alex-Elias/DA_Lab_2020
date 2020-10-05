@@ -1,4 +1,7 @@
+package datastructures;
 
+
+import datastructures.Tuple;
 import java.util.Comparator;
 
 /**
@@ -7,11 +10,12 @@ import java.util.Comparator;
  * @author alex
  */
 public class JPS_Node implements Comparator<JPS_Node>{
-    Tuple coordinates;
-    JPS_Node parent;
-    double f,g,h;
-    boolean forced;
-    double weight;
+    public Tuple coordinates;
+    public JPS_Node parent;
+    public double f;
+    public boolean forced;
+    public double weight;
+    public double priority;
         
     public JPS_Node(Tuple coordinates){
         this.coordinates = coordinates;
@@ -27,11 +31,7 @@ public class JPS_Node implements Comparator<JPS_Node>{
     public void set_parent(JPS_Node parent){
         this.parent=parent;
     }
-    public void set_f_g_h(double f,double g,double h){
-        this.f=f;
-        this.g=g;
-        this.h=h;
-    }
+    
     
     @Override
     public int compare(JPS_Node node, JPS_Node node2){

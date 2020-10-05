@@ -1,3 +1,12 @@
+package GUI;
+
+import filereader.Filereader;
+import algorithms.AStar;
+import algorithms.Dijkstra;
+import algorithms.JPS;
+import algorithms.BFS;
+import datastructures.JPS_Node;
+import datastructures.Tuple;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -22,6 +31,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
+
 /**
  * the graphical user interface class
  * this class uses Javafx libraries to implement a graphical user interface
@@ -74,7 +85,7 @@ public class GUI extends Application{
         
         */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
-        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/random512-10-0.map");
+        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-32-0.map");
         //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
         
 

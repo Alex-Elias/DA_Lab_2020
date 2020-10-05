@@ -1,7 +1,13 @@
+package algorithms;
 
+
+import datastructures.Tuple;
+import datastructures.Node;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+
+
 
 /**
  * An implementation of the Dijkstra's algorithm

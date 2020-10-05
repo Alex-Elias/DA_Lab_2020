@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import datastructures.Tuple;
+import datastructures.Node;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -1,3 +1,5 @@
+package filereader;
+
 /**
  * reads a file where '.' are open spaces and '@' are obstacles
  * returns an 2d array where 0's are open spaces and 1's are obstacles

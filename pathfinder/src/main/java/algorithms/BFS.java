@@ -1,3 +1,5 @@
+package algorithms;
+
 /**
  * An implementation of the breadth first search algorithm
  * the algorithm finds the shortest path between two points on two dimensional array
@@ -5,6 +7,7 @@
  * the 1's represent obstacles where the algorithm must go around 
  * 
  */
+import datastructures.Tuple;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -14,10 +17,10 @@ import java.util.Queue;
 public class BFS {
     
     boolean [][] visited;
-    int [][] distance;
+    public int [][] distance;
     int[][] maze;
-    Tuple[][] predecessor;
-    ArrayList<Tuple> path;
+    public Tuple[][] predecessor;
+    public ArrayList<Tuple> path;
     
     /**
      * initializes this class

@@ -1,3 +1,5 @@
+package datastructures;
+
 
 import java.util.Comparator;
 /**
@@ -9,8 +11,8 @@ import java.util.Comparator;
  * @author alex
  */
 public class Node implements Comparator<Node>{
-    Tuple coordinate;
-    double weight;
+    public Tuple coordinate;
+    public double weight;
     
     public Node(){
         
