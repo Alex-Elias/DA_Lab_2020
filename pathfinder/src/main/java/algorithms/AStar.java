@@ -4,7 +4,7 @@ package algorithms;
 import datastructures.JPS_Node;
 import datastructures.Tuple;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
+import datastructures.PriorityQueue;
 /**
  * A Star algorithm to find the shortest path in a weighted graph
  * basically Dijkstra's but has a heuristic function
@@ -14,7 +14,7 @@ public class AStar {
 
     int[][] maze;
     public double[][] distance;
-    PriorityQueue<JPS_Node> queue;
+    PriorityQueue queue;
     public JPS_Node[][] predecessor;
     
     //  test
@@ -26,7 +26,7 @@ public class AStar {
     public AStar(int[][] maze){
         this.distance = new double[maze.length][maze[0].length];
         this.maze=maze;
-        this.queue = new PriorityQueue<JPS_Node>(new JPS_Node());
+        this.queue = new PriorityQueue();
         this.predecessor = new JPS_Node[maze.length][maze[0].length];
         
         //test
@@ -40,7 +40,7 @@ public class AStar {
      */
     public void run_AStar(JPS_Node start, JPS_Node goal){
         start.f=0;
-        this.queue.add(start);
+        this.queue.insert(start,start.f);
         this.predecessor[start.coordinates.x][start.coordinates.y] = start;
         
         for (int i = 0; i< this.maze.length; i++){
@@ -58,7 +58,7 @@ public class AStar {
         while(!this.queue.isEmpty()){
             
             
-            JPS_Node current = this.queue.poll();
+            JPS_Node current = this.queue.deleteMin();
             if(!this.visited[current.coordinates.x][current.coordinates.y]){
                 this.visited[current.coordinates.x][current.coordinates.y] = true;
             
@@ -75,7 +75,7 @@ public class AStar {
                         this.distance[next.coordinates.x][next.coordinates.y]= new_weight;
                         double priority = new_weight + heuristic(next,goal);
                         next.f = priority;
-                        this.queue.add(next);
+                        this.queue.insert(next,next.f);
                         this.predecessor[next.coordinates.x][next.coordinates.y] = current;
                     }
 

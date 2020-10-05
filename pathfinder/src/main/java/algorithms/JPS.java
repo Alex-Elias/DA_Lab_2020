@@ -3,7 +3,7 @@ package algorithms;
 
 import datastructures.JPS_Node;
 import datastructures.Tuple;
-import java.util.PriorityQueue;
+import datastructures.PriorityQueue;
 
 
 /**
@@ -17,7 +17,7 @@ public class JPS {
     public int[][] maze;
     public JPS_Node start;
     public JPS_Node goal;
-    PriorityQueue<JPS_Node> queue;
+    PriorityQueue queue;
     
     JPS_Node[][] predecessor;
     public int[][] jump_point;
@@ -27,7 +27,7 @@ public class JPS {
     
     public JPS(int[][] maze){
         this.maze = maze;
-        this.queue= new PriorityQueue<JPS_Node>(new JPS_Node());
+        this.queue= new PriorityQueue();
         this.predecessor = new JPS_Node[maze.length][maze[0].length];
         
         this.jump_point = new int[maze.length][maze[0].length];
@@ -37,7 +37,7 @@ public class JPS {
     public void run_JPS( JPS_Node start, JPS_Node goal){
         start.f=0;
         start.parent=start;
-        this.queue.add(start);
+        this.queue.insert(start,start.f);
         this.predecessor[start.coordinates.x][start.coordinates.y] = start;
         
 //        for (int i = 0; i< this.maze.length; i++){
@@ -54,7 +54,7 @@ public class JPS {
         while(!this.queue.isEmpty()){
             
             
-            JPS_Node current = this.queue.poll();
+            JPS_Node current = this.queue.deleteMin();
             if(this.visited[current.coordinates.x][current.coordinates.y]){
                continue; 
             }
@@ -73,7 +73,7 @@ public class JPS {
                 }
                 this.jump_point[next[i].coordinates.x][next[i].coordinates.y] = 1;
                 next[i].f = next[i].weight + heuristic(next[i],goal);
-                this.queue.add(next[i]);
+                this.queue.insert(next[i],next[i].f);
             }
 
 

@@ -1,5 +1,8 @@
 
 import GUI.GUI;
+import datastructures.JPS_Node;
+import datastructures.PriorityQueue;
+import datastructures.Tuple;
 
 public class Main {
     
@@ -19,6 +22,15 @@ public class Main {
         
         GUI gui = new GUI();
         gui.launchGUI();
+        
+//        PriorityQueue q = new PriorityQueue();
+//        double p = 15;
+//        for(int i = 1; i<= 10; i++){
+//            q.insert(new JPS_Node(new Tuple(0,i)), p-i);
+//        }
+//        while(!q.isEmpty()){
+//            System.out.println(q.deleteMin().coordinates);
+//        }
         
 ////        int[][] maze4x4 = {{0,0,1,0},{0,0,1,0},{0,0,1,0},{0,0,0,0}};
 //        int[][] maze5x5 = {{0,0,0,1,0},{0,1,1,1,0},{0,0,0,0,0},{0,1,1,1,0},{0,0,0,0,0}};
