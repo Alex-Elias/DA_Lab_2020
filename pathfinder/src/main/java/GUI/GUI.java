@@ -45,8 +45,7 @@ import javafx.stage.Stage;
  *           click on the button 'run Dijkstra' to run the Dijkstra algorithm, the shortest path will be displayed in red
  *           click on the button 'run A*' to run the A Star algorithm, the shortest path will be displayed in green
  * NOTE:
- *      **YOU WILL NEED TO CHANGE THE PATH OF THE FILE ON YOUR COMPUTER FOR IT TO RUN**
- * 
+ *     
  *      this is a work in progress, the shortest path will only be displayed if the path is reachable
  *      a wall can be selected as a coordinate, there is no shortest path and thus the algorithm will not work
  *      there is no way to reset the map or the coordinates, you just have to exit out of the window and rerun the program
@@ -63,9 +62,24 @@ public class GUI extends Application{
     private boolean dest_set_already = false;
     private Tuple destination;
     private Pane maze;
+    private Dijkstra dijk;
+    private AStar Astar;
+    private JPS jps;
+    private BFS bfs;
+    
+    private int[][] maze_array_read_from_file;
     
     //the multiplicular amout to stretch the maze, only in int right now
     private int maze_stretch = 2;
+    
+    //maps
+    private String m1 = "Mazes/maze512-1-0.map";
+    private String m8 = "Mazes/maze512-8-0.map";
+    private String m32 = "Mazes/maze512-32-0.map";
+    private String r10 = "Mazes/random512-10-0.map";
+    private String r40 = "Mazes/random512-40-7.map";
+    
+    private Filereader file;
     
 
     @Override
@@ -76,31 +90,31 @@ public class GUI extends Application{
         //it takes string input of the location of a .map maze file
         /**
          * the tested mazes are:
-         *  /Pathfinder/Mazes/maze512-1-0.map 
-         *  /Pathfinder/Mazes/maze512-32-0.map 
-         *  /Pathfinder/Mazes/maze512-8-0.map
-         *  /Pathfinder/Mazes/random512-10-0.map  
-         *  /Pathfinder/Mazes/brc101d.map - 
-         *  //Pathfinder/Mazes/random512-40-7.map 
+         *  Mazes/maze512-1-0.map 
+         *  Mazes/maze512-32-0.map 
+         *  Mazes/maze512-8-0.map
+         *  Mazes/random512-10-0.map  
+         *  Mazes/brc101d.map - 
+         *  Mazes/random512-40-7.map 
         
         */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
-        Filereader f = new Filereader("//home/alex/Pathfinder/Mazes/maze512-1-0.map");
+        this.file = new Filereader("Mazes/maze512-8-0.map");
         //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
         
 
         //Filereader returns a 2d array of the maze
-        int[][] maze_array_read_from_file = f.returnArray();
+        this.maze_array_read_from_file= file.returnArray();
         // sets the class variable maze
         createMaze(maze_array_read_from_file);
         
-        Dijkstra dijk = new Dijkstra(maze_array_read_from_file);
+        this.dijk = new Dijkstra(maze_array_read_from_file);
         
-        AStar Astar = new AStar(maze_array_read_from_file);
+        this.Astar = new AStar(maze_array_read_from_file);
         
-        JPS jps = new JPS(maze_array_read_from_file);
+        this.jps = new JPS(maze_array_read_from_file);
         
-        BFS bfs = new BFS(maze_array_read_from_file);
+        this.bfs = new BFS(maze_array_read_from_file);
         //the main borderpane where all of the nodes are set
         BorderPane borderpane = new BorderPane();
         borderpane.setRight(this.maze);
@@ -284,18 +298,70 @@ public class GUI extends Application{
         });
         
         //UNFINISHED
-        String maze_options_list_array[] = {"one pixel corridor", "four pixel corridor", "16 pixel corridor","32 pixel corridor"};
+        String maze_options_list_array[] = {"one pixel corridor", "eight pixel corridor", "32 pixel corridor", "random map 40%", "random map 10%"};
         
         ComboBox maze_options = new ComboBox(FXCollections.observableArrayList(maze_options_list_array));
         Button maze_select_button = new Button("select");
+        Button maze_reset_button = new Button("reset maze");
         HBox maze_options_select = new HBox();
         
         maze_select_button.setOnAction((event) -> {
+            String map = maze_options.getValue().toString();
+            if(map.equals("one pixel corridor")){
+                this.file = new Filereader(this.m1);
+            }else if(map.equals("eight pixel corridor")){
+                this.file = new Filereader(this.m8);
+            }else if(map.equals("32 pixel corridor")){
+                this.file = new Filereader(this.m32);
+            }else if(map.equals("random map 40%")){
+                this.file = new Filereader(this.r40);
+            }else{
+                this.file = new Filereader(this.r10);
+            }
+            this.maze_array_read_from_file = this.file.returnArray();
+            this.maze.getChildren().clear();
+            for( int i = 0; i < maze_array_read_from_file.length; i++){
+                for(int j = 0; j < maze_array_read_from_file[1].length; j++){
+                    if(maze_array_read_from_file[i][j]==1){
+                    maze.getChildren().add(new Circle(this.maze_stretch*j,this.maze_stretch*i,1));
+                    }else{
+                    
+                    }
+                }
+            }
+            this.origin_set_already= false;
+            this.dest_set_already=false;
+            this.Astar = new AStar(maze_array_read_from_file);
+            this.bfs = new BFS(maze_array_read_from_file);
+            this.dijk = new Dijkstra(maze_array_read_from_file);
+            this.jps = new JPS(maze_array_read_from_file);
             
+            
+            
+            
+        });
+        maze_reset_button.setOnAction((event) -> {
+            this.maze.getChildren().clear();
+            for( int i = 0; i < maze_array_read_from_file.length; i++){
+                for(int j = 0; j < maze_array_read_from_file[1].length; j++){
+                    if(maze_array_read_from_file[i][j]==1){
+                    maze.getChildren().add(new Circle(this.maze_stretch*j,this.maze_stretch*i,1));
+                    }else{
+                    
+                    }
+                }
+            }
+            this.origin_set_already= false;
+            this.dest_set_already=false;
+            this.Astar = new AStar(maze_array_read_from_file);
+            this.bfs = new BFS(maze_array_read_from_file);
+            this.dijk = new Dijkstra(maze_array_read_from_file);
+            this.jps = new JPS(maze_array_read_from_file);
+        
         });
                 
                 
-        maze_options_select.getChildren().addAll(maze_options,maze_select_button);
+        maze_options_select.getChildren().addAll(maze_options,maze_select_button, maze_reset_button);
         borderpane.setBottom(maze_options_select);
         
         //adds the top left vbox nodes

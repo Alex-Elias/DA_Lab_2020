@@ -21,7 +21,7 @@ public class PriorityQueue {
         return 2*p+1;
     }
     private int parent(int p){
-        return Math.floorDiv(p, 2);
+        return (int) p/2;
     }
     
     public Node min(){
@@ -98,7 +98,7 @@ public class PriorityQueue {
         this.heap = temp;
     }
     private void decreaseSize(){
-        Node[] temp = new Node[Math.floorDiv(this.heap.length, 2)];
+        Node[] temp = new Node[(int) this.heap.length/2];
         for(int i = 1; i <= temp.length/2 +1; i++){
             temp[i] = this.heap[i];
         }

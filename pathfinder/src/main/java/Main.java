@@ -9,11 +9,7 @@ public class Main {
     public static void main(String[] args) {
         /**
          * my project finds the shortest path between two points on a weighted graph
-         * the pathfinding algorithms that work are:
-         * Dijkstra's
-         * A* (A Star) - is slower than expected, I need to work on improving the implementation
          * Breath first search - which is not for weighted graphs so there is only 4 directions of movement
-         * (does not function) Jump Point Search - I have not been able to implement it fully
          * GUI class has instructions on how to run the program
          * my project is lacking thorough test for the classes
          * 
@@ -22,6 +18,7 @@ public class Main {
         
         GUI gui = new GUI();
         gui.launchGUI();
+        
         
 //        PriorityQueue q = new PriorityQueue();
 //        double p = 15;
