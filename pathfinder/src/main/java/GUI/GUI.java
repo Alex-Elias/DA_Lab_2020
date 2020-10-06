@@ -236,7 +236,7 @@ public class GUI extends Application{
            
            TupleList dijk_shortestPath = dijk.getShortestPath(this.destination);
            long end_time = System.nanoTime();
-           while(dijk_shortestPath.isEmpty()){
+           while(!dijk_shortestPath.isEmpty()){
                 Tuple t = dijk_shortestPath.remove();
                 Circle redCircle = new Circle(this.maze_stretch *t.y,this.maze_stretch * t.x,1);
                 redCircle.setFill(Color.RED);

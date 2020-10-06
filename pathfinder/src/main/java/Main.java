@@ -3,6 +3,9 @@ import GUI.GUI;
 import datastructures.Node;
 import datastructures.PriorityQueue;
 import datastructures.Tuple;
+import datastructures.*;
+import performanceTesting.Mergesort;
+import performanceTesting.PerformanceTesting;
 
 public class Main {
     
@@ -18,6 +21,16 @@ public class Main {
         
         GUI gui = new GUI();
         gui.launchGUI();
+//        long[] test = {1,2,3,4,3,2,1};
+//        Mergesort M = new Mergesort();
+//        long[] res = M.runMergesort(test);
+//        for(int i = 0; i <res.length; i++){
+//            System.out.println(res[i]);
+//        }
+
+//        PerformanceTesting t = new PerformanceTesting();
+//        t.runPerformanceTests();
+            
         
         
 //        PriorityQueue q = new PriorityQueue();

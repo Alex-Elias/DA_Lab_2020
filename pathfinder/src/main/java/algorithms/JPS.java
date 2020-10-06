@@ -2,13 +2,13 @@ package algorithms;
 
 
 import datastructures.Node;
+import datastructures.NodeList;
 import datastructures.Tuple;
 import datastructures.PriorityQueue;
 
 
 /**
- * Functions poorly and not on all maps yet
- * 
+ *  
  * poor implementation of the Jump Point Search algorithm
  * @author alex
  */
@@ -66,14 +66,15 @@ public class JPS {
                 this.goal = current;
                 break;
             }
-            Node[] next = get_successors(current,start,goal);
-            for(int i = 0; i< next.length; i++){
-                if(next[i]== null){
+            NodeList successor = get_successors(current,start,goal);
+            while(!successor.isEmpty()){
+                Node next = successor.remove();
+                if(next== null){
                     continue;
                 }
-                this.jump_point[next[i].coordinates.x][next[i].coordinates.y] = 1;
-                next[i].f = next[i].weight + heuristic(next[i],goal);
-                this.queue.insert(next[i],next[i].f);
+                this.jump_point[next.coordinates.x][next.coordinates.y] = 1;
+                next.f = next.weight + heuristic(next,goal);
+                this.queue.insert(next,next.f);
             }
 
 
@@ -118,18 +119,20 @@ public class JPS {
     }
 
     
-    public Node[] get_successors(Node node, Node start, Node goal){
-        Node[] successors = new Node[9];
-        Node[] neighbors = get_neighbor_pruned(node);
-        for(int i = 0; i < neighbors.length; i++){
-            if(neighbors[i]== null){
+    public NodeList get_successors(Node node, Node start, Node goal){
+        NodeList successors = new NodeList();
+        NodeList neighbors = get_neighbor_pruned(node);
+        while(!neighbors.isEmpty()){
+            Node neighbor = neighbors.remove();
+            
+            if(neighbor== null){
                 continue;
             }
-            Node jump = jump(node, get_directions(neighbors[i]),start,goal);
+            Node jump = jump(node, get_directions(neighbor),start,goal);
             if(jump != null){
                 //need to implement distance and heuristics here or possibly in the jump method
             }
-            successors[i]= jump;
+            successors.add(jump);
             if(jump!= null){
                 this.predecessor[jump.coordinates.x][jump.coordinates.y] = node;
 
@@ -156,12 +159,14 @@ public class JPS {
             this.goal = n;
             return n;
         }
-        Node[] neighbors = get_neighbor_pruned(n);
-        for(int i = 0; i< neighbors.length;i++){
-            if(neighbors[i]== null){
+        NodeList neighbors = get_neighbor_pruned(n);
+        
+        while(!neighbors.isEmpty()){
+            Node neighbor = neighbors.remove();
+            if(neighbor== null){
                 continue;
             }
-            if(neighbors[i].forced){
+            if(neighbor.forced){
                 return n;
             }
         }
@@ -179,62 +184,78 @@ public class JPS {
     }
     
     
-    public Node[] get_neighbors(Node node){
-        Node[] neighbors = new Node[9];
+    public NodeList get_neighbors(Node node){
+        NodeList neighbors = new NodeList();
         if (node.coordinates.x +1 < this.maze.length){
             if(this.maze[node.coordinates.x + 1][node.coordinates.y] ==0){
-                neighbors[6] = (new Node(new Tuple(node.coordinates.x+1,node.coordinates.y)));
-                neighbors[6].parent = node;
+                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y));
+                temp.parent = node;
+                neighbors.add(temp);
+                
             }
         }
         if (node.coordinates.y +1 < this.maze[0].length){
             if(this.maze[node.coordinates.x][node.coordinates.y +1] == 0){
-                neighbors[4] = (new Node (new Tuple(node.coordinates.x,node.coordinates.y+1)));
-                neighbors[4].parent = node;
+                Node temp = new Node (new Tuple(node.coordinates.x,node.coordinates.y+1));
+                temp.parent = node;
+                neighbors.add(temp);
+                
             }
         }
         if (node.coordinates.x -1 >= 0){
             if (this.maze[node.coordinates.x -1][node.coordinates.y] == 0){
-                neighbors[2]=(new Node (new Tuple(node.coordinates.x-1,node.coordinates.y)));
-                neighbors[2].parent = node;
+                Node temp = new Node (new Tuple(node.coordinates.x-1,node.coordinates.y));
+                temp.parent = node;
+                neighbors.add(temp);
+                
             }
         }
         if (node.coordinates.y -1 >= 0){
             if (this.maze[node.coordinates.x][node.coordinates.y-1] == 0){
-                neighbors[8]=(new Node (new Tuple(node.coordinates.x,node.coordinates.y-1)));
-                neighbors[8].parent = node;
+                Node temp = new Node (new Tuple(node.coordinates.x,node.coordinates.y-1));
+                temp.parent = node;
+                neighbors.add(temp);
+                
             }
         }
         if (node.coordinates.x +1 < this.maze.length && node.coordinates.y +1 < this.maze[0].length){
             if(this.maze[node.coordinates.x + 1][node.coordinates.y+1] ==0){
-                neighbors[5]=(new Node(new Tuple(node.coordinates.x+1,node.coordinates.y+1)));
-                neighbors[5].parent = node;
+                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y+1));
+                temp.parent = node;
+                neighbors.add(temp);
+                
             }
         }
         if (node.coordinates.x -1 >=0 && node.coordinates.y +1 < this.maze[0].length){
             if(this.maze[node.coordinates.x - 1][node.coordinates.y+1] ==0){
-                neighbors[3]=(new Node(new Tuple(node.coordinates.x-1,node.coordinates.y+1)));
-                neighbors[3].parent = node;
+                Node temp = new Node(new Tuple(node.coordinates.x-1,node.coordinates.y+1));
+                temp.parent = node;
+                neighbors.add(temp);
+                
             }
         }
         if (node.coordinates.x +1 < this.maze.length && node.coordinates.y -1 >=0){
             if(this.maze[node.coordinates.x + 1][node.coordinates.y-1] ==0){
-                neighbors[7]=(new Node(new Tuple(node.coordinates.x+1,node.coordinates.y-1)));
-                neighbors[7].parent = node;
+                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y-1));
+                temp.parent = node;
+                neighbors.add(temp);
+                
             }
         }
         if (node.coordinates.x -1 >=0 && node.coordinates.y-1 >=0){
             if(this.maze[node.coordinates.x - 1][node.coordinates.y-1] ==0){
-                neighbors[1]=(new Node(new Tuple(node.coordinates.x-1,node.coordinates.y-1)));
-                neighbors[1].parent = node;
+                Node temp = new Node(new Tuple(node.coordinates.x-1,node.coordinates.y-1));
+                temp.parent = node;
+                neighbors.add(temp);
+                
             }
         }
         return neighbors;
     }
-    public Node[] get_neighbor_pruned(Node node){
+    public NodeList get_neighbor_pruned(Node node){
         int dx = node.coordinates.x - node.parent.coordinates.x;
         int dy = node.coordinates.y - node.parent.coordinates.y;
-        Node[] pruned = new Node[5];
+        NodeList pruned = new NodeList();
         if(dx==0 && dy == 0){
             return get_neighbors(node);
         }
@@ -246,7 +267,7 @@ public class JPS {
                     if(forced != null){
                         forced.parent = node;
                         forced.forced =true;
-                        pruned[1] = forced;
+                        pruned.add(forced);
                     }
                 }
                 if(!is_valid(node.coordinates.x -1, node.coordinates.y)){
@@ -254,12 +275,12 @@ public class JPS {
                     if(forced != null){
                         forced.parent = node;
                         forced.forced=true;
-                        pruned[2] = forced;
+                        pruned.add(forced);
                     }
                 }
                 Node forced = is_valid_place(new Tuple(node.coordinates.x, node.coordinates.y + dy));
                 forced.parent = node;
-                pruned[3]= forced;
+                pruned.add(forced);
             }
         }
         if( dy==0){
@@ -269,7 +290,7 @@ public class JPS {
                     if(forced != null){
                         forced.parent = node;
                         forced.forced =true;
-                        pruned[1] = forced;
+                        pruned.add(forced);
                     }
                 }
                 if(!is_valid(node.coordinates.x, node.coordinates.y - 1)){
@@ -277,12 +298,12 @@ public class JPS {
                     if(forced != null){
                         forced.parent = node;
                         forced.forced=true;
-                        pruned[2] = forced;
+                        pruned.add(forced);
                     }
                 }
                 Node forced = is_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y ));
                 forced.parent = node;
-                pruned[3]= forced;
+                pruned.add(forced);
             }
         }
         if(dx != 0 && dy != 0){
@@ -291,7 +312,7 @@ public class JPS {
                 if(forced !=null){
                     forced.parent = node;
                     forced.forced=true;
-                    pruned[0] = forced;
+                    pruned.add(forced);
                 }
             }
             if(!is_valid(node.coordinates.x + (dx*-1),node.coordinates.y)){
@@ -299,25 +320,25 @@ public class JPS {
                 if(forced != null){
                     forced.parent=node;
                     forced.forced=true;
-                    pruned[1]=forced;
+                    pruned.add(forced);
                 }
             }
             Node temp = is_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y+dy));
             if(temp!=null){
             temp.parent=node;
-            pruned[2]=temp;
+            pruned.add(temp);
             }
             
             Node temp1 = is_valid_place(new Tuple(node.coordinates.x, node.coordinates.y+dy));
             if(temp1!=null){
             temp1.parent=node; 
-            pruned[3]=temp1;
+            pruned.add(temp1);
             }
             
             Node temp2 = is_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y));
             if(temp2!=null){
             temp2.parent=node; 
-            pruned[4]=temp2;
+            pruned.add(temp2);
             }
             
         }

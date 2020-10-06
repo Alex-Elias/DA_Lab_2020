@@ -33,7 +33,7 @@ public class Filereader {
      */
     public void printline(int i){
         for (int j = 0; j< i; j++){
-            System.out.println(sc.next());
+            sc.next();
 
         }
         
