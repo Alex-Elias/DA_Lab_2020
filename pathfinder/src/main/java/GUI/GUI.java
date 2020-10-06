@@ -6,7 +6,9 @@ import algorithms.Dijkstra;
 import algorithms.JPS;
 import algorithms.BFS;
 import datastructures.Node;
+import datastructures.NodeList;
 import datastructures.Tuple;
+import datastructures.TupleList;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -232,9 +234,10 @@ public class GUI extends Application{
            long start_time = System.nanoTime();
            dijk.runDijkstra(this.origin,this.destination);
            
-           ArrayList<Tuple> dijk_shortestPath = dijk.getShortestPath(this.destination);
+           TupleList dijk_shortestPath = dijk.getShortestPath(this.destination);
            long end_time = System.nanoTime();
-           for(Tuple t: dijk_shortestPath){
+           while(dijk_shortestPath.isEmpty()){
+                Tuple t = dijk_shortestPath.remove();
                 Circle redCircle = new Circle(this.maze_stretch *t.y,this.maze_stretch * t.x,1);
                 redCircle.setFill(Color.RED);
                 this.maze.getChildren().add(redCircle);
@@ -254,9 +257,10 @@ public class GUI extends Application{
             
             Astar.run_AStar(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
             long end_time = System.nanoTime();
-            ArrayList<Node> AStar_shortestPath = Astar.get_shortest_path(new Node(new Tuple(this.destination.x,this.destination.y)));
+            NodeList AStar_shortestPath = Astar.get_shortest_path(new Node(new Tuple(this.destination.x,this.destination.y)));
             
-            for(Node node : AStar_shortestPath){
+            while(!AStar_shortestPath.isEmpty()){
+                Node node = AStar_shortestPath.remove();
                 Circle greenCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
                 greenCircle.setFill(Color.GREEN);
                 this.maze.getChildren().add(greenCircle);

@@ -3,7 +3,8 @@ package algorithms;
 
 import datastructures.Node;
 import datastructures.Tuple;
-import java.util.ArrayList;
+import datastructures.NodeList;
+
 import datastructures.PriorityQueue;
 /**
  * A Star algorithm to find the shortest path in a weighted graph
@@ -16,6 +17,7 @@ public class AStar {
     public double[][] distance;
     PriorityQueue queue;
     public Node[][] predecessor;
+    
     
     //  test
     boolean[][] visited;
@@ -67,8 +69,9 @@ public class AStar {
                 }
             
             
-            
-                for(Node next : adjacencyList(current.coordinates)){
+                NodeList list = adjacencyList(current.coordinates);
+                while(!list.isEmpty()){
+                    Node next = list.remove();
                     double new_weight = this.distance[current.coordinates.x][current.coordinates.y] + next.weight;
 
                     if (new_weight < this.distance[next.coordinates.x][next.coordinates.y]){
@@ -89,8 +92,8 @@ public class AStar {
      * @param goal the goal node
      * @return list of nodes
      */
-    public ArrayList<Node> get_shortest_path(Node goal){
-        ArrayList<Node> shortest_path_list = new ArrayList<>();
+    public NodeList get_shortest_path(Node goal){
+        NodeList shortest_path_list = new NodeList();
         Node last = goal;
         while(this.predecessor[last.coordinates.x][last.coordinates.y].coordinates != last.coordinates){
             shortest_path_list.add(last);
@@ -119,8 +122,8 @@ public class AStar {
      * @param T the tuple of coordinates where one wants to find the available spaces
      * @return a list of available spaces as JPS_Nodes
      */
-    public ArrayList<Node> adjacencyList(Tuple T){
-        ArrayList<Node> list = new ArrayList();
+    public NodeList adjacencyList(Tuple T){
+        NodeList list = new NodeList();
         if (T.x +1 < this.maze.length){
             if(this.maze[T.x + 1][T.y] ==0){
                 list.add(new Node(new Tuple(T.x+1,T.y),1));

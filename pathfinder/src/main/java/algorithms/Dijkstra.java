@@ -4,9 +4,11 @@ package algorithms;
 import datastructures.Tuple;
 
 import datastructures.Node;
-import java.util.ArrayList;
+import datastructures.NodeList;
+
 
 import datastructures.PriorityQueue;
+import datastructures.TupleList;
 
 
 
@@ -59,7 +61,9 @@ public class Dijkstra{
                 }
                 if(!this.processed[u.x][u.y]){
                     this.processed[u.x][u.y] = true;
-                    for(Node edge: this.adjacencyList(u)){
+                    NodeList list = this.adjacencyList(u);
+                    while(!list.isEmpty()){
+                        Node edge = list.remove();
                         Tuple v = edge.coordinates;
                         if(this.distance[v.x][v.y] > this.distance[u.x][u.y] + edge.weight){
                             this.distance[v.x][v.y] = this.distance[u.x][u.y] + edge.weight;
@@ -75,8 +79,8 @@ public class Dijkstra{
      * @param T the tuple coordinate which is used to find the adjacent nodes
      * @return an ArrayList of Class Node of the adjacent nodes
      */
-    public ArrayList<Node> adjacencyList(Tuple T){
-        ArrayList<Node> list = new ArrayList();
+    public NodeList adjacencyList(Tuple T){
+        NodeList list = new NodeList();
         if (T.x +1 < this.maze.length){
             if(this.maze[T.x + 1][T.y] ==0){
                 list.add(new Node(new Tuple(T.x+1,T.y),1));
@@ -127,8 +131,8 @@ public class Dijkstra{
      * @param destination the tuple coordinate of the desired destination of the shortest path
      * @return an ArrayList of tuple coordinates of the shortest path
      */
-    public ArrayList<Tuple> getShortestPath(Tuple destination){
-        ArrayList<Tuple> shortestPath_list = new ArrayList<>();
+    public TupleList getShortestPath(Tuple destination){
+        TupleList shortestPath_list = new TupleList();
         Tuple last = destination;
         while(this.predecessor[last.x][last.y] != last){
             shortestPath_list.add(last);
