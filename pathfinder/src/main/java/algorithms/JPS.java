@@ -9,7 +9,10 @@ import datastructures.PriorityQueue;
 
 /**
  *  
- * poor implementation of the Jump Point Search algorithm
+ * implementation of the Jump Point Search.
+ * JPS finds the shortest path between two nodes on an evenly weighted graph.
+ * JPS is an optimization of the A Star algorithm, by pruning certain nodes and creating jump points, JPS reduces A Star's running time. 
+ * 
  * @author alex
  */
 public class JPS {
@@ -24,7 +27,13 @@ public class JPS {
     public double weight;
     boolean[][] visited;
     
+    private final double RootTwo = 1.4142135;
     
+    /**
+     * Initializes JPS
+     * 
+     * @param maze a 2d array with ones as obstacles and zeros as open spaces
+     */
     public JPS(int[][] maze){
         this.maze = maze;
         this.queue= new PriorityQueue();
@@ -34,22 +43,18 @@ public class JPS {
         this.visited = new boolean[maze.length][maze[0].length];
         
     }
+    /**
+     * Runs JPS to find the shortest path between the start and goal node.
+     * @param start a node which stores the position of the start
+     * @param goal a node which stores the position of the goal
+     */
     public void run_JPS( Node start, Node goal){
         start.f=0;
         start.parent=start;
         this.queue.insert(start,start.f);
         this.predecessor[start.coordinates.x][start.coordinates.y] = start;
         
-//        for (int i = 0; i< this.maze.length; i++){
-//            for (int j = 0; j<this.maze[0].length; j++){
-//                this.distance[i][j] = 2147483647;
-//                this.jump_point[i][j] = 0;
-//                
-//                
-//            }
-//            
-//        }
-        //this.distance[start.coordinates.x][start.coordinates.y] = 0;
+
         
         while(!this.queue.isEmpty()){
             
@@ -84,8 +89,12 @@ public class JPS {
         
         
     }
-    
-    public Node is_valid_place(Tuple T){
+    /**
+     * gets a tuple and returns a node with the tuples coordinates if the coordinates point to a valid place on the maze, otherwise returns null
+     * @param T the tuple with the coordinates
+     * @return a node with the coordinates of the tuple if the coordinates point to a valid place otherwise returns null
+     */
+    public Node get_valid_place(Tuple T){
         if(T.x< 0 || T.y < 0){
             return null;
         }
@@ -109,16 +118,27 @@ public class JPS {
         }
         return true;
     }
-    
+    /**
+     * finds the heuristic between two locations and returns it as a floating point number
+     * @param location the Node of one of the locations
+     * @param location2 the Node of the other location
+     * @return the heuristic as a floating point number
+     */
     public double heuristic(Node location, Node location2){
         double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
         double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
         
-        return dx+dy +(1.4142135 -2) * Math.min(dx, dy);
+        return dx+dy +(RootTwo -2) * Math.min(dx, dy);
         
     }
 
-    
+    /**
+     * finds a list of successors to the current node
+     * @param node the current node
+     * @param start the start node
+     * @param goal the goal node
+     * @return the list of successors to the current node
+     */
     public NodeList get_successors(Node node, Node start, Node goal){
         NodeList successors = new NodeList();
         NodeList neighbors = get_neighbor_pruned(node);
@@ -140,17 +160,25 @@ public class JPS {
         }
         return successors;
     }
+    /**
+     * finds the jump points from the current node
+     * @param node the current node
+     * @param direction the direction to find the next jump point
+     * @param start the starting node 
+     * @param goal the goal node
+     * @return the jump point as a node if found otherwise returns null
+     */
     public Node jump(Node node, Tuple direction, Node start, Node goal){
         
         Tuple next = new Tuple(node.coordinates.x + direction.x, node.coordinates.y + direction.y);
-        Node n = is_valid_place(next);
+        Node n = get_valid_place(next);
         
         if(n == null){
             return null;
         }
         n.parent = node;
         if(direction.x !=0 && direction.y !=0){
-            n.weight = n.parent.weight + 1.4142135;
+            n.weight = n.parent.weight + RootTwo;
         }else{
             n.weight = n.parent.weight + 1;
         }
@@ -183,7 +211,11 @@ public class JPS {
         return jump(n,direction,start,goal);
     }
     
-    
+    /**
+     * finds the neighbors of a certain node and returns a list of the nodes
+     * @param node the node which the neighbors are found
+     * @return a list of neighbors as nodes
+     */
     public NodeList get_neighbors(Node node){
         NodeList neighbors = new NodeList();
         if (node.coordinates.x +1 < this.maze.length){
@@ -252,6 +284,11 @@ public class JPS {
         }
         return neighbors;
     }
+    /**
+     * finds the pruned list of the neighbors of a certain node
+     * @param node
+     * @return a list of nodes of the pruned neighbors
+     */
     public NodeList get_neighbor_pruned(Node node){
         int dx = node.coordinates.x - node.parent.coordinates.x;
         int dy = node.coordinates.y - node.parent.coordinates.y;
@@ -263,7 +300,7 @@ public class JPS {
         if(dx == 0){
             if (is_valid(node.coordinates.x, node.coordinates.y + dy)){
                 if(!is_valid(node.coordinates.x +1, node.coordinates.y)){
-                    Node forced = is_valid_place(new Tuple(node.coordinates.x +1, node.coordinates.y + dy));
+                    Node forced = get_valid_place(new Tuple(node.coordinates.x +1, node.coordinates.y + dy));
                     if(forced != null){
                         forced.parent = node;
                         forced.forced =true;
@@ -271,14 +308,14 @@ public class JPS {
                     }
                 }
                 if(!is_valid(node.coordinates.x -1, node.coordinates.y)){
-                    Node forced = is_valid_place(new Tuple(node.coordinates.x -1, node.coordinates.y + dy));
+                    Node forced = get_valid_place(new Tuple(node.coordinates.x -1, node.coordinates.y + dy));
                     if(forced != null){
                         forced.parent = node;
                         forced.forced=true;
                         pruned.add(forced);
                     }
                 }
-                Node forced = is_valid_place(new Tuple(node.coordinates.x, node.coordinates.y + dy));
+                Node forced = get_valid_place(new Tuple(node.coordinates.x, node.coordinates.y + dy));
                 forced.parent = node;
                 pruned.add(forced);
             }
@@ -286,7 +323,7 @@ public class JPS {
         if( dy==0){
             if (is_valid(node.coordinates.x + dx, node.coordinates.y)){
                 if(!is_valid(node.coordinates.x, node.coordinates.y + 1)){
-                    Node forced = is_valid_place(new Tuple(node.coordinates.x +dx, node.coordinates.y + 1));
+                    Node forced = get_valid_place(new Tuple(node.coordinates.x +dx, node.coordinates.y + 1));
                     if(forced != null){
                         forced.parent = node;
                         forced.forced =true;
@@ -294,21 +331,21 @@ public class JPS {
                     }
                 }
                 if(!is_valid(node.coordinates.x, node.coordinates.y - 1)){
-                    Node forced = is_valid_place(new Tuple(node.coordinates.x +dx, node.coordinates.y -1));
+                    Node forced = get_valid_place(new Tuple(node.coordinates.x +dx, node.coordinates.y -1));
                     if(forced != null){
                         forced.parent = node;
                         forced.forced=true;
                         pruned.add(forced);
                     }
                 }
-                Node forced = is_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y ));
+                Node forced = get_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y ));
                 forced.parent = node;
                 pruned.add(forced);
             }
         }
         if(dx != 0 && dy != 0){
             if(!is_valid(node.coordinates.x, node.coordinates.y + (dy * -1))){
-                Node forced = is_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y + (dy*-1)));
+                Node forced = get_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y + (dy*-1)));
                 if(forced !=null){
                     forced.parent = node;
                     forced.forced=true;
@@ -316,26 +353,26 @@ public class JPS {
                 }
             }
             if(!is_valid(node.coordinates.x + (dx*-1),node.coordinates.y)){
-                Node forced = is_valid_place(new Tuple(node.coordinates.x + (dx*-1), node.coordinates.y + dy));
+                Node forced = get_valid_place(new Tuple(node.coordinates.x + (dx*-1), node.coordinates.y + dy));
                 if(forced != null){
                     forced.parent=node;
                     forced.forced=true;
                     pruned.add(forced);
                 }
             }
-            Node temp = is_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y+dy));
+            Node temp = get_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y+dy));
             if(temp!=null){
             temp.parent=node;
             pruned.add(temp);
             }
             
-            Node temp1 = is_valid_place(new Tuple(node.coordinates.x, node.coordinates.y+dy));
+            Node temp1 = get_valid_place(new Tuple(node.coordinates.x, node.coordinates.y+dy));
             if(temp1!=null){
             temp1.parent=node; 
             pruned.add(temp1);
             }
             
-            Node temp2 = is_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y));
+            Node temp2 = get_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y));
             if(temp2!=null){
             temp2.parent=node; 
             pruned.add(temp2);
@@ -348,7 +385,11 @@ public class JPS {
     
     
     
-    
+    /**
+     * finds the direction from the parent to the node
+     * @param node 
+     * @return the direction as a tuple
+     */
     public Tuple get_directions(Node node){
         int x = node.coordinates.x -node.parent.coordinates.x;
         int y = node.coordinates.y -node.parent.coordinates.y;

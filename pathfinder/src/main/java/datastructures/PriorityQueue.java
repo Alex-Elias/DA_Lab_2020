@@ -1,5 +1,8 @@
 package datastructures;
-
+/**
+ * 
+ * @author alex
+ */
 public class PriorityQueue {
     private Node[] heap;
     private int last;

@@ -46,11 +46,14 @@ import javafx.stage.Stage;
  *           click on the button 'run BFS' to run the BFS algorithm,the algorithm will run and the shortest path will be displayed in blue
  *           click on the button 'run Dijkstra' to run the Dijkstra algorithm, the shortest path will be displayed in red
  *           click on the button 'run A*' to run the A Star algorithm, the shortest path will be displayed in green
+ *           click on the button 'run JPS' to run the Jump Point Search algorithm, the shortest path will be displayed in green
+ *           the button 'reset' on the bottom left of the window will reset the map, sometimes it takes a while so be patient
+ *           to change the map click on the drop down menu and select a map then click on the 'select' button
  * NOTE:
  *     
  *      this is a work in progress, the shortest path will only be displayed if the path is reachable
  *      a wall can be selected as a coordinate, there is no shortest path and thus the algorithm will not work
- *      there is no way to reset the map or the coordinates, you just have to exit out of the window and rerun the program
+ *      
  *      BFS algorithm is for non-weighted graphs so there is only 4 directions of movement so the path will be longer than the other algorithms
  * 
  * 
@@ -301,7 +304,7 @@ public class GUI extends Application{
             stats_JPS_Time.setText("Length of JPS in ms: " + time_mil);
         });
         
-        //UNFINISHED
+        //Bottom left buttons and drop down menu
         String maze_options_list_array[] = {"one pixel corridor", "eight pixel corridor", "32 pixel corridor", "random map 40%", "random map 10%"};
         
         ComboBox maze_options = new ComboBox(FXCollections.observableArrayList(maze_options_list_array));
@@ -376,8 +379,9 @@ public class GUI extends Application{
         top_left_vbox.getChildren().add(confirmOrigin);
         top_left_vbox.getChildren().add(new Label("Press the button below to run BFS algorithm"));
         top_left_vbox.getChildren().add(runBFS_Button);
-        top_left_vbox.getChildren().add(runAStar_Button);
         top_left_vbox.getChildren().add(runDijkstra_Button);
+        top_left_vbox.getChildren().add(runAStar_Button);
+        
         top_left_vbox.getChildren().add(runJPS_button);
         top_left_vbox.getChildren().add(stats_vbox);
         

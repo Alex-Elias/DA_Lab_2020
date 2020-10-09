@@ -17,6 +17,8 @@ public class AStar {
     public double[][] distance;
     PriorityQueue queue;
     public Node[][] predecessor;
+    private double Inf = 2147483647;
+    private double RootTwo = 1.4142135;
     
     
     //  test
@@ -47,7 +49,7 @@ public class AStar {
         
         for (int i = 0; i< this.maze.length; i++){
             for (int j = 0; j<this.maze[0].length; j++){
-                this.distance[i][j] = 2147483647;
+                this.distance[i][j] = this.Inf;
                 this.visited[i][j] = false;
                 
             }
@@ -117,6 +119,7 @@ public class AStar {
         return dx+dy +(1.4142135 - 2) * Math.min(dx, dy);
         
     }
+    
     /**
      * the method finds all the available neighbors from the location T
      * @param T the tuple of coordinates where one wants to find the available spaces
@@ -146,22 +149,22 @@ public class AStar {
         }
         if (T.x +1 < this.maze.length && T.y +1 < this.maze[0].length){
             if(this.maze[T.x + 1][T.y+1] ==0){
-                list.add(new Node(new Tuple(T.x+1,T.y+1),1.4142135));
+                list.add(new Node(new Tuple(T.x+1,T.y+1),this.RootTwo));
             }
         }
         if (T.x -1 >=0 && T.y +1 < this.maze[0].length){
             if(this.maze[T.x - 1][T.y+1] ==0){
-                list.add(new Node(new Tuple(T.x-1,T.y+1),1.4142135));
+                list.add(new Node(new Tuple(T.x-1,T.y+1),this.RootTwo));
             }
         }
         if (T.x +1 < this.maze.length && T.y -1 >=0){
             if(this.maze[T.x + 1][T.y-1] ==0){
-                list.add(new Node(new Tuple(T.x+1,T.y-1),1.4142135));
+                list.add(new Node(new Tuple(T.x+1,T.y-1),this.RootTwo));
             }
         }
         if (T.x -1 >=0 && T.y-1 >=0){
             if(this.maze[T.x - 1][T.y-1] ==0){
-                list.add(new Node(new Tuple(T.x-1,T.y-1),1.4142135));
+                list.add(new Node(new Tuple(T.x-1,T.y-1),this.RootTwo));
             }
         }
         return list;
