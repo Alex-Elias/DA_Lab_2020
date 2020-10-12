@@ -15,7 +15,7 @@ import datastructures.PriorityQueue;
  * 
  * @author alex
  */
-public class JPS {
+public class JPS extends Algorithm{
 
     public int[][] maze;
     public Node start;
@@ -35,12 +35,9 @@ public class JPS {
      * @param maze a 2d array with ones as obstacles and zeros as open spaces
      */
     public JPS(int[][] maze){
+        super(maze);
         this.maze = maze;
-        this.queue= new PriorityQueue();
-        this.predecessor = new Node[maze.length][maze[0].length];
         
-        this.jump_point = new int[maze.length][maze[0].length];
-        this.visited = new boolean[maze.length][maze[0].length];
         
     }
     /**
@@ -49,6 +46,11 @@ public class JPS {
      * @param goal a node which stores the position of the goal
      */
     public void run_JPS( Node start, Node goal){
+        this.queue= new PriorityQueue();
+        this.predecessor = new Node[maze.length][maze[0].length];
+        
+        this.jump_point = new int[maze.length][maze[0].length];
+        this.visited = new boolean[maze.length][maze[0].length];
         start.f=0;
         start.parent=start;
         this.queue.insert(start,start.f);
@@ -69,6 +71,7 @@ public class JPS {
             if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){
                 this.weight = current.weight;
                 this.goal = current;
+                super.setDestination(this.goal);
                 break;
             }
             NodeList successor = get_successors(current,start,goal);
@@ -118,19 +121,7 @@ public class JPS {
         }
         return true;
     }
-    /**
-     * finds the heuristic between two locations and returns it as a floating point number
-     * @param location the Node of one of the locations
-     * @param location2 the Node of the other location
-     * @return the heuristic as a floating point number
-     */
-    public double heuristic(Node location, Node location2){
-        double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
-        double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
-        
-        return dx+dy +(RootTwo -2) * Math.min(dx, dy);
-        
-    }
+    
 
     /**
      * finds a list of successors to the current node
@@ -211,79 +202,8 @@ public class JPS {
         return jump(n,direction,start,goal);
     }
     
-    /**
-     * finds the neighbors of a certain node and returns a list of the nodes
-     * @param node the node which the neighbors are found
-     * @return a list of neighbors as nodes
-     */
-    public NodeList get_neighbors(Node node){
-        NodeList neighbors = new NodeList();
-        if (node.coordinates.x +1 < this.maze.length){
-            if(this.maze[node.coordinates.x + 1][node.coordinates.y] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y));
-                temp.parent = node;
-                neighbors.add(temp);
-                
-            }
-        }
-        if (node.coordinates.y +1 < this.maze[0].length){
-            if(this.maze[node.coordinates.x][node.coordinates.y +1] == 0){
-                Node temp = new Node (new Tuple(node.coordinates.x,node.coordinates.y+1));
-                temp.parent = node;
-                neighbors.add(temp);
-                
-            }
-        }
-        if (node.coordinates.x -1 >= 0){
-            if (this.maze[node.coordinates.x -1][node.coordinates.y] == 0){
-                Node temp = new Node (new Tuple(node.coordinates.x-1,node.coordinates.y));
-                temp.parent = node;
-                neighbors.add(temp);
-                
-            }
-        }
-        if (node.coordinates.y -1 >= 0){
-            if (this.maze[node.coordinates.x][node.coordinates.y-1] == 0){
-                Node temp = new Node (new Tuple(node.coordinates.x,node.coordinates.y-1));
-                temp.parent = node;
-                neighbors.add(temp);
-                
-            }
-        }
-        if (node.coordinates.x +1 < this.maze.length && node.coordinates.y +1 < this.maze[0].length){
-            if(this.maze[node.coordinates.x + 1][node.coordinates.y+1] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y+1));
-                temp.parent = node;
-                neighbors.add(temp);
-                
-            }
-        }
-        if (node.coordinates.x -1 >=0 && node.coordinates.y +1 < this.maze[0].length){
-            if(this.maze[node.coordinates.x - 1][node.coordinates.y+1] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x-1,node.coordinates.y+1));
-                temp.parent = node;
-                neighbors.add(temp);
-                
-            }
-        }
-        if (node.coordinates.x +1 < this.maze.length && node.coordinates.y -1 >=0){
-            if(this.maze[node.coordinates.x + 1][node.coordinates.y-1] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y-1));
-                temp.parent = node;
-                neighbors.add(temp);
-                
-            }
-        }
-        if (node.coordinates.x -1 >=0 && node.coordinates.y-1 >=0){
-            if(this.maze[node.coordinates.x - 1][node.coordinates.y-1] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x-1,node.coordinates.y-1));
-                temp.parent = node;
-                neighbors.add(temp);
-                
-            }
-        }
-        return neighbors;
-    }
+    
+    
     /**
      * finds the pruned list of the neighbors of a certain node
      * @param node
@@ -294,7 +214,7 @@ public class JPS {
         int dy = node.coordinates.y - node.parent.coordinates.y;
         NodeList pruned = new NodeList();
         if(dx==0 && dy == 0){
-            return get_neighbors(node);
+            return getNeighbors(node);
         }
         
         if(dx == 0){

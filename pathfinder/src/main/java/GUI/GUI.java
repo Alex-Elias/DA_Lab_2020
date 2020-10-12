@@ -427,11 +427,11 @@ public class GUI extends Application{
         long start_time = System.nanoTime();
         dijk.runDijkstra(this.origin,this.destination);
 
-        TupleList dijk_shortestPath = dijk.getShortestPath(this.destination);
+        NodeList dijk_shortestPath = dijk.getShortestPath();
         long end_time = System.nanoTime();
         while(!dijk_shortestPath.isEmpty()){
-             Tuple t = dijk_shortestPath.remove();
-             Circle redCircle = new Circle(this.maze_stretch *t.y,this.maze_stretch * t.x,1);
+             Node n = dijk_shortestPath.remove();
+             Circle redCircle = new Circle(this.maze_stretch *n.coordinates.y,this.maze_stretch * n.coordinates.x,1);
              redCircle.setFill(Color.RED);
              this.maze.getChildren().add(redCircle);
          }
@@ -443,7 +443,7 @@ public class GUI extends Application{
             
         Astar.run_AStar(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
         long end_time = System.nanoTime();
-        NodeList AStar_shortestPath = Astar.get_shortest_path(new Node(new Tuple(this.destination.x,this.destination.y)));
+        NodeList AStar_shortestPath = Astar.getShortestPath();
 
         while(!AStar_shortestPath.isEmpty()){
             Node node = AStar_shortestPath.remove();
@@ -468,12 +468,14 @@ public class GUI extends Application{
                 }
             }
         }
-        Node last = jps.goal;
-        while(last.parent.coordinates != last.coordinates){
-            Circle brownCircle = new Circle(this.maze_stretch * last.coordinates.y, this.maze_stretch * last.coordinates.x,1);
-            brownCircle.setFill(Color.YELLOW);
-            this.maze.getChildren().add(brownCircle);
-            last = last.parent;
+        NodeList JPSshortestPath = jps.getShortestPath();
+        
+        while(!JPSshortestPath.isEmpty()){
+            Node node = JPSshortestPath.remove();
+            Circle yellowCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
+            yellowCircle.setFill(Color.YELLOW);
+            this.maze.getChildren().add(yellowCircle);
+            
         }
 
         long time_mil = (end_time-start_time)/1000000;

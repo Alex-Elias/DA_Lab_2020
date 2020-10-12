@@ -58,7 +58,7 @@ public class DijkstraTest {
 //    }
 
     /**
-     * Test of adjacencyList method, of class Dijkstra.
+     * Test of getNeighbors method, of class Dijkstra.
      */
     @Test
     public void testAdjacencyList() {
@@ -66,7 +66,7 @@ public class DijkstraTest {
         Tuple T = new Tuple(0,0);
         Dijkstra instance = new Dijkstra(maze2x2);
         ArrayList<Node> expResult = new ArrayList<>(Arrays.asList(new Node(new Tuple(1,0),1.0),new Node(new Tuple(0,1),1.0),new Node(new Tuple(1,1),1.4142135)));
-        ArrayList<Node> result = instance.adjacencyList(T);
+        ArrayList<Node> result = instance.getNeighbors(T);
         System.out.println(result);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
