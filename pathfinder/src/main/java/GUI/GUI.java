@@ -32,6 +32,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 
@@ -51,8 +53,8 @@ import javafx.stage.Stage;
  *           to change the map click on the drop down menu and select a map then click on the 'select' button
  * NOTE:
  *     
- *      this is a work in progress, the shortest path will only be displayed if the path is reachable
- *      a wall can be selected as a coordinate, there is no shortest path and thus the algorithm will not work
+ *      
+ *      
  *      
  *      BFS algorithm is for non-weighted graphs so there is only 4 directions of movement so the path will be longer than the other algorithms
  * 
@@ -86,9 +88,37 @@ public class GUI extends Application{
     
     private Filereader file;
     
+    
+    // stat Labels
+    Label stats_title;
+    Label stats_BFS;
+    Label stats_BFS_Length;
+    Label stats_BFS_Time;
+    Label stats_dijk;
+    Label stats_dijk_Length;
+    Label stats_dijk_Time;
+    Label stats_AStar;
+    Label stats_AStar_Length;
+    Label stats_AStar_Time;
+    Label stats_JPS;
+    Label stats_JPS_Length;
+    Label stats_JPS_Time;
+
+    // Buttons
+    Button confirmOrigin;
+    Button runBFS_Button;
+    Button runDijkstra_Button;
+    Button runAStar_Button;
+    Button runJPS_button;
+    Button maze_select_button;
+    Button maze_reset_button;
+    
+
+    
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.initialize();
         
         
         //Create new Filereaderclass
@@ -120,6 +150,11 @@ public class GUI extends Application{
         this.jps = new JPS(maze_array_read_from_file);
         
         this.bfs = new BFS(maze_array_read_from_file);
+        
+        
+        
+        
+        
         //the main borderpane where all of the nodes are set
         BorderPane borderpane = new BorderPane();
         borderpane.setRight(this.maze);
@@ -138,19 +173,7 @@ public class GUI extends Application{
         
         //the vbox containing all of the stats from the algoritm performance and distance of shortest path
         VBox stats_vbox = new VBox();
-        Label stats_title = new Label("Stats:");
-        Label stats_BFS = new Label("BFS:");
-        Label stats_BFS_Length = new Label("Length of path:");
-        Label stats_BFS_Time = new Label("Length of BFS in ms:");
-        Label stats_dijk = new Label("Dijkstra: ");
-        Label stats_dijk_Length = new Label("Length of path: ");
-        Label stats_dijk_Time = new Label("Length of Dijkstra in ms:");
-        Label stats_AStar = new Label("A*: ");
-        Label stats_AStar_Length = new Label("Length of path: ");
-        Label stats_AStar_Time = new Label("Length of A* in ms: ");
-        Label stats_JPS = new Label("JPS: ");
-        Label stats_JPS_Length = new Label("Length of path: ");
-        Label stats_JPS_Time = new Label("Length of JPS in ms: ");
+        
         stats_vbox.getChildren().addAll(stats_title,stats_BFS,stats_BFS_Length,stats_BFS_Time,stats_dijk,stats_dijk_Length,stats_dijk_Time);
         stats_vbox.getChildren().addAll(stats_AStar,stats_AStar_Length,stats_AStar_Time,stats_JPS,stats_JPS_Length,stats_JPS_Time);
         
@@ -162,8 +185,16 @@ public class GUI extends Application{
         Label Destination_coordinates_label = new Label("Destination: X=  , Y=  ");
         Direction_Origin_pane.getChildren().add(Directions_label);
         
+        
+        
+        Label error_location_label = new Label();
+        
+        
+        
+        
         Direction_Origin_pane.getChildren().add(Origin_coordinates_label);
         Destination_pane.getChildren().add(Destination_coordinates_label);
+        
         /**
          * event handler which sets the coordinates of the mouse on the maze to the X and Y coordinate TextField
          */
@@ -176,7 +207,7 @@ public class GUI extends Application{
                 Y_coordinate.setText("" + event.getY());
             }
         });
-        Button confirmOrigin = new Button("confirm");
+        
         
         /**
          * the button on activation first sets the class variable, Origin, with the values in the X, Y textfield 
@@ -185,16 +216,32 @@ public class GUI extends Application{
          */
         confirmOrigin.setOnAction((event) -> {
             // mind the counterintuitive x, y values for the circle coordinates
-            if(!this.origin_set_already){
-                setOrigin(new Tuple((int)Double.parseDouble(Y_coordinate.getText()) / this.maze_stretch,(int) Double.parseDouble(X_coordinate.getText())/this.maze_stretch));
-                this.origin_set_already = true;
-                Origin_coordinates_label.setText("Origin: X= " + this.origin.y*this.maze_stretch + ", Y= " + this.origin.x*this.maze_stretch);
-                this.maze.getChildren().add(new Circle(this.origin.y*this.maze_stretch,this.origin.x*this.maze_stretch,4,Color.RED));
-            }else if(!this.dest_set_already){
-                this.destination = new Tuple((int)Double.parseDouble(Y_coordinate.getText())/this.maze_stretch, (int)Double.parseDouble(X_coordinate.getText())/this.maze_stretch);
-                Destination_coordinates_label.setText("Destination: X= "+ this.destination.y*this.maze_stretch + ", Y= " + this.destination.x*this.maze_stretch);
-                this.dest_set_already = true;
-                this.maze.getChildren().add(new Circle(this.destination.y*this.maze_stretch,this.destination.x*this.maze_stretch,4,Color.RED));
+            int x = (int)Double.parseDouble(Y_coordinate.getText()) / this.maze_stretch;
+            int y = (int) Double.parseDouble(X_coordinate.getText())/this.maze_stretch;
+            if(this.isValidLocation(x, y)){
+                
+                error_location_label.setText("");
+            
+            
+                if(!this.origin_set_already){
+                    setOrigin(new Tuple(x,y));
+                    this.origin_set_already = true;
+                    Origin_coordinates_label.setText("Origin: X= " + this.origin.y*this.maze_stretch + ", Y= " + this.origin.x*this.maze_stretch);
+                    this.maze.getChildren().add(new Circle(this.origin.y*this.maze_stretch,this.origin.x*this.maze_stretch,4,Color.RED));
+                }else if(!this.dest_set_already){
+                    this.destination = new Tuple(x,y);
+                    Destination_coordinates_label.setText("Destination: X= "+ this.destination.y*this.maze_stretch + ", Y= " + this.destination.x*this.maze_stretch);
+                    this.dest_set_already = true;
+                    this.maze.getChildren().add(new Circle(this.destination.y*this.maze_stretch,this.destination.x*this.maze_stretch,4,Color.RED));
+                }
+            }else{
+                error_location_label.setText("Invalid location! Make sure you are not selecting a wall");
+                error_location_label.setTextFill(Color.RED);
+            }
+            
+            if(this.origin_set_already && this.dest_set_already){
+                this.setAlgorithmButtonsEnabled();
+                confirmOrigin.setDisable(true);
             }
              
                 
@@ -203,7 +250,6 @@ public class GUI extends Application{
         
         
         // button on press runs the BFS algorithm
-        Button runBFS_Button = new Button("Run BFS");
         
         
         /**
@@ -232,74 +278,34 @@ public class GUI extends Application{
          * Runs Dijkstra algorithm
          */
         
-        Button runDijkstra_Button = new Button("Run Dijkstra");
+        
         runDijkstra_Button.setOnAction((event) -> {
-           long start_time = System.nanoTime();
-           dijk.runDijkstra(this.origin,this.destination);
            
-           TupleList dijk_shortestPath = dijk.getShortestPath(this.destination);
-           long end_time = System.nanoTime();
-           while(!dijk_shortestPath.isEmpty()){
-                Tuple t = dijk_shortestPath.remove();
-                Circle redCircle = new Circle(this.maze_stretch *t.y,this.maze_stretch * t.x,1);
-                redCircle.setFill(Color.RED);
-                this.maze.getChildren().add(redCircle);
-            }
-            long time_mil = (end_time-start_time)/1000000;
+            long time_mil = this.runDijkstra();
             double distance = dijk.getDistance(this.destination);
             stats_dijk_Length.setText("Length of path: " + distance);
             stats_dijk_Time.setText("Length of Dijkstra in ms: " + time_mil);
         });
         //button on press runs the A* algoithm
-        Button runAStar_Button = new Button("Run A*");
+        
         /**
          * runs the A* algorithm
          */
         runAStar_Button.setOnAction((event) -> {
-            long start_time = System.nanoTime();
             
-            Astar.run_AStar(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
-            long end_time = System.nanoTime();
-            NodeList AStar_shortestPath = Astar.get_shortest_path(new Node(new Tuple(this.destination.x,this.destination.y)));
-            
-            while(!AStar_shortestPath.isEmpty()){
-                Node node = AStar_shortestPath.remove();
-                Circle greenCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
-                greenCircle.setFill(Color.GREEN);
-                this.maze.getChildren().add(greenCircle);
-            }
-            long time_mil = (end_time-start_time)/1000000;
+            long time_mil = this.runAStar();
             double distance = Astar.distance[this.destination.x][this.destination.y];
             stats_AStar_Length.setText("Length of path: " + distance);
             stats_AStar_Time.setText("Length of A* in ms: " + time_mil);
             
         });
         
-        Button runJPS_button = new Button("Run JPS");
+        
         
         runJPS_button.setOnAction((event) ->{
-            long start_time = System.nanoTime();
-            jps.run_JPS(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
-            long end_time = System.nanoTime();
-            for(int i = 0; i < jps.maze.length; i++){
-                for (int j = 0; j < jps.maze[0].length; j++){
-                    if(jps.jump_point[i][j]==1){
-                        Circle purpleCircle = new Circle(this.maze_stretch* j, this.maze_stretch * i, 1);
-                        purpleCircle.setFill(Color.PURPLE);
-                        this.maze.getChildren().add(purpleCircle);
-
-                    }
-                }
-            }
-            Node last = jps.goal;
-            while(last.parent.coordinates != last.coordinates){
-                Circle brownCircle = new Circle(this.maze_stretch * last.coordinates.y, this.maze_stretch * last.coordinates.x,1);
-                brownCircle.setFill(Color.YELLOW);
-                this.maze.getChildren().add(brownCircle);
-                last = last.parent;
-            }
             
-            long time_mil = (end_time-start_time)/1000000;
+            
+            long time_mil = this.runJPS();
             stats_JPS_Length.setText("Length of path: " + jps.weight);
             stats_JPS_Time.setText("Length of JPS in ms: " + time_mil);
         });
@@ -308,8 +314,7 @@ public class GUI extends Application{
         String maze_options_list_array[] = {"one pixel corridor", "eight pixel corridor", "32 pixel corridor", "random map 40%", "random map 10%"};
         
         ComboBox maze_options = new ComboBox(FXCollections.observableArrayList(maze_options_list_array));
-        Button maze_select_button = new Button("select");
-        Button maze_reset_button = new Button("reset maze");
+        
         HBox maze_options_select = new HBox();
         
         maze_select_button.setOnAction((event) -> {
@@ -326,44 +331,14 @@ public class GUI extends Application{
                 this.file = new Filereader(this.r10);
             }
             this.maze_array_read_from_file = this.file.returnArray();
-            this.maze.getChildren().clear();
-            for( int i = 0; i < maze_array_read_from_file.length; i++){
-                for(int j = 0; j < maze_array_read_from_file[1].length; j++){
-                    if(maze_array_read_from_file[i][j]==1){
-                    maze.getChildren().add(new Circle(this.maze_stretch*j,this.maze_stretch*i,1));
-                    }else{
-                    
-                    }
-                }
-            }
-            this.origin_set_already= false;
-            this.dest_set_already=false;
-            this.Astar = new AStar(maze_array_read_from_file);
-            this.bfs = new BFS(maze_array_read_from_file);
-            this.dijk = new Dijkstra(maze_array_read_from_file);
-            this.jps = new JPS(maze_array_read_from_file);
+            this.resetMap();
             
             
             
             
         });
         maze_reset_button.setOnAction((event) -> {
-            this.maze.getChildren().clear();
-            for( int i = 0; i < maze_array_read_from_file.length; i++){
-                for(int j = 0; j < maze_array_read_from_file[1].length; j++){
-                    if(maze_array_read_from_file[i][j]==1){
-                    maze.getChildren().add(new Circle(this.maze_stretch*j,this.maze_stretch*i,1));
-                    }else{
-                    
-                    }
-                }
-            }
-            this.origin_set_already= false;
-            this.dest_set_already=false;
-            this.Astar = new AStar(maze_array_read_from_file);
-            this.bfs = new BFS(maze_array_read_from_file);
-            this.dijk = new Dijkstra(maze_array_read_from_file);
-            this.jps = new JPS(maze_array_read_from_file);
+            this.resetMap();
         
         });
                 
@@ -374,8 +349,9 @@ public class GUI extends Application{
         //adds the top left vbox nodes
         top_left_vbox.getChildren().add(Direction_Origin_pane);
         top_left_vbox.getChildren().add(Destination_coordinates_label);
-        
+        top_left_vbox.getChildren().add(error_location_label);
         top_left_vbox.getChildren().add(coordinate_hbox);
+        
         top_left_vbox.getChildren().add(confirmOrigin);
         top_left_vbox.getChildren().add(new Label("Press the button below to run BFS algorithm"));
         top_left_vbox.getChildren().add(runBFS_Button);
@@ -388,6 +364,14 @@ public class GUI extends Application{
         
         
         
+        this.setAlgorithmButtonsDisabled();
+        
+        Stage instructionStage = new Stage();
+        instructionStage.initModality(Modality.APPLICATION_MODAL);
+        instructionStage.initOwner(stage);
+        Scene instructionScene = new Scene(this.instructions());
+        instructionStage.setScene(instructionScene);
+        instructionStage.setTitle("User Instructions");
         
         
         
@@ -397,6 +381,7 @@ public class GUI extends Application{
         stage.setTitle("Pathfinding");
         
         stage.show();
+        instructionStage.show();
         
     }
     
@@ -425,6 +410,157 @@ public class GUI extends Application{
     }
     private void setOrigin(Tuple T){
         this.origin = T;
+    }
+    private boolean isValidLocation(int x, int y){
+        if(x<0 || x >= this.maze_array_read_from_file.length){
+            return false;
+        }
+        if(y < 0 || y >= this.maze_array_read_from_file.length){
+            return false;
+        }
+        if(this.maze_array_read_from_file[x][y]==1){
+            return false;
+        }
+        return true;
+    }
+    private long runDijkstra(){
+        long start_time = System.nanoTime();
+        dijk.runDijkstra(this.origin,this.destination);
+
+        TupleList dijk_shortestPath = dijk.getShortestPath(this.destination);
+        long end_time = System.nanoTime();
+        while(!dijk_shortestPath.isEmpty()){
+             Tuple t = dijk_shortestPath.remove();
+             Circle redCircle = new Circle(this.maze_stretch *t.y,this.maze_stretch * t.x,1);
+             redCircle.setFill(Color.RED);
+             this.maze.getChildren().add(redCircle);
+         }
+         long time_mil = (end_time-start_time)/1000000;
+         return time_mil;
+    }
+    private long runAStar(){
+        long start_time = System.nanoTime();
+            
+        Astar.run_AStar(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
+        long end_time = System.nanoTime();
+        NodeList AStar_shortestPath = Astar.get_shortest_path(new Node(new Tuple(this.destination.x,this.destination.y)));
+
+        while(!AStar_shortestPath.isEmpty()){
+            Node node = AStar_shortestPath.remove();
+            Circle greenCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
+            greenCircle.setFill(Color.GREEN);
+            this.maze.getChildren().add(greenCircle);
+        }
+        long time_mil = (end_time-start_time)/1000000;
+        return time_mil;
+    }
+    private long runJPS(){
+        long start_time = System.nanoTime();
+        jps.run_JPS(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
+        long end_time = System.nanoTime();
+        for(int i = 0; i < jps.maze.length; i++){
+            for (int j = 0; j < jps.maze[0].length; j++){
+                if(jps.jump_point[i][j]==1){
+                    Circle purpleCircle = new Circle(this.maze_stretch* j, this.maze_stretch * i, 1);
+                    purpleCircle.setFill(Color.PURPLE);
+                    this.maze.getChildren().add(purpleCircle);
+
+                }
+            }
+        }
+        Node last = jps.goal;
+        while(last.parent.coordinates != last.coordinates){
+            Circle brownCircle = new Circle(this.maze_stretch * last.coordinates.y, this.maze_stretch * last.coordinates.x,1);
+            brownCircle.setFill(Color.YELLOW);
+            this.maze.getChildren().add(brownCircle);
+            last = last.parent;
+        }
+
+        long time_mil = (end_time-start_time)/1000000;
+        return time_mil;
+    }
+    private void setAlgorithmButtonsDisabled(){
+        runBFS_Button.setDisable(true);
+        
+        runDijkstra_Button.setDisable(true);
+        runAStar_Button.setDisable(true);
+        runJPS_button.setDisable(true);
+    }
+    private void setAlgorithmButtonsEnabled(){
+        runBFS_Button.setDisable(false);
+        runDijkstra_Button.setDisable(false);
+        runAStar_Button.setDisable(false);
+        runJPS_button.setDisable(false);
+    }
+    private void resetMap(){
+        this.maze.getChildren().clear();
+            for( int i = 0; i < maze_array_read_from_file.length; i++){
+                for(int j = 0; j < maze_array_read_from_file[1].length; j++){
+                    if(maze_array_read_from_file[i][j]==1){
+                    maze.getChildren().add(new Circle(this.maze_stretch*j,this.maze_stretch*i,1));
+                    }else{
+                    
+                    }
+                }
+            }
+            this.origin_set_already= false;
+            this.dest_set_already=false;
+            this.Astar = new AStar(maze_array_read_from_file);
+            this.bfs = new BFS(maze_array_read_from_file);
+            this.dijk = new Dijkstra(maze_array_read_from_file);
+            this.jps = new JPS(maze_array_read_from_file);
+            
+            this.setAlgorithmButtonsDisabled();
+            this.confirmOrigin.setDisable(false);
+    }
+    private void initialize(){
+        // stat Labels
+        this.stats_title = new Label("Stats:");
+        this.stats_BFS = new Label("BFS:");
+        this.stats_BFS_Length = new Label("Length of path:");
+        this.stats_BFS_Time = new Label("Length of BFS in ms:");
+        this.stats_dijk = new Label("Dijkstra: ");
+        this.stats_dijk_Length = new Label("Length of path: ");
+        this.stats_dijk_Time = new Label("Length of Dijkstra in ms:");
+        this.stats_AStar = new Label("A*: ");
+        this.stats_AStar_Length = new Label("Length of path: ");
+        this.stats_AStar_Time = new Label("Length of A* in ms: ");
+        this.stats_JPS = new Label("JPS: ");
+        this.stats_JPS_Length = new Label("Length of path: ");
+        this.stats_JPS_Time = new Label("Length of JPS in ms: ");
+
+        // Buttons
+        this.confirmOrigin = new Button("confirm");
+        this.runBFS_Button = new Button("Run BFS");
+        this.runDijkstra_Button = new Button("Run Dijkstra");
+        this.runAStar_Button = new Button("Run A*");
+        this.runJPS_button = new Button("Run JPS");
+        this.maze_select_button = new Button("select");
+        this.maze_reset_button = new Button("reset maze");
+    }
+    
+    private VBox instructions(){
+        
+        Label label1 = new Label("Click on the desired starting location in the maze or input manually into the text field and click the 'confirm' button to confirm your choice");
+        label1.setFont(new Font(20));
+        Label label2 = new Label("Repeat the process to confirm the destination");
+        label2.setFont(new Font(20));
+        Label label3 = new Label("Click on the button 'run BFS' to run the BFS algorithm,the algorithm will run and the shortest path will be displayed in blue");
+        label3.setFont(new Font(20));
+        Label label4 = new Label("Click on the button 'run Dijkstra' to run the Dijkstra algorithm, the shortest path will be displayed in red");
+        label4.setFont(new Font(20));
+        Label label5 = new Label("Click on the button 'run A*' to run the A Star algorithm, the shortest path will be displayed in green");
+        label5.setFont(new Font(20));
+        Label label6 = new Label("Click on the button 'run JPS' to run the Jump Point Search algorithm, the shortest path will be displayed in green");
+        label6.setFont(new Font(20));
+        Label label7 = new Label("The button 'reset' on the bottom left of the window will reset the map, sometimes it takes a while so be patient");
+        label7.setFont(new Font(20));
+        Label label8 = new Label("to change the map click on the drop down menu and select a map then click on the 'select' button");
+        label8.setFont(new Font(20));
+        VBox box = new VBox();
+        box.setSpacing(10);
+        box.getChildren().addAll(label1,label2,label3,label4,label5,label6,label7,label8);
+        return box;
     }
     
     
