@@ -54,4 +54,7 @@ public class NodeList {
         }
         this.list = temp;
     }
+    public int length(){
+        return last;
+    }
 }

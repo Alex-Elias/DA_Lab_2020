@@ -62,6 +62,33 @@ public class Filereader {
         return array;
         
     }
+    public int[][] returnMaze(){
+        printline(6);
+        String temp = this.sc.next();
+        int[][] array = new int[temp.length()][temp.length()];
+        int i = 0;
+        for (int j = 0; j < temp.length(); j++){
+            if(Character.toString(temp.charAt(j)).equals("@") ||Character.toString(temp.charAt(j)).equals("T")){
+                array[i][j] = 1;
+            }else{
+                array[i][j] = 0;
+            }
+        }
+        i++;
+        while(sc.hasNext()){
+            temp = this.sc.next();
+            for (int j = 0; j < temp.length(); j++){
+                if(Character.toString(temp.charAt(j)).equals("@") ||Character.toString(temp.charAt(j)).equals("T")){
+                    array[i][j] = 1;
+                }else{
+                    array[i][j] = 0;
+                }
+            }
+            i++;
+        }
+        return array;
+        
+    }
     
     
 }
