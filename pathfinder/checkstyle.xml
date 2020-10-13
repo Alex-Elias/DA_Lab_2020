@@ -35,7 +35,7 @@
       <property name="countEmpty" value="false" />
     </module>
 
-    <!--- Naming Conventions -->
+    
 
     <module name="ClassTypeParameterName" />
     <module name="ConstantName" />
@@ -77,7 +77,7 @@
     </module>
   </module>
 
-  <!-- File Length -->
+  
 
   <module name="FileLength">
     <property name="max" value="500" />

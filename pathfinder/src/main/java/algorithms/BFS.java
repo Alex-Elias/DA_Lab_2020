@@ -47,18 +47,18 @@ public class BFS {
             
             
         }
-        this.visited[origin.x][origin.y] = true;
-        this.distance[origin.x][origin.y] = 0;
+        this.visited[origin.getX()][origin.getY()] = true;
+        this.distance[origin.getX()][origin.getY()] = 0;
         
         Queue<Tuple> q = new LinkedList<>();
         q.add(origin);
         while(!q.isEmpty()){
             Tuple v = q.poll();
             for (Tuple s: adjacencyList(v)){
-                if (!this.visited[s.x][s.y]){
-                    this.visited[s.x][s.y] = true;
-                    this.distance[s.x][s.y] = distance[v.x][v.y] +1;
-                    this.predecessor[s.x][s.y] = v;
+                if (!this.visited[s.getX()][s.getY()]){
+                    this.visited[s.getX()][s.getY()] = true;
+                    this.distance[s.getX()][s.getY()] = distance[v.getX()][v.getY()] +1;
+                    this.predecessor[s.getX()][s.getY()] = v;
                     q.add(s);
                 }
             }
@@ -71,24 +71,24 @@ public class BFS {
      */
     public ArrayList<Tuple> adjacencyList(Tuple T){
         ArrayList<Tuple> list = new ArrayList();
-        if (T.x +1 < this.maze.length){
-            if(this.maze[T.x + 1][T.y] ==0){
-                list.add(new Tuple(T.x+1,T.y));
+        if (T.getX() +1 < this.maze.length){
+            if(this.maze[T.getX() + 1][T.getY()] ==0){
+                list.add(new Tuple(T.getX()+1,T.getY()));
             }
         }
-        if (T.y +1 < this.maze[0].length){
-            if(this.maze[T.x][T.y +1] == 0){
-                list.add(new Tuple(T.x,T.y+1));
+        if (T.getY() +1 < this.maze[0].length){
+            if(this.maze[T.getX()][T.getY() +1] == 0){
+                list.add(new Tuple(T.getX(),T.getY()+1));
             }
         }
-        if (T.x -1 >= 0){
-            if (this.maze[T.x -1][T.y] == 0){
-                list.add(new Tuple(T.x-1,T.y));
+        if (T.getX() -1 >= 0){
+            if (this.maze[T.getX() -1][T.getY()] == 0){
+                list.add(new Tuple(T.getX()-1,T.getY()));
             }
         }
-        if (T.y -1 >= 0){
-            if (this.maze[T.x][T.y-1] == 0){
-                list.add(new Tuple(T.x,T.y-1));
+        if (T.getY() -1 >= 0){
+            if (this.maze[T.getX()][T.getY()-1] == 0){
+                list.add(new Tuple(T.getX(),T.getY()-1));
             }
         }
         return list;
@@ -102,9 +102,9 @@ public class BFS {
         Tuple current_node = end;
         Queue<Tuple> Q = new LinkedList<>();
         ArrayList<Tuple> Path = new ArrayList<>();
-        while(this.distance[this.predecessor[current_node.x][current_node.y].x][this.predecessor[current_node.x][current_node.y].y] != 0){
+        while(this.distance[this.predecessor[current_node.getX()][current_node.getY()].getX()][this.predecessor[current_node.getX()][current_node.getY()].getY()] != 0){
             Q.add(current_node);
-            current_node = this.predecessor[current_node.x][current_node.y];
+            current_node = this.predecessor[current_node.getX()][current_node.getY()];
         }
         while(!Q.isEmpty()){
             Path.add(Q.poll());
@@ -124,7 +124,7 @@ public class BFS {
      * @return the distance from the origin to the destination as an integer
      */
     public int getDistance(Tuple destination){
-        return this.distance[destination.x][destination.y];
+        return this.distance[destination.getX()][destination.getY()];
     }
     
 }

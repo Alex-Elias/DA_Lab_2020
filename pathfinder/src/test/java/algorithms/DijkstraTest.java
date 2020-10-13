@@ -45,6 +45,13 @@ public class DijkstraTest {
     public void findShortestPathSimpleMap(){
         Dijkstra dijk = new Dijkstra(fr.returnMaze());
         dijk.runDijkstra(new Tuple(0,0), new Tuple(0,3));
-        assertTrue(Math.abs(dijk.getDistance(new Tuple(0,3)) - 18.31) < 0.01);
+        assertTrue(Math.abs(dijk.getDistance() - 18.31) < 0.01);
+    }
+    @Test
+    public void findShortestPathComplex(){
+        Filereader f = new Filereader("Mazes/maze512-8-0.map");
+        Dijkstra dijk = new Dijkstra(f.returnArray());
+        dijk.runDijkstra(new Tuple(2,2), new Tuple(511,511));
+        assertTrue(Math.abs(dijk.getDistance() - 1447.241) < 0.001);
     }
 }

@@ -12,6 +12,7 @@ public class Algorithm {
     private int[][] maze;
     private double RootTwo = 1.4142135; 
     private Node destination;
+    private double distance;
     
     public Algorithm(int[][] maze){
         this.maze = maze;
@@ -21,66 +22,66 @@ public class Algorithm {
     
     public NodeList getNeighbors(Node node){
         NodeList neighbors = new NodeList();
-        if (node.coordinates.x +1 < this.maze.length){
-            if(this.maze[node.coordinates.x + 1][node.coordinates.y] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y),1);
-                temp.parent = node;
+        if (node.getX() +1 < this.maze.length){
+            if(this.maze[node.getX() + 1][node.getY()] ==0){
+                Node temp = new Node(new Tuple(node.getX()+1,node.getY()),1);
+                temp.setParent(node);
                 neighbors.add(temp);
                 
             }
         }
-        if (node.coordinates.y +1 < this.maze[0].length){
-            if(this.maze[node.coordinates.x][node.coordinates.y +1] == 0){
-                Node temp = new Node (new Tuple(node.coordinates.x,node.coordinates.y+1),1);
-                temp.parent = node;
+        if (node.getY() +1 < this.maze[0].length){
+            if(this.maze[node.getX()][node.getY() +1] == 0){
+                Node temp = new Node (new Tuple(node.getX(),node.getY()+1),1);
+                temp.setParent(node);
                 neighbors.add(temp);
                 
             }
         }
-        if (node.coordinates.x -1 >= 0){
-            if (this.maze[node.coordinates.x -1][node.coordinates.y] == 0){
-                Node temp = new Node (new Tuple(node.coordinates.x-1,node.coordinates.y),1);
-                temp.parent = node;
+        if (node.getX() -1 >= 0){
+            if (this.maze[node.getX() -1][node.getY()] == 0){
+                Node temp = new Node (new Tuple(node.getX()-1,node.getY()),1);
+                temp.setParent(node);
                 neighbors.add(temp);
                 
             }
         }
-        if (node.coordinates.y -1 >= 0){
-            if (this.maze[node.coordinates.x][node.coordinates.y-1] == 0){
-                Node temp = new Node (new Tuple(node.coordinates.x,node.coordinates.y-1),1);
-                temp.parent = node;
+        if (node.getY() -1 >= 0){
+            if (this.maze[node.getX()][node.getY()-1] == 0){
+                Node temp = new Node (new Tuple(node.getX(),node.getY()-1),1);
+                temp.setParent(node);
                 neighbors.add(temp);
                 
             }
         }
-        if (node.coordinates.x +1 < this.maze.length && node.coordinates.y +1 < this.maze[0].length){
-            if(this.maze[node.coordinates.x + 1][node.coordinates.y+1] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y+1),this.RootTwo);
-                temp.parent = node;
+        if (node.getX() +1 < this.maze.length && node.getY() +1 < this.maze[0].length){
+            if(this.maze[node.getX() + 1][node.getY()+1] ==0){
+                Node temp = new Node(new Tuple(node.getX()+1,node.getY()+1),this.RootTwo);
+                temp.setParent(node);
                 neighbors.add(temp);
                 
             }
         }
-        if (node.coordinates.x -1 >=0 && node.coordinates.y +1 < this.maze[0].length){
-            if(this.maze[node.coordinates.x - 1][node.coordinates.y+1] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x-1,node.coordinates.y+1),this.RootTwo);
-                temp.parent = node;
+        if (node.getX() -1 >=0 && node.getY() +1 < this.maze[0].length){
+            if(this.maze[node.getX() - 1][node.getY()+1] ==0){
+                Node temp = new Node(new Tuple(node.getX()-1,node.getY()+1),this.RootTwo);
+                temp.setParent(node);
                 neighbors.add(temp);
                 
             }
         }
-        if (node.coordinates.x +1 < this.maze.length && node.coordinates.y -1 >=0){
-            if(this.maze[node.coordinates.x + 1][node.coordinates.y-1] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x+1,node.coordinates.y-1),this.RootTwo);
-                temp.parent = node;
+        if (node.getX() +1 < this.maze.length && node.getY() -1 >=0){
+            if(this.maze[node.getX() + 1][node.getY()-1] ==0){
+                Node temp = new Node(new Tuple(node.getX()+1,node.getY()-1),this.RootTwo);
+                temp.setParent(node);
                 neighbors.add(temp);
                 
             }
         }
-        if (node.coordinates.x -1 >=0 && node.coordinates.y-1 >=0){
-            if(this.maze[node.coordinates.x - 1][node.coordinates.y-1] ==0){
-                Node temp = new Node(new Tuple(node.coordinates.x-1,node.coordinates.y-1),this.RootTwo);
-                temp.parent = node;
+        if (node.getX() -1 >=0 && node.getY()-1 >=0){
+            if(this.maze[node.getX() - 1][node.getY()-1] ==0){
+                Node temp = new Node(new Tuple(node.getX()-1,node.getY()-1),this.RootTwo);
+                temp.setParent(node);
                 neighbors.add(temp);
                 
             }
@@ -91,9 +92,10 @@ public class Algorithm {
     public NodeList getShortestPath(){
         NodeList list = new NodeList();
         Node last = this.destination;
-        while(last.coordinates != last.parent.coordinates){
+        while(last.getCoordinates() != last.getParent().getCoordinates()){
+            
             list.add(last);
-            last = last.parent;
+            last = last.getParent();
         }
         return list;
     }
@@ -110,11 +112,18 @@ public class Algorithm {
      */
     //Theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
     public double heuristic(Node location, Node location2){
-        double dx = Math.abs(location.coordinates.x - location2.coordinates.x);
-        double dy = Math.abs(location.coordinates.y - location2.coordinates.y);
+        double dx = Math.abs(location.getX() - location2.getX());
+        double dy = Math.abs(location.getY() - location2.getY());
         
         return dx+dy +(1.4142135 - 2) * Math.min(dx, dy);
         
+    }
+    public void setDistance(double distance){
+        this.distance=distance;
+    }
+    
+    public double getDistance(){
+        return this.distance;
     }
     
 }

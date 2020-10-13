@@ -16,8 +16,8 @@ package datastructures;
 
 
 public class Tuple {
-    public final int x;
-    public final int y;
+    private final int x;
+    private final int y;
     
     /**
      * initializes the Tuple class
@@ -27,6 +27,13 @@ public class Tuple {
     public Tuple(int x, int y){
         this.x = x;
         this.y = y;
+    }
+    
+    public int getX(){
+        return this.x;
+    }
+    public int getY(){
+        return this.y;
     }
     @Override
     public String toString(){

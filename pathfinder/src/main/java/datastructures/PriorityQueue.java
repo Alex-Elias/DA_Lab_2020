@@ -33,9 +33,10 @@ public class PriorityQueue {
     
     public void insert(Node node, double priority){
         this.last = last +1;
-        node.priority = priority;
+        
+        node.setPriority(priority);
         int p = last;
-        while(p>1 && (node.priority < this.heap[this.parent(p)].priority)){
+        while(p>1 && (node.getPriority() < this.heap[this.parent(p)].getPriority())){
             this.heap[p] = this.heap[this.parent(p)];
             p = this.parent(p);
             
@@ -75,12 +76,12 @@ public class PriorityQueue {
             smallerChild = left;
         }
         else{
-            if (this.heap[left].priority < this.heap[right].priority){
+            if (this.heap[left].getPriority() < this.heap[right].getPriority()){
                 smallerChild = left;
             }else{
                 smallerChild = right;
             }
-            if( this.heap[node].priority > this.heap[smallerChild].priority){
+            if( this.heap[node].getPriority() > this.heap[smallerChild].getPriority()){
                 swap(node,smallerChild);
                 pushDown(smallerChild);
             }

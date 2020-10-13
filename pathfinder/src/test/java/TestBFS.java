@@ -72,8 +72,8 @@ public class TestBFS {
         BFS test_BFS = new BFS(test_maze);
         assertTrue(test_BFS.adjacencyList(new Tuple(1,1)).isEmpty());
         Tuple test_T = test_BFS.adjacencyList(new Tuple(3,0)).get(0);
-        assertEquals(4,test_T.x);
-        assertEquals(0,test_T.y);
+        assertEquals(4,test_T.getX());
+        assertEquals(0,test_T.getY());
         
         assertEquals("four adjacent nodes test failed",4,test_BFS.adjacencyList(new Tuple(1,4)).size());
         assertEquals("one adjacent nodes test failed",1,test_BFS.adjacencyList(new Tuple(5,0)).size());

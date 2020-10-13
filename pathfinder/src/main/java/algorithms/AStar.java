@@ -16,7 +16,7 @@ public class AStar extends Algorithm{
     int[][] maze;
     public double[][] distance;
     PriorityQueue queue;
-    public Node[][] predecessor;
+    
     private double Inf = 2147483647;
     private double RootTwo = 1.4142135;
     
@@ -41,13 +41,14 @@ public class AStar extends Algorithm{
     public void run_AStar(Node start, Node goal){
         this.distance = new double[maze.length][maze[0].length];
         this.queue = new PriorityQueue();
-        this.predecessor = new Node[maze.length][maze[0].length];
+        
         
         this.visited= new boolean[maze.length][maze[0].length];
-        start.f=0;
-        start.parent = start;
-        this.queue.insert(start,start.f);
-        this.predecessor[start.coordinates.x][start.coordinates.y] = start;
+        
+        start.setF(0);
+        start.setParent(start);
+        this.queue.insert(start,start.getF());
+        
         
         for (int i = 0; i< this.maze.length; i++){
             for (int j = 0; j<this.maze[0].length; j++){
@@ -57,7 +58,7 @@ public class AStar extends Algorithm{
             }
             
         }
-        this.distance[start.coordinates.x][start.coordinates.y] = 0;
+        this.distance[start.getX()][start.getY()] = 0;
         
 
         
@@ -65,11 +66,12 @@ public class AStar extends Algorithm{
             
             
             Node current = this.queue.deleteMin();
-            if(!this.visited[current.coordinates.x][current.coordinates.y]){
-                this.visited[current.coordinates.x][current.coordinates.y] = true;
+            if(!this.visited[current.getX()][current.getY()]){
+                this.visited[current.getX()][current.getY()] = true;
             
-                if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){
+                if(current.getX() == goal.getX() && current.getY() == goal.getY()){
                     super.setDestination(current);
+                    super.setDistance(this.distance[current.getX()][current.getY()]);
                     break;
                 }
             
@@ -77,14 +79,14 @@ public class AStar extends Algorithm{
                 NodeList list = getNeighbors(current);
                 while(!list.isEmpty()){
                     Node next = list.remove();
-                    double new_weight = this.distance[current.coordinates.x][current.coordinates.y] + next.weight;
+                    double new_weight = this.distance[current.getX()][current.getY()] + next.getWeight();
 
-                    if (new_weight < this.distance[next.coordinates.x][next.coordinates.y]){
-                        this.distance[next.coordinates.x][next.coordinates.y]= new_weight;
+                    if (new_weight < this.distance[next.getX()][next.getY()]){
+                        this.distance[next.getX()][next.getY()]= new_weight;
                         double priority = new_weight + heuristic(next,goal);
-                        next.f = priority;
-                        this.queue.insert(next,next.f);
-                        this.predecessor[next.coordinates.x][next.coordinates.y] = current;
+                        next.setF(priority);
+                        this.queue.insert(next,next.getF());
+                        
                     }
 
                 }

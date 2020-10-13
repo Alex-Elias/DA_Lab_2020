@@ -8,7 +8,6 @@ import datastructures.NodeList;
 
 
 import datastructures.PriorityQueue;
-import datastructures.TupleList;
 
 
 
@@ -53,30 +52,31 @@ public class Dijkstra extends Algorithm{
             
         }
         
-            this.distance[origin.x][origin.y]= 0;
-            this.predecessor[origin.x][origin.y]= origin;
+            this.distance[origin.getX()][origin.getY()]= 0;
+            this.predecessor[origin.getX()][origin.getY()]= origin;
             Node start = new Node(origin,0);
-            start.parent = start;
+            start.setParent(start);
             this.queue.insert(start,0);
             while(!queue.isEmpty()){
                 Node next = queue.deleteMin();
-                Tuple u = next.coordinates;
-                if(u.x == goal.x && u.y == goal.y){
+                Tuple u = next.getCoordinates();
+                if(u.getX() == goal.getX() && u.getY() == goal.getY()){
                     super.setDestination(next);
+                    super.setDistance(this.distance[u.getX()][u.getY()]);
                     this.destination = next;
                     break;
                 }
-                if(!this.processed[u.x][u.y]){
-                    this.processed[u.x][u.y] = true;
+                if(!this.processed[u.getX()][u.getY()]){
+                    this.processed[u.getX()][u.getY()] = true;
                     NodeList list = this.getNeighbors(next);
                     while(!list.isEmpty()){
                         Node edge = list.remove();
-                        Tuple v = edge.coordinates;
-                        if(this.distance[v.x][v.y] > this.distance[u.x][u.y] + edge.weight){
-                            this.distance[v.x][v.y] = this.distance[u.x][u.y] + edge.weight;
+                        Tuple v = edge.getCoordinates();
+                        if(this.distance[v.getX()][v.getY()] > this.distance[u.getX()][u.getY()] + edge.getWeight()){
+                            this.distance[v.getX()][v.getY()] = this.distance[u.getX()][u.getY()] + edge.getWeight();
                             
-                            this.queue.insert(edge,this.distance[v.x][v.y]);
-                            this.predecessor[v.x][v.y]= u;
+                            this.queue.insert(edge,this.distance[v.getX()][v.getY()]);
+                            this.predecessor[v.getX()][v.getY()]= u;
                         }
                     }
                 }
@@ -86,13 +86,7 @@ public class Dijkstra extends Algorithm{
     
     
     
-    /**
-     * a getter method with returns the distance of the shortest path from the origin to the destination
-     * @param destination a tuple with the coordinates of the desired destination, must be integer type
-     * @return a double type value of the shortest path from the origin to the destination
-     */
-    public double getDistance(Tuple destination){
-        return this.distance[destination.x][destination.y];
-    }
+    
+    
     
 }

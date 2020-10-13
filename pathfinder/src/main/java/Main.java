@@ -20,19 +20,11 @@ public class Main {
          */
 
         
-//        GUI gui = new GUI();
-//        gui.launchGUI();
+        GUI gui = new GUI();
+        gui.launchGUI();
 
 
 
-        Filereader fr = new Filereader("Mazes/test.map");
-        int[][] test = fr.returnMaze();
-        for(int i = 0; i< test.length; i++){
-            for (int j = 0; j< test[0].length; j++){
-                System.out.print(test[i][j]);
-            }
-            System.out.println("");
-        }
 //        
 //      uncomment to run the performance tests
 //      it is recomended to comment the gui so it does not run

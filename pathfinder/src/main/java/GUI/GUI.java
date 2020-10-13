@@ -8,30 +8,22 @@ import algorithms.BFS;
 import datastructures.Node;
 import datastructures.NodeList;
 import datastructures.Tuple;
-import datastructures.TupleList;
-import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -226,13 +218,13 @@ public class GUI extends Application{
                 if(!this.origin_set_already){
                     setOrigin(new Tuple(x,y));
                     this.origin_set_already = true;
-                    Origin_coordinates_label.setText("Origin: X= " + this.origin.y*this.maze_stretch + ", Y= " + this.origin.x*this.maze_stretch);
-                    this.maze.getChildren().add(new Circle(this.origin.y*this.maze_stretch,this.origin.x*this.maze_stretch,4,Color.RED));
+                    Origin_coordinates_label.setText("Origin: X= " + this.origin.getY()*this.maze_stretch + ", Y= " + this.origin.getX()*this.maze_stretch);
+                    this.maze.getChildren().add(new Circle(this.origin.getY()*this.maze_stretch,this.origin.getX()*this.maze_stretch,4,Color.RED));
                 }else if(!this.dest_set_already){
                     this.destination = new Tuple(x,y);
-                    Destination_coordinates_label.setText("Destination: X= "+ this.destination.y*this.maze_stretch + ", Y= " + this.destination.x*this.maze_stretch);
+                    Destination_coordinates_label.setText("Destination: X= "+ this.destination.getY()*this.maze_stretch + ", Y= " + this.destination.getX()*this.maze_stretch);
                     this.dest_set_already = true;
-                    this.maze.getChildren().add(new Circle(this.destination.y*this.maze_stretch,this.destination.x*this.maze_stretch,4,Color.RED));
+                    this.maze.getChildren().add(new Circle(this.destination.getY()*this.maze_stretch,this.destination.getX()*this.maze_stretch,4,Color.RED));
                 }
             }else{
                 error_location_label.setText("Invalid location! Make sure you are not selecting a wall");
@@ -264,12 +256,12 @@ public class GUI extends Application{
             bfs.shortestpath(this.destination);
             Long end_time = System.nanoTime();
             for(Tuple t: bfs.path){
-                Circle blueCircle = new Circle(this.maze_stretch *t.y,this.maze_stretch * t.x,1);
+                Circle blueCircle = new Circle(this.maze_stretch *t.getY(),this.maze_stretch * t.getX(),1);
                 blueCircle.setFill(Color.BLUE);
                 this.maze.getChildren().add(blueCircle);
             }
             long time_mil = (end_time-start_time)/1000000;
-            int temp = bfs.distance[this.destination.x][this.destination.y];
+            int temp = bfs.distance[this.destination.getX()][this.destination.getY()];
             stats_BFS_Length.setText("Length of path: " + temp);
             stats_BFS_Time.setText("Length of BFS in ms: " + time_mil);
             
@@ -282,7 +274,7 @@ public class GUI extends Application{
         runDijkstra_Button.setOnAction((event) -> {
            
             long time_mil = this.runDijkstra();
-            double distance = dijk.getDistance(this.destination);
+            double distance = dijk.getDistance();
             stats_dijk_Length.setText("Length of path: " + distance);
             stats_dijk_Time.setText("Length of Dijkstra in ms: " + time_mil);
         });
@@ -294,7 +286,7 @@ public class GUI extends Application{
         runAStar_Button.setOnAction((event) -> {
             
             long time_mil = this.runAStar();
-            double distance = Astar.distance[this.destination.x][this.destination.y];
+            double distance = Astar.distance[this.destination.getX()][this.destination.getY()];
             stats_AStar_Length.setText("Length of path: " + distance);
             stats_AStar_Time.setText("Length of A* in ms: " + time_mil);
             
@@ -431,7 +423,7 @@ public class GUI extends Application{
         long end_time = System.nanoTime();
         while(!dijk_shortestPath.isEmpty()){
              Node n = dijk_shortestPath.remove();
-             Circle redCircle = new Circle(this.maze_stretch *n.coordinates.y,this.maze_stretch * n.coordinates.x,1);
+             Circle redCircle = new Circle(this.maze_stretch *n.getY(),this.maze_stretch * n.getX(),1);
              redCircle.setFill(Color.RED);
              this.maze.getChildren().add(redCircle);
          }
@@ -441,13 +433,13 @@ public class GUI extends Application{
     private long runAStar(){
         long start_time = System.nanoTime();
             
-        Astar.run_AStar(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
+        Astar.run_AStar(new Node(new Tuple(this.origin.getX(),this.origin.getY())), new Node(new Tuple(this.destination.getX(),this.destination.getY())));
         long end_time = System.nanoTime();
         NodeList AStar_shortestPath = Astar.getShortestPath();
 
         while(!AStar_shortestPath.isEmpty()){
             Node node = AStar_shortestPath.remove();
-            Circle greenCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
+            Circle greenCircle = new Circle(this.maze_stretch * node.getY(), this.maze_stretch * node.getX(),1);
             greenCircle.setFill(Color.GREEN);
             this.maze.getChildren().add(greenCircle);
         }
@@ -456,7 +448,7 @@ public class GUI extends Application{
     }
     private long runJPS(){
         long start_time = System.nanoTime();
-        jps.run_JPS(new Node(new Tuple(this.origin.x,this.origin.y)), new Node(new Tuple(this.destination.x,this.destination.y)));
+        jps.run_JPS(new Node(new Tuple(this.origin.getX(),this.origin.getY())), new Node(new Tuple(this.destination.getX(),this.destination.getY())));
         long end_time = System.nanoTime();
         for(int i = 0; i < jps.maze.length; i++){
             for (int j = 0; j < jps.maze[0].length; j++){
@@ -472,7 +464,7 @@ public class GUI extends Application{
         
         while(!JPSshortestPath.isEmpty()){
             Node node = JPSshortestPath.remove();
-            Circle yellowCircle = new Circle(this.maze_stretch * node.coordinates.y, this.maze_stretch * node.coordinates.x,1);
+            Circle yellowCircle = new Circle(this.maze_stretch * node.getY(), this.maze_stretch * node.getX(),1);
             yellowCircle.setFill(Color.YELLOW);
             this.maze.getChildren().add(yellowCircle);
             

@@ -51,10 +51,10 @@ public class JPS extends Algorithm{
         
         this.jump_point = new int[maze.length][maze[0].length];
         this.visited = new boolean[maze.length][maze[0].length];
-        start.f=0;
-        start.parent=start;
-        this.queue.insert(start,start.f);
-        this.predecessor[start.coordinates.x][start.coordinates.y] = start;
+        start.setF(0);
+        start.setParent(start);
+        this.queue.insert(start,start.getF());
+        this.predecessor[start.getX()][start.getY()] = start;
         
 
         
@@ -62,16 +62,17 @@ public class JPS extends Algorithm{
             
             
             Node current = this.queue.deleteMin();
-            if(this.visited[current.coordinates.x][current.coordinates.y]){
+            if(this.visited[current.getX()][current.getY()]){
                continue; 
             }
-            this.visited[current.coordinates.x][current.coordinates.y] = true;
+            this.visited[current.getX()][current.getY()] = true;
             
             
-            if(current.coordinates.x == goal.coordinates.x && current.coordinates.y == goal.coordinates.y){
-                this.weight = current.weight;
+            if(current.getX() == goal.getX() && current.getY() == goal.getY()){
+                this.weight = current.getWeight();
                 this.goal = current;
                 super.setDestination(this.goal);
+                super.setDistance(current.getWeight());
                 break;
             }
             NodeList successor = get_successors(current,start,goal);
@@ -80,9 +81,9 @@ public class JPS extends Algorithm{
                 if(next== null){
                     continue;
                 }
-                this.jump_point[next.coordinates.x][next.coordinates.y] = 1;
-                next.f = next.weight + heuristic(next,goal);
-                this.queue.insert(next,next.f);
+                this.jump_point[next.getX()][next.getY()] = 1;
+                next.setF(next.getWeight() + heuristic(next,goal));
+                this.queue.insert(next,next.getF());
             }
 
 
@@ -98,13 +99,13 @@ public class JPS extends Algorithm{
      * @return a node with the coordinates of the tuple if the coordinates point to a valid place otherwise returns null
      */
     public Node get_valid_place(Tuple T){
-        if(T.x< 0 || T.y < 0){
+        if(T.getX()< 0 || T.getY() < 0){
             return null;
         }
-        if(T.x>=this.maze.length || T.y >= this.maze[0].length){
+        if(T.getX()>=this.maze.length || T.getY() >= this.maze[0].length){
             return null;
         }
-        if(this.maze[T.x][T.y] == 1){
+        if(this.maze[T.getX()][T.getY()] == 1){
             return null;
         }
         return new Node(T);
@@ -145,7 +146,7 @@ public class JPS extends Algorithm{
             }
             successors.add(jump);
             if(jump!= null){
-                this.predecessor[jump.coordinates.x][jump.coordinates.y] = node;
+                this.predecessor[jump.getX()][jump.getY()] = node;
 
             }
         }
@@ -161,20 +162,21 @@ public class JPS extends Algorithm{
      */
     public Node jump(Node node, Tuple direction, Node start, Node goal){
         
-        Tuple next = new Tuple(node.coordinates.x + direction.x, node.coordinates.y + direction.y);
+        Tuple next = new Tuple(node.getX() + direction.getX(), node.getY() + direction.getY());
         Node n = get_valid_place(next);
         
         if(n == null){
             return null;
         }
-        n.parent = node;
-        if(direction.x !=0 && direction.y !=0){
-            n.weight = n.parent.weight + RootTwo;
+        
+        n.setParent(node);
+        if(direction.getX() !=0 && direction.getY() !=0){
+            n.setWeight(n.getParent().getWeight() + RootTwo);
         }else{
-            n.weight = n.parent.weight + 1;
+            n.setWeight(n.getParent().getWeight() + 1);
         }
         
-        if(n.coordinates.x == goal.coordinates.x && n.coordinates.y == goal.coordinates.y){
+        if(n.getX() == goal.getX() && n.getY() == goal.getY()){
             this.goal = n;
             return n;
         }
@@ -185,12 +187,12 @@ public class JPS extends Algorithm{
             if(neighbor== null){
                 continue;
             }
-            if(neighbor.forced){
+            if(neighbor.isForced()){
                 return n;
             }
         }
-        if(direction.x !=0 && direction.y !=0){
-            if( jump(n, new Tuple(direction.x,0),start,goal) != null || jump(n, new Tuple(0,direction.y),start,goal) != null){
+        if(direction.getX() !=0 && direction.getY() !=0){
+            if( jump(n, new Tuple(direction.getX() ,0),start,goal) != null || jump(n, new Tuple(0,direction.getY() ),start,goal) != null){
                 return n;
             } 
         }
@@ -210,91 +212,93 @@ public class JPS extends Algorithm{
      * @return a list of nodes of the pruned neighbors
      */
     public NodeList get_neighbor_pruned(Node node){
-        int dx = node.coordinates.x - node.parent.coordinates.x;
-        int dy = node.coordinates.y - node.parent.coordinates.y;
+        int dx = node.getX() - node.getParent().getX();
+        int dy = node.getY() - node.getParent().getY();
         NodeList pruned = new NodeList();
         if(dx==0 && dy == 0){
             return getNeighbors(node);
         }
         
         if(dx == 0){
-            if (is_valid(node.coordinates.x, node.coordinates.y + dy)){
-                if(!is_valid(node.coordinates.x +1, node.coordinates.y)){
-                    Node forced = get_valid_place(new Tuple(node.coordinates.x +1, node.coordinates.y + dy));
+            if (is_valid(node.getX(), node.getY() + dy)){
+                if(!is_valid(node.getX() +1, node.getY())){
+                    Node forced = get_valid_place(new Tuple(node.getX() +1, node.getY() + dy));
                     if(forced != null){
-                        forced.parent = node;
-                        forced.forced =true;
+                        
+                        forced.setParent(node);
+                        
+                        forced.setForced(true);
                         pruned.add(forced);
                     }
                 }
-                if(!is_valid(node.coordinates.x -1, node.coordinates.y)){
-                    Node forced = get_valid_place(new Tuple(node.coordinates.x -1, node.coordinates.y + dy));
+                if(!is_valid(node.getX() -1, node.getY())){
+                    Node forced = get_valid_place(new Tuple(node.getX() -1, node.getY() + dy));
                     if(forced != null){
-                        forced.parent = node;
-                        forced.forced=true;
+                        forced.setParent(node);
+                        forced.setForced(true);
                         pruned.add(forced);
                     }
                 }
-                Node forced = get_valid_place(new Tuple(node.coordinates.x, node.coordinates.y + dy));
-                forced.parent = node;
+                Node forced = get_valid_place(new Tuple(node.getX(), node.getY() + dy));
+                forced.setParent(node);;
                 pruned.add(forced);
             }
         }
         if( dy==0){
-            if (is_valid(node.coordinates.x + dx, node.coordinates.y)){
-                if(!is_valid(node.coordinates.x, node.coordinates.y + 1)){
-                    Node forced = get_valid_place(new Tuple(node.coordinates.x +dx, node.coordinates.y + 1));
+            if (is_valid(node.getX() + dx, node.getY())){
+                if(!is_valid(node.getX(), node.getY() + 1)){
+                    Node forced = get_valid_place(new Tuple(node.getX() +dx, node.getY() + 1));
                     if(forced != null){
-                        forced.parent = node;
-                        forced.forced =true;
+                        forced.setParent(node);;
+                        forced.setForced(true);
                         pruned.add(forced);
                     }
                 }
-                if(!is_valid(node.coordinates.x, node.coordinates.y - 1)){
-                    Node forced = get_valid_place(new Tuple(node.coordinates.x +dx, node.coordinates.y -1));
+                if(!is_valid(node.getX(), node.getY() - 1)){
+                    Node forced = get_valid_place(new Tuple(node.getX() +dx, node.getY() -1));
                     if(forced != null){
-                        forced.parent = node;
-                        forced.forced=true;
+                        forced.setParent(node);;
+                        forced.setForced(true);
                         pruned.add(forced);
                     }
                 }
-                Node forced = get_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y ));
-                forced.parent = node;
+                Node forced = get_valid_place(new Tuple(node.getX() + dx, node.getY() ));
+                forced.setParent(node);;
                 pruned.add(forced);
             }
         }
         if(dx != 0 && dy != 0){
-            if(!is_valid(node.coordinates.x, node.coordinates.y + (dy * -1))){
-                Node forced = get_valid_place(new Tuple(node.coordinates.x + dx, node.coordinates.y + (dy*-1)));
+            if(!is_valid(node.getX(), node.getY() + (dy * -1))){
+                Node forced = get_valid_place(new Tuple(node.getX() + dx, node.getY() + (dy*-1)));
                 if(forced !=null){
-                    forced.parent = node;
-                    forced.forced=true;
+                    forced.setParent(node);;
+                    forced.setForced(true);
                     pruned.add(forced);
                 }
             }
-            if(!is_valid(node.coordinates.x + (dx*-1),node.coordinates.y)){
-                Node forced = get_valid_place(new Tuple(node.coordinates.x + (dx*-1), node.coordinates.y + dy));
+            if(!is_valid(node.getX() + (dx*-1),node.getY())){
+                Node forced = get_valid_place(new Tuple(node.getX() + (dx*-1), node.getY() + dy));
                 if(forced != null){
-                    forced.parent=node;
-                    forced.forced=true;
+                    forced.setParent(node);;
+                    forced.setForced(true);
                     pruned.add(forced);
                 }
             }
-            Node temp = get_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y+dy));
+            Node temp = get_valid_place(new Tuple(node.getX()+dx, node.getY()+dy));
             if(temp!=null){
-            temp.parent=node;
+            temp.setParent(node);
             pruned.add(temp);
             }
             
-            Node temp1 = get_valid_place(new Tuple(node.coordinates.x, node.coordinates.y+dy));
+            Node temp1 = get_valid_place(new Tuple(node.getX(), node.getY()+dy));
             if(temp1!=null){
-            temp1.parent=node; 
+            temp1.setParent(node);
             pruned.add(temp1);
             }
             
-            Node temp2 = get_valid_place(new Tuple(node.coordinates.x+dx, node.coordinates.y));
+            Node temp2 = get_valid_place(new Tuple(node.getX()+dx, node.getY()));
             if(temp2!=null){
-            temp2.parent=node; 
+            temp2.setParent(node);
             pruned.add(temp2);
             }
             
@@ -311,8 +315,8 @@ public class JPS extends Algorithm{
      * @return the direction as a tuple
      */
     public Tuple get_directions(Node node){
-        int x = node.coordinates.x -node.parent.coordinates.x;
-        int y = node.coordinates.y -node.parent.coordinates.y;
+        int x = node.getX() -node.getParent().getX();
+        int y = node.getY() -node.getParent().getY();
         return new Tuple(x,y);
     }
     
