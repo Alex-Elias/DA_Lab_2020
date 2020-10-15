@@ -12,15 +12,11 @@ public class PriorityQueue {
         this.last = 0;
     }
     private int left(int p){
-        if(2*p > last){
-            return 0;
-        }
+
         return 2 *p;
     }
     private int right(int p){
-        if(2*p+1 > last){
-            return 0;
-        }
+
         return 2*p+1;
     }
     private int parent(int p){
@@ -50,6 +46,7 @@ public class PriorityQueue {
     public Node deleteMin(){
         Node element = this.heap[1];
         this.heap[1] = this.heap[this.last];
+        this.heap[this.last] = null;
         this.last = this.last -1;
         this.pushDown(1);
         if(last < this.heap.length * 0.25 && this.heap.length >64){
@@ -64,12 +61,10 @@ public class PriorityQueue {
         return false;
     }
     private void pushDown(int node){
-        int smallerChild = 0;
+        int smallerChild = node;
         int left = left(node);
         int right = right(node);
-        if(left == 0 || right == 0){
-            return;
-        }
+        
         if(left > this.last){
             return;
         }else if(left == last){
@@ -81,11 +76,12 @@ public class PriorityQueue {
             }else{
                 smallerChild = right;
             }
-            if( this.heap[node].getPriority() > this.heap[smallerChild].getPriority()){
+            
+        }
+        if( this.heap[node].getPriority() > this.heap[smallerChild].getPriority()){
                 swap(node,smallerChild);
                 pushDown(smallerChild);
             }
-        }
         
     }
     
@@ -107,6 +103,10 @@ public class PriorityQueue {
             temp[i] = this.heap[i];
         }
         this.heap = temp;
+    }
+    
+    public int getSize(){
+        return this.last;
     }
     
 }

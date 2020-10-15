@@ -41,8 +41,9 @@ public class PerformanceTesting {
     }
     private long[] runDijkstra(int[][] maze){
         long[] dijkstraM1 = new long[101];
+        Dijkstra dijk = new Dijkstra(maze);
         for(int i = 0; i< 101; i++){
-            Dijkstra dijk = new Dijkstra(maze);
+            
             long start = System.nanoTime();
             dijk.runDijkstra(this.mazeStart, this.mazeFinish);
             long finish = System.nanoTime();
@@ -52,8 +53,9 @@ public class PerformanceTesting {
     }
     private long[] runAstar(int[][] maze){
         long[] aStarM1 = new long[101];
+        AStar Astar = new AStar(maze);
         for(int i = 0; i< 101; i++){
-            AStar Astar = new AStar(maze);
+            
             long start = System.nanoTime();
             Astar.run_AStar(new Node(this.mazeStart), new Node(this.mazeFinish));
             long finish = System.nanoTime();
@@ -63,8 +65,9 @@ public class PerformanceTesting {
     }
     private long[] runJPS(int[][] maze){
        long[] jpsM1 = new long[101];
+       JPS jps = new JPS(maze);
         for(int i = 0; i< 101; i++){
-            JPS jps = new JPS(maze);
+            
             long start = System.nanoTime();
             jps.run_JPS(new Node(this.mazeStart), new Node(this.mazeFinish));
             long finish = System.nanoTime();

@@ -112,10 +112,10 @@ public class Algorithm {
      */
     //Theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
     public double heuristic(Node location, Node location2){
-        double dx = Math.abs(location.getX() - location2.getX());
-        double dy = Math.abs(location.getY() - location2.getY());
+        double dx = abs(location.getX() - location2.getX());
+        double dy = abs(location.getY() - location2.getY());
         
-        return dx+dy +(1.4142135 - 2) * Math.min(dx, dy);
+        return dx+dy +(1.4142135 - 2) * min(dx, dy);
         
     }
     public void setDistance(double distance){
@@ -125,5 +125,19 @@ public class Algorithm {
     public double getDistance(){
         return this.distance;
     }
+    
+    private double abs(double value){
+        if(value < 0){
+            return value *-1;
+        }
+        return value;
+    }
+    private double min(double one, double two){
+        if(one <= two){
+            return one;
+        }
+        return two;
+    }
+    
     
 }

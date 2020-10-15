@@ -57,8 +57,8 @@ import javafx.stage.Stage;
 public class GUI extends Application{
     
     private Tuple origin;
-    private boolean origin_set_already = false;
-    private boolean dest_set_already = false;
+    private boolean originSetAlready = false;
+    private boolean destinationSetAlready = false;
     private Tuple destination;
     private Pane maze;
     private Dijkstra dijk;
@@ -69,7 +69,7 @@ public class GUI extends Application{
     private int[][] maze_array_read_from_file;
     
     //the multiplicular amout to stretch the maze, only in int right now
-    private int maze_stretch = 2;
+    private int mazeStretch = 2;
     
     //maps
     private String m1 = "Mazes/maze512-1-0.map";
@@ -82,28 +82,28 @@ public class GUI extends Application{
     
     
     // stat Labels
-    Label stats_title;
-    Label stats_BFS;
-    Label stats_BFS_Length;
-    Label stats_BFS_Time;
-    Label stats_dijk;
-    Label stats_dijk_Length;
-    Label stats_dijk_Time;
-    Label stats_AStar;
-    Label stats_AStar_Length;
-    Label stats_AStar_Time;
-    Label stats_JPS;
-    Label stats_JPS_Length;
-    Label stats_JPS_Time;
+    Label statsTitle;
+    Label statsBFS;
+    Label statsBFSLength;
+    Label statsBFSTime;
+    Label statsDijk;
+    Label statsDijkLength;
+    Label statsDijkTime;
+    Label statsAStar;
+    Label statsAStarLength;
+    Label statsAStarTime;
+    Label statsJPS;
+    Label statsJPSLength;
+    Label statsJPSTime;
 
     // Buttons
     Button confirmOrigin;
-    Button runBFS_Button;
-    Button runDijkstra_Button;
-    Button runAStar_Button;
-    Button runJPS_button;
-    Button maze_select_button;
-    Button maze_reset_button;
+    Button runBFSButton;
+    Button runDijkstraButton;
+    Button runAStarButton;
+    Button runJPSButton;
+    Button mazeSelectButton;
+    Button mazeResetButton;
     
 
     
@@ -151,23 +151,23 @@ public class GUI extends Application{
         BorderPane borderpane = new BorderPane();
         borderpane.setRight(this.maze);
         // the top left VBox containing the text
-        VBox top_left_vbox = new VBox();
-        top_left_vbox.setSpacing(10);
+        VBox topLeftVbox = new VBox();
+        topLeftVbox.setSpacing(10);
         
         //the hbox containing the two textfields for the coordinates
-        HBox coordinate_hbox = new HBox();
-        TextField X_coordinate = new TextField("X =");
-        TextField Y_coordinate = new TextField("Y =");
+        HBox coordinateHbox = new HBox();
+        TextField XCoordinate = new TextField("X =");
+        TextField YCoordinate = new TextField("Y =");
         
-        coordinate_hbox.getChildren().add(X_coordinate);
-        coordinate_hbox.getChildren().add(Y_coordinate);
-        coordinate_hbox.setSpacing(20);
+        coordinateHbox.getChildren().add(XCoordinate);
+        coordinateHbox.getChildren().add(YCoordinate);
+        coordinateHbox.setSpacing(20);
         
         //the vbox containing all of the stats from the algoritm performance and distance of shortest path
-        VBox stats_vbox = new VBox();
+        VBox statsVbox = new VBox();
         
-        stats_vbox.getChildren().addAll(stats_title,stats_BFS,stats_BFS_Length,stats_BFS_Time,stats_dijk,stats_dijk_Length,stats_dijk_Time);
-        stats_vbox.getChildren().addAll(stats_AStar,stats_AStar_Length,stats_AStar_Time,stats_JPS,stats_JPS_Length,stats_JPS_Time);
+        statsVbox.getChildren().addAll(statsTitle,statsBFS,statsBFSLength,statsBFSTime,statsDijk,statsDijkLength,statsDijkTime);
+        statsVbox.getChildren().addAll(statsAStar,statsAStarLength,statsAStarTime,statsJPS,statsJPSLength,statsJPSTime);
         
         FlowPane Direction_Origin_pane = new FlowPane();
         FlowPane Destination_pane = new FlowPane();
@@ -195,8 +195,8 @@ public class GUI extends Application{
             @Override
             public void handle(MouseEvent event){
                 
-                X_coordinate.setText("" + event.getX());
-                Y_coordinate.setText("" + event.getY());
+                XCoordinate.setText("" + event.getX());
+                YCoordinate.setText("" + event.getY());
             }
         });
         
@@ -208,30 +208,30 @@ public class GUI extends Application{
          */
         confirmOrigin.setOnAction((event) -> {
             // mind the counterintuitive x, y values for the circle coordinates
-            int x = (int)Double.parseDouble(Y_coordinate.getText()) / this.maze_stretch;
-            int y = (int) Double.parseDouble(X_coordinate.getText())/this.maze_stretch;
+            int x = (int)Double.parseDouble(YCoordinate.getText()) / this.mazeStretch;
+            int y = (int) Double.parseDouble(XCoordinate.getText())/this.mazeStretch;
             if(this.isValidLocation(x, y)){
                 
                 error_location_label.setText("");
             
             
-                if(!this.origin_set_already){
+                if(!this.originSetAlready){
                     setOrigin(new Tuple(x,y));
-                    this.origin_set_already = true;
-                    Origin_coordinates_label.setText("Origin: X= " + this.origin.getY()*this.maze_stretch + ", Y= " + this.origin.getX()*this.maze_stretch);
-                    this.maze.getChildren().add(new Circle(this.origin.getY()*this.maze_stretch,this.origin.getX()*this.maze_stretch,4,Color.RED));
-                }else if(!this.dest_set_already){
+                    this.originSetAlready = true;
+                    Origin_coordinates_label.setText("Origin: X= " + this.origin.getY()*this.mazeStretch + ", Y= " + this.origin.getX()*this.mazeStretch);
+                    this.maze.getChildren().add(new Circle(this.origin.getY()*this.mazeStretch,this.origin.getX()*this.mazeStretch,4,Color.RED));
+                }else if(!this.destinationSetAlready){
                     this.destination = new Tuple(x,y);
-                    Destination_coordinates_label.setText("Destination: X= "+ this.destination.getY()*this.maze_stretch + ", Y= " + this.destination.getX()*this.maze_stretch);
-                    this.dest_set_already = true;
-                    this.maze.getChildren().add(new Circle(this.destination.getY()*this.maze_stretch,this.destination.getX()*this.maze_stretch,4,Color.RED));
+                    Destination_coordinates_label.setText("Destination: X= "+ this.destination.getY()*this.mazeStretch + ", Y= " + this.destination.getX()*this.mazeStretch);
+                    this.destinationSetAlready = true;
+                    this.maze.getChildren().add(new Circle(this.destination.getY()*this.mazeStretch,this.destination.getX()*this.mazeStretch,4,Color.RED));
                 }
             }else{
                 error_location_label.setText("Invalid location! Make sure you are not selecting a wall");
                 error_location_label.setTextFill(Color.RED);
             }
             
-            if(this.origin_set_already && this.dest_set_already){
+            if(this.originSetAlready && this.destinationSetAlready){
                 this.setAlgorithmButtonsEnabled();
                 confirmOrigin.setDisable(true);
             }
@@ -249,21 +249,21 @@ public class GUI extends Application{
          * records the length of time the algorithm takes
          * updates the text with the shortest path length and the execution time
          */
-        runBFS_Button.setOnAction((event) -> {
+        runBFSButton.setOnAction((event) -> {
             Long start_time = System.nanoTime();
             bfs.runBFS(this.origin);
             
             bfs.shortestpath(this.destination);
             Long end_time = System.nanoTime();
             for(Tuple t: bfs.path){
-                Circle blueCircle = new Circle(this.maze_stretch *t.getY(),this.maze_stretch * t.getX(),1);
+                Circle blueCircle = new Circle(this.mazeStretch *t.getY(),this.mazeStretch * t.getX(),1);
                 blueCircle.setFill(Color.BLUE);
                 this.maze.getChildren().add(blueCircle);
             }
             long time_mil = (end_time-start_time)/1000000;
             int temp = bfs.distance[this.destination.getX()][this.destination.getY()];
-            stats_BFS_Length.setText("Length of path: " + temp);
-            stats_BFS_Time.setText("Length of BFS in ms: " + time_mil);
+            statsBFSLength.setText("Length of path: " + temp);
+            statsBFSTime.setText("Length of BFS in ms: " + time_mil);
             
         });
         /**
@@ -271,35 +271,35 @@ public class GUI extends Application{
          */
         
         
-        runDijkstra_Button.setOnAction((event) -> {
+        runDijkstraButton.setOnAction((event) -> {
            
             long time_mil = this.runDijkstra();
             double distance = dijk.getDistance();
-            stats_dijk_Length.setText("Length of path: " + distance);
-            stats_dijk_Time.setText("Length of Dijkstra in ms: " + time_mil);
+            statsDijkLength.setText("Length of path: " + distance);
+            statsDijkTime.setText("Length of Dijkstra in ms: " + time_mil);
         });
         //button on press runs the A* algoithm
         
         /**
          * runs the A* algorithm
          */
-        runAStar_Button.setOnAction((event) -> {
+        runAStarButton.setOnAction((event) -> {
             
             long time_mil = this.runAStar();
             double distance = Astar.distance[this.destination.getX()][this.destination.getY()];
-            stats_AStar_Length.setText("Length of path: " + distance);
-            stats_AStar_Time.setText("Length of A* in ms: " + time_mil);
+            statsAStarLength.setText("Length of path: " + distance);
+            statsAStarTime.setText("Length of A* in ms: " + time_mil);
             
         });
         
         
         
-        runJPS_button.setOnAction((event) ->{
+        runJPSButton.setOnAction((event) ->{
             
             
             long time_mil = this.runJPS();
-            stats_JPS_Length.setText("Length of path: " + jps.weight);
-            stats_JPS_Time.setText("Length of JPS in ms: " + time_mil);
+            statsJPSLength.setText("Length of path: " + jps.weight);
+            statsJPSTime.setText("Length of JPS in ms: " + time_mil);
         });
         
         //Bottom left buttons and drop down menu
@@ -309,7 +309,7 @@ public class GUI extends Application{
         
         HBox maze_options_select = new HBox();
         
-        maze_select_button.setOnAction((event) -> {
+        mazeSelectButton.setOnAction((event) -> {
             String map = maze_options.getValue().toString();
             if(map.equals("one pixel corridor")){
                 this.file = new Filereader(this.m1);
@@ -329,29 +329,29 @@ public class GUI extends Application{
             
             
         });
-        maze_reset_button.setOnAction((event) -> {
+        mazeResetButton.setOnAction((event) -> {
             this.resetMap();
         
         });
                 
                 
-        maze_options_select.getChildren().addAll(maze_options,maze_select_button, maze_reset_button);
+        maze_options_select.getChildren().addAll(maze_options,mazeSelectButton, mazeResetButton);
         borderpane.setBottom(maze_options_select);
         
         //adds the top left vbox nodes
-        top_left_vbox.getChildren().add(Direction_Origin_pane);
-        top_left_vbox.getChildren().add(Destination_coordinates_label);
-        top_left_vbox.getChildren().add(error_location_label);
-        top_left_vbox.getChildren().add(coordinate_hbox);
+        topLeftVbox.getChildren().add(Direction_Origin_pane);
+        topLeftVbox.getChildren().add(Destination_coordinates_label);
+        topLeftVbox.getChildren().add(error_location_label);
+        topLeftVbox.getChildren().add(coordinateHbox);
         
-        top_left_vbox.getChildren().add(confirmOrigin);
-        top_left_vbox.getChildren().add(new Label("Press the button below to run BFS algorithm"));
-        top_left_vbox.getChildren().add(runBFS_Button);
-        top_left_vbox.getChildren().add(runDijkstra_Button);
-        top_left_vbox.getChildren().add(runAStar_Button);
+        topLeftVbox.getChildren().add(confirmOrigin);
+        topLeftVbox.getChildren().add(new Label("Press the button below to run BFS algorithm"));
+        topLeftVbox.getChildren().add(runBFSButton);
+        topLeftVbox.getChildren().add(runDijkstraButton);
+        topLeftVbox.getChildren().add(runAStarButton);
         
-        top_left_vbox.getChildren().add(runJPS_button);
-        top_left_vbox.getChildren().add(stats_vbox);
+        topLeftVbox.getChildren().add(runJPSButton);
+        topLeftVbox.getChildren().add(statsVbox);
         
         
         
@@ -367,7 +367,7 @@ public class GUI extends Application{
         
         
         
-        borderpane.setLeft(top_left_vbox);
+        borderpane.setLeft(topLeftVbox);
         Scene scene = new Scene(borderpane);
         stage.setScene(scene);
         stage.setTitle("Pathfinding");
@@ -388,7 +388,7 @@ public class GUI extends Application{
         for( int i = 0; i < mazeArray.length; i++){
             for(int j = 0; j < mazeArray[1].length; j++){
                 if(mazeArray[i][j]==1){
-                    maze.getChildren().add(new Circle(this.maze_stretch*j,this.maze_stretch*i,1));
+                    maze.getChildren().add(new Circle(this.mazeStretch*j,this.mazeStretch*i,1));
                 }else{
                     
                 }
@@ -423,7 +423,7 @@ public class GUI extends Application{
         long end_time = System.nanoTime();
         while(!dijk_shortestPath.isEmpty()){
              Node n = dijk_shortestPath.remove();
-             Circle redCircle = new Circle(this.maze_stretch *n.getY(),this.maze_stretch * n.getX(),1);
+             Circle redCircle = new Circle(this.mazeStretch *n.getY(),this.mazeStretch * n.getX(),1);
              redCircle.setFill(Color.RED);
              this.maze.getChildren().add(redCircle);
          }
@@ -439,7 +439,7 @@ public class GUI extends Application{
 
         while(!AStar_shortestPath.isEmpty()){
             Node node = AStar_shortestPath.remove();
-            Circle greenCircle = new Circle(this.maze_stretch * node.getY(), this.maze_stretch * node.getX(),1);
+            Circle greenCircle = new Circle(this.mazeStretch * node.getY(), this.mazeStretch * node.getX(),1);
             greenCircle.setFill(Color.GREEN);
             this.maze.getChildren().add(greenCircle);
         }
@@ -453,7 +453,7 @@ public class GUI extends Application{
         for(int i = 0; i < jps.maze.length; i++){
             for (int j = 0; j < jps.maze[0].length; j++){
                 if(jps.jump_point[i][j]==1){
-                    Circle purpleCircle = new Circle(this.maze_stretch* j, this.maze_stretch * i, 1);
+                    Circle purpleCircle = new Circle(this.mazeStretch* j, this.mazeStretch * i, 1);
                     purpleCircle.setFill(Color.PURPLE);
                     this.maze.getChildren().add(purpleCircle);
 
@@ -464,7 +464,7 @@ public class GUI extends Application{
         
         while(!JPSshortestPath.isEmpty()){
             Node node = JPSshortestPath.remove();
-            Circle yellowCircle = new Circle(this.maze_stretch * node.getY(), this.maze_stretch * node.getX(),1);
+            Circle yellowCircle = new Circle(this.mazeStretch * node.getY(), this.mazeStretch * node.getX(),1);
             yellowCircle.setFill(Color.YELLOW);
             this.maze.getChildren().add(yellowCircle);
             
@@ -474,31 +474,31 @@ public class GUI extends Application{
         return time_mil;
     }
     private void setAlgorithmButtonsDisabled(){
-        runBFS_Button.setDisable(true);
+        runBFSButton.setDisable(true);
         
-        runDijkstra_Button.setDisable(true);
-        runAStar_Button.setDisable(true);
-        runJPS_button.setDisable(true);
+        runDijkstraButton.setDisable(true);
+        runAStarButton.setDisable(true);
+        runJPSButton.setDisable(true);
     }
     private void setAlgorithmButtonsEnabled(){
-        runBFS_Button.setDisable(false);
-        runDijkstra_Button.setDisable(false);
-        runAStar_Button.setDisable(false);
-        runJPS_button.setDisable(false);
+        runBFSButton.setDisable(false);
+        runDijkstraButton.setDisable(false);
+        runAStarButton.setDisable(false);
+        runJPSButton.setDisable(false);
     }
     private void resetMap(){
         this.maze.getChildren().clear();
             for( int i = 0; i < maze_array_read_from_file.length; i++){
                 for(int j = 0; j < maze_array_read_from_file[1].length; j++){
                     if(maze_array_read_from_file[i][j]==1){
-                    maze.getChildren().add(new Circle(this.maze_stretch*j,this.maze_stretch*i,1));
+                    maze.getChildren().add(new Circle(this.mazeStretch*j,this.mazeStretch*i,1));
                     }else{
                     
                     }
                 }
             }
-            this.origin_set_already= false;
-            this.dest_set_already=false;
+            this.originSetAlready= false;
+            this.destinationSetAlready=false;
             this.Astar = new AStar(maze_array_read_from_file);
             this.bfs = new BFS(maze_array_read_from_file);
             this.dijk = new Dijkstra(maze_array_read_from_file);
@@ -509,28 +509,28 @@ public class GUI extends Application{
     }
     private void initialize(){
         // stat Labels
-        this.stats_title = new Label("Stats:");
-        this.stats_BFS = new Label("BFS:");
-        this.stats_BFS_Length = new Label("Length of path:");
-        this.stats_BFS_Time = new Label("Length of BFS in ms:");
-        this.stats_dijk = new Label("Dijkstra: ");
-        this.stats_dijk_Length = new Label("Length of path: ");
-        this.stats_dijk_Time = new Label("Length of Dijkstra in ms:");
-        this.stats_AStar = new Label("A*: ");
-        this.stats_AStar_Length = new Label("Length of path: ");
-        this.stats_AStar_Time = new Label("Length of A* in ms: ");
-        this.stats_JPS = new Label("JPS: ");
-        this.stats_JPS_Length = new Label("Length of path: ");
-        this.stats_JPS_Time = new Label("Length of JPS in ms: ");
+        this.statsTitle = new Label("Stats:");
+        this.statsBFS = new Label("BFS:");
+        this.statsBFSLength = new Label("Length of path:");
+        this.statsBFSTime = new Label("Length of BFS in ms:");
+        this.statsDijk = new Label("Dijkstra: ");
+        this.statsDijkLength = new Label("Length of path: ");
+        this.statsDijkTime = new Label("Length of Dijkstra in ms:");
+        this.statsAStar = new Label("A*: ");
+        this.statsAStarLength = new Label("Length of path: ");
+        this.statsAStarTime = new Label("Length of A* in ms: ");
+        this.statsJPS = new Label("JPS: ");
+        this.statsJPSLength = new Label("Length of path: ");
+        this.statsJPSTime = new Label("Length of JPS in ms: ");
 
         // Buttons
         this.confirmOrigin = new Button("confirm");
-        this.runBFS_Button = new Button("Run BFS");
-        this.runDijkstra_Button = new Button("Run Dijkstra");
-        this.runAStar_Button = new Button("Run A*");
-        this.runJPS_button = new Button("Run JPS");
-        this.maze_select_button = new Button("select");
-        this.maze_reset_button = new Button("reset maze");
+        this.runBFSButton = new Button("Run BFS");
+        this.runDijkstraButton = new Button("Run Dijkstra");
+        this.runAStarButton = new Button("Run A*");
+        this.runJPSButton = new Button("Run JPS");
+        this.mazeSelectButton = new Button("select");
+        this.mazeResetButton = new Button("reset maze");
     }
     
     private VBox instructions(){

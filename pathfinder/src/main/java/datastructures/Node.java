@@ -23,9 +23,7 @@ public class Node {
         this.coordinates=coordinates;
         this.weight=weight;
     }
-    public Node(){
-        
-    }
+    
     
     public void setParent(Node parent){
         this.parent=parent;

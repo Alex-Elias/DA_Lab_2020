@@ -32,6 +32,7 @@ public class NodeList {
             return null;
         }
         Node r = this.list[this.last];
+        this.list[this.last] = null;
         this.last--;
         if(this.last < this.list.length *0.25 && this.list.length > 120){
             this.decreaseSize();
@@ -57,4 +58,6 @@ public class NodeList {
     public int length(){
         return last;
     }
+    
+    
 }
