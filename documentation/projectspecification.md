@@ -47,9 +47,9 @@ The program inputs are a map and starting and ending points. The progam already 
 
 |Algorithm| Time Complexity| Space Complexity|
 |---------|----------------|-----------------|
-|Dijkstra| O\(\(|E|+|V|)log|V|) | O\(|V|) | 
-|A Star| O(|E|) | O(|V|) |
-|JPS| O(|E|) | O(|V|) |
+|Dijkstra| O\(\(|E|+|V|\)log|V|\) | O\(|V|\) | 
+|A Star| O\(|E|\) | O\(|V|\) |
+|JPS| O\(|E|\) | O\(|V|\) |
 
 
 ## Sources
