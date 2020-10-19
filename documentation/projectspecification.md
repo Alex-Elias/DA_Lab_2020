@@ -47,19 +47,19 @@ The program inputs are a map and starting and ending points. The progam already 
 
 |Algorithm| Time Complexity| Space Complexity|
 |---------|----------------|-----------------|
-|Dijkstra| O((|E|+|V|)log|V|) | O(|V|) | 
+|Dijkstra| O\(\(|E|+|V|)log|V|) | O\(|V|) | 
 |A Star| O(|E|) | O(|V|) |
 |JPS| O(|E|) | O(|V|) |
 
 
 ## Sources
 
-..* https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-..* https://en.wikipedia.org/wiki/A*_search_algorithm#Complexity
-..* https://en.wikipedia.org/wiki/Jump_point_search
-..* https://iq.opengenus.org/dijkstras-algorithm-finding-shortest-path-between-all-nodes/
-..* http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf
-..* https://www.redblobgames.com/pathfinding/a-star/introduction.html
+* https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+* https://en.wikipedia.org/wiki/A*_search_algorithm#Complexity
+* https://en.wikipedia.org/wiki/Jump_point_search
+* https://iq.opengenus.org/dijkstras-algorithm-finding-shortest-path-between-all-nodes/
+* http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf
+* https://www.redblobgames.com/pathfinding/a-star/introduction.html
 
 
 ##### Degree programme: Bachelor's Programme in Chemistry
