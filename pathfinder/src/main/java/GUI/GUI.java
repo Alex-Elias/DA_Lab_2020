@@ -4,7 +4,6 @@ import filereader.Filereader;
 import algorithms.AStar;
 import algorithms.Dijkstra;
 import algorithms.JPS;
-import algorithms.BFS;
 import datastructures.Node;
 import datastructures.NodeList;
 import datastructures.Tuple;
@@ -37,7 +36,6 @@ import javafx.stage.Stage;
  *           click on the desired starting location in the maze or input manually into the text field and click the confirm button to confirm the choice
  *           a red dot will appear to confirming the location as well as the location coordinates will appear in the upper left of the page
  *           repeat the process to confirm the destination
- *           click on the button 'run BFS' to run the BFS algorithm,the algorithm will run and the shortest path will be displayed in blue
  *           click on the button 'run Dijkstra' to run the Dijkstra algorithm, the shortest path will be displayed in red
  *           click on the button 'run A*' to run the A Star algorithm, the shortest path will be displayed in green
  *           click on the button 'run JPS' to run the Jump Point Search algorithm, the shortest path will be displayed in green
@@ -48,7 +46,6 @@ import javafx.stage.Stage;
  *      
  *      
  *      
- *      BFS algorithm is for non-weighted graphs so there is only 4 directions of movement so the path will be longer than the other algorithms
  * 
  * 
  * 
@@ -64,9 +61,9 @@ public class GUI extends Application{
     private Dijkstra dijk;
     private AStar Astar;
     private JPS jps;
-    private BFS bfs;
     
-    private int[][] maze_array_read_from_file;
+    
+    private int[][] mazeArrayReadFromFile;
     
     //the multiplicular amout to stretch the maze, only in int right now
     private int mazeStretch = 2;
@@ -83,9 +80,7 @@ public class GUI extends Application{
     
     // stat Labels
     Label statsTitle;
-    Label statsBFS;
-    Label statsBFSLength;
-    Label statsBFSTime;
+    
     Label statsDijk;
     Label statsDijkLength;
     Label statsDijkTime;
@@ -96,12 +91,13 @@ public class GUI extends Application{
     Label statsJPSLength;
     Label statsJPSTime;
     
+    // coordinanation labels
     Label OriginCoordinatesLabel;
     Label DestinationCoordinatesLabel;
 
     // Buttons
     Button confirmOrigin;
-    Button runBFSButton;
+    
     Button runDijkstraButton;
     Button runAStarButton;
     Button runJPSButton;
@@ -137,17 +133,17 @@ public class GUI extends Application{
         
 
         //Filereader returns a 2d array of the maze
-        this.maze_array_read_from_file= file.returnArray();
+        this.mazeArrayReadFromFile= file.returnArray();
         // sets the class variable maze
-        createMaze(maze_array_read_from_file);
+        createMaze(mazeArrayReadFromFile);
         
-        this.dijk = new Dijkstra(maze_array_read_from_file);
+        this.dijk = new Dijkstra(mazeArrayReadFromFile);
         
-        this.Astar = new AStar(maze_array_read_from_file);
+        this.Astar = new AStar(mazeArrayReadFromFile);
         
-        this.jps = new JPS(maze_array_read_from_file);
+        this.jps = new JPS(mazeArrayReadFromFile);
         
-        this.bfs = new BFS(maze_array_read_from_file);
+        
         
         
         
@@ -171,8 +167,7 @@ public class GUI extends Application{
         //the vbox containing all of the stats from the algoritm performance and distance of shortest path
         VBox statsVbox = new VBox();
         
-        statsVbox.getChildren().addAll(statsTitle,statsBFS,statsBFSLength,statsBFSTime,statsDijk,statsDijkLength,statsDijkTime);
-        statsVbox.getChildren().addAll(statsAStar,statsAStarLength,statsAStarTime,statsJPS,statsJPSLength,statsJPSTime);
+        statsVbox.getChildren().addAll(statsTitle, statsDijk, statsDijkLength, statsDijkTime, statsAStar, statsAStarLength, statsAStarTime, statsJPS, statsJPSLength, statsJPSTime);
         
         FlowPane Direction_Origin_pane = new FlowPane();
         FlowPane Destination_pane = new FlowPane();
@@ -245,31 +240,11 @@ public class GUI extends Application{
         });
         
         
-        // button on press runs the BFS algorithm
         
         
-        /**
-         * runs the BFS algorithm and sets the shortest path in the maze in blue
-         * records the length of time the algorithm takes
-         * updates the text with the shortest path length and the execution time
-         */
-        runBFSButton.setOnAction((event) -> {
-            Long start_time = System.nanoTime();
-            bfs.runBFS(this.origin);
-            
-            bfs.shortestpath(this.destination);
-            Long end_time = System.nanoTime();
-            for(Tuple t: bfs.path){
-                Circle blueCircle = new Circle(this.mazeStretch *t.getY(),this.mazeStretch * t.getX(),1);
-                blueCircle.setFill(Color.BLUE);
-                this.maze.getChildren().add(blueCircle);
-            }
-            long time_mil = (end_time-start_time)/1000000;
-            int temp = bfs.distance[this.destination.getX()][this.destination.getY()];
-            statsBFSLength.setText("Length of path: " + temp);
-            statsBFSTime.setText("Length of BFS in ms: " + time_mil);
-            
-        });
+        
+        
+        
         /**
          * Runs Dijkstra algorithm
          */
@@ -326,7 +301,7 @@ public class GUI extends Application{
             }else{
                 this.file = new Filereader(this.r10);
             }
-            this.maze_array_read_from_file = this.file.returnArray();
+            this.mazeArrayReadFromFile = this.file.returnArray();
             this.resetMap();
             
             
@@ -350,8 +325,6 @@ public class GUI extends Application{
         topLeftVbox.getChildren().add(coordinateHbox);
         
         topLeftVbox.getChildren().add(confirmOrigin);
-        topLeftVbox.getChildren().add(new Label("Press the button below to run BFS algorithm"));
-        topLeftVbox.getChildren().add(runBFSButton);
         topLeftVbox.getChildren().add(runDijkstraButton);
         topLeftVbox.getChildren().add(runAStarButton);
         
@@ -409,13 +382,13 @@ public class GUI extends Application{
         this.origin = T;
     }
     private boolean isValidLocation(int x, int y){
-        if(x<0 || x >= this.maze_array_read_from_file.length){
+        if(x<0 || x >= this.mazeArrayReadFromFile.length){
             return false;
         }
-        if(y < 0 || y >= this.maze_array_read_from_file.length){
+        if(y < 0 || y >= this.mazeArrayReadFromFile.length){
             return false;
         }
-        if(this.maze_array_read_from_file[x][y]==1){
+        if(this.mazeArrayReadFromFile[x][y]==1){
             return false;
         }
         return true;
@@ -479,23 +452,21 @@ public class GUI extends Application{
         return time_mil;
     }
     private void setAlgorithmButtonsDisabled(){
-        runBFSButton.setDisable(true);
         
         runDijkstraButton.setDisable(true);
         runAStarButton.setDisable(true);
         runJPSButton.setDisable(true);
     }
     private void setAlgorithmButtonsEnabled(){
-        runBFSButton.setDisable(false);
         runDijkstraButton.setDisable(false);
         runAStarButton.setDisable(false);
         runJPSButton.setDisable(false);
     }
     private void resetMap(){
         this.maze.getChildren().clear();
-            for( int i = 0; i < maze_array_read_from_file.length; i++){
-                for(int j = 0; j < maze_array_read_from_file[1].length; j++){
-                    if(maze_array_read_from_file[i][j]==1){
+            for( int i = 0; i < mazeArrayReadFromFile.length; i++){
+                for(int j = 0; j < mazeArrayReadFromFile[1].length; j++){
+                    if(mazeArrayReadFromFile[i][j]==1){
                     maze.getChildren().add(new Circle(this.mazeStretch*j,this.mazeStretch*i,1));
                     }else{
                     
@@ -504,10 +475,10 @@ public class GUI extends Application{
             }
             this.originSetAlready= false;
             this.destinationSetAlready=false;
-            this.Astar = new AStar(maze_array_read_from_file);
-            this.bfs = new BFS(maze_array_read_from_file);
-            this.dijk = new Dijkstra(maze_array_read_from_file);
-            this.jps = new JPS(maze_array_read_from_file);
+            this.Astar = new AStar(mazeArrayReadFromFile);
+            
+            this.dijk = new Dijkstra(mazeArrayReadFromFile);
+            this.jps = new JPS(mazeArrayReadFromFile);
             
             this.setAlgorithmButtonsDisabled();
             this.confirmOrigin.setDisable(false);
@@ -516,8 +487,6 @@ public class GUI extends Application{
             
     }
     private void resetStats(){
-        this.statsBFSLength.setText("Length of path:");
-        this.statsBFSTime.setText("Length of BFS in ms:");
         this.statsDijkLength.setText("Length of path: ");
         this.statsDijkTime.setText("Length of Dijkstra in ms:");
         this.statsAStarLength.setText("Length of path: ");
@@ -533,9 +502,6 @@ public class GUI extends Application{
     private void initialize(){
         // stat Labels
         this.statsTitle = new Label("Stats:");
-        this.statsBFS = new Label("BFS:");
-        this.statsBFSLength = new Label("Length of path:");
-        this.statsBFSTime = new Label("Length of BFS in ms:");
         this.statsDijk = new Label("Dijkstra: ");
         this.statsDijkLength = new Label("Length of path: ");
         this.statsDijkTime = new Label("Length of Dijkstra in ms:");
@@ -551,7 +517,6 @@ public class GUI extends Application{
 
         // Buttons
         this.confirmOrigin = new Button("confirm");
-        this.runBFSButton = new Button("Run BFS");
         this.runDijkstraButton = new Button("Run Dijkstra");
         this.runAStarButton = new Button("Run A*");
         this.runJPSButton = new Button("Run JPS");
@@ -568,8 +533,7 @@ public class GUI extends Application{
         label1.setFont(new Font(20));
         Label label2 = new Label("Repeat the process to confirm the destination");
         label2.setFont(new Font(20));
-        Label label3 = new Label("Click on the button 'run BFS' to run the BFS algorithm,the algorithm will run and the shortest path will be displayed in blue");
-        label3.setFont(new Font(20));
+        
         Label label4 = new Label("Click on the button 'run Dijkstra' to run the Dijkstra algorithm, the shortest path will be displayed in red");
         label4.setFont(new Font(20));
         Label label5 = new Label("Click on the button 'run A*' to run the A Star algorithm, the shortest path will be displayed in green");
@@ -582,7 +546,7 @@ public class GUI extends Application{
         label8.setFont(new Font(20));
         VBox box = new VBox();
         box.setSpacing(10);
-        box.getChildren().addAll(label1,label2,label3,label4,label5,label6,label7,label8);
+        box.getChildren().addAll(label1,label2,label4,label5,label6,label7,label8);
         return box;
     }
     
