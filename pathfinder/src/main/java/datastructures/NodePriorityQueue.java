@@ -3,11 +3,11 @@ package datastructures;
  * 
  * @author alex
  */
-public class PriorityQueue {
+public class NodePriorityQueue {
     private Node[] heap;
     private int last;
     
-    public PriorityQueue(){
+    public NodePriorityQueue(){
         this.heap = new Node[64];
         this.last = 0;
     }

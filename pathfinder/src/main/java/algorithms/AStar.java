@@ -5,7 +5,7 @@ import datastructures.Node;
 import datastructures.Tuple;
 import datastructures.NodeList;
 
-import datastructures.PriorityQueue;
+import datastructures.NodePriorityQueue;
 /**
  * A Star algorithm to find the shortest path in a weighted graph
  * basically Dijkstra's but has a heuristic function
@@ -15,7 +15,7 @@ public class AStar extends Algorithm{
 
     int[][] maze;
     public double[][] distance;
-    PriorityQueue queue;
+    NodePriorityQueue queue;
     
     private double Inf = 2147483647;
     private double RootTwo = 1.4142135;
@@ -38,9 +38,9 @@ public class AStar extends Algorithm{
      * @param start the starting node
      * @param goal the goal node
      */
-    public void run_AStar(Node start, Node goal){
+    public void runAStar(Node start, Node goal){
         this.distance = new double[maze.length][maze[0].length];
-        this.queue = new PriorityQueue();
+        this.queue = new NodePriorityQueue();
         
         
         this.visited= new boolean[maze.length][maze[0].length];

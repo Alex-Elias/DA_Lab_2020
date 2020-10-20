@@ -4,7 +4,7 @@ package algorithms;
 import datastructures.Node;
 import datastructures.NodeList;
 import datastructures.Tuple;
-import datastructures.PriorityQueue;
+import datastructures.NodePriorityQueue;
 
 
 /**
@@ -20,7 +20,7 @@ public class JPS extends Algorithm{
     public int[][] maze;
     public Node start;
     public Node goal;
-    PriorityQueue queue;
+    NodePriorityQueue queue;
     
     Node[][] predecessor;
     public int[][] jump_point;
@@ -45,8 +45,8 @@ public class JPS extends Algorithm{
      * @param start a node which stores the position of the start
      * @param goal a node which stores the position of the goal
      */
-    public void run_JPS( Node start, Node goal){
-        this.queue= new PriorityQueue();
+    public void runJPS( Node start, Node goal){
+        this.queue= new NodePriorityQueue();
         this.predecessor = new Node[maze.length][maze[0].length];
         
         this.jump_point = new int[maze.length][maze[0].length];

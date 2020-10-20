@@ -30,7 +30,7 @@ public class AStarTest {
     public void findPathSimpleMap(){
         
         AStar astar = new AStar(fr.returnMaze());
-        astar.run_AStar(new Node(new Tuple(0,0)), new Node(new Tuple(3,0)));
+        astar.runAStar(new Node(new Tuple(0,0)), new Node(new Tuple(3,0)));
         NodeList list = astar.getShortestPath();
         
         assertTrue(list.length() > 0);
@@ -38,15 +38,26 @@ public class AStarTest {
     @Test
     public void findShortestPathSimpleMap(){
         AStar astar = new AStar(fr.returnMaze());
-        astar.run_AStar(new Node(new Tuple(0,0)),new Node(new Tuple(0,3)));
+        astar.runAStar(new Node(new Tuple(0,0)),new Node(new Tuple(0,3)));
         assertTrue(Math.abs(astar.getDistance() - 18.31) < 0.01);
     }
     @Test
     public void findShortestPathComplex(){
         Filereader f = new Filereader("Mazes/maze512-8-0.map");
         AStar astar = new AStar(f.returnArray());
-        astar.run_AStar(new Node(new Tuple(2,2)), new Node(new Tuple(511,511)));
+        astar.runAStar(new Node(new Tuple(2,2)), new Node(new Tuple(511,511)));
         assertTrue(Math.abs(astar.getDistance() - 1447.241) < 0.001);
+    }
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void invalidStartTest(){
+        AStar astar = new AStar(fr.returnMaze());
+        astar.runAStar(new Node(new Tuple(-1,0)), new Node(new Tuple(5,5)));
+    }
+    @Test(expected = NullPointerException.class)
+    public void invalidTestObstacleAsDestination(){
+        AStar astar = new AStar(fr.returnMaze());
+        astar.runAStar(new Node(new Tuple(0,0)), new Node(new Tuple(1,2)));
+        astar.getShortestPath();
     }
     
 }

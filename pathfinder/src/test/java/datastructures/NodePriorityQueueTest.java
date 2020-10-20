@@ -14,13 +14,13 @@ import org.junit.Before;
  *
  * @author alex
  */
-public class PriorityQueueTest {
+public class NodePriorityQueueTest {
     
-    private PriorityQueue queue;
+    private NodePriorityQueue queue;
     
     @Before
     public void setUp(){
-        this.queue = new PriorityQueue();
+        this.queue = new NodePriorityQueue();
     }
     
     @Test
@@ -57,7 +57,7 @@ public class PriorityQueueTest {
         assertTrue(increasingPriority(queue));
     }
     
-    public boolean increasingPriority(PriorityQueue q){
+    public boolean increasingPriority(NodePriorityQueue q){
         double last = q.deleteMin().getPriority();
         while(!q.isEmpty()){
             double temp = q.deleteMin().getPriority();

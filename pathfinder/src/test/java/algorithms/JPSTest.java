@@ -30,7 +30,7 @@ public class JPSTest {
     public void findPathSimpleMap(){
        
         JPS jps = new JPS(fr.returnMaze());
-        jps.run_JPS(new Node(new Tuple(0,0)), new Node(new Tuple(3,0)));
+        jps.runJPS(new Node(new Tuple(0,0)), new Node(new Tuple(3,0)));
         NodeList list = jps.getShortestPath();
         
         assertTrue(list.length() > 0);
@@ -38,15 +38,26 @@ public class JPSTest {
     @Test
     public void findShortestPathSimpleMap(){
         JPS jps = new JPS(fr.returnMaze());
-        jps.run_JPS(new Node(new Tuple(0,0)),new Node(new Tuple(0,3)));
+        jps.runJPS(new Node(new Tuple(0,0)),new Node(new Tuple(0,3)));
         assertTrue(Math.abs(jps.getDistance() - 18.31) < 0.01);
     }
     @Test
     public void findShortestPathComplex(){
         Filereader f = new Filereader("Mazes/maze512-8-0.map");
         JPS jps = new JPS(f.returnArray());
-        jps.run_JPS(new Node(new Tuple(2,2)), new Node(new Tuple(511,511)));
+        jps.runJPS(new Node(new Tuple(2,2)), new Node(new Tuple(511,511)));
         assertTrue(Math.abs(jps.getDistance() - 1447.241) < 0.001);
+    }
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void invalidStartTest(){
+        JPS jps = new JPS(fr.returnMaze());
+        jps.runJPS(new Node(new Tuple(-1,0)), new Node(new Tuple(5,5)));
+    }
+    @Test(expected = NullPointerException.class)
+    public void InvalidTestObstacleAsDestination(){
+        JPS jps = new JPS(fr.returnMaze());
+        jps.runJPS(new Node(new Tuple(0,0)), new Node(new Tuple(1,2)));
+        jps.getShortestPath();
     }
     
 }

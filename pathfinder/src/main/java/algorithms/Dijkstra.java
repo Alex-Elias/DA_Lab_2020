@@ -7,7 +7,7 @@ import datastructures.Node;
 import datastructures.NodeList;
 
 
-import datastructures.PriorityQueue;
+import datastructures.NodePriorityQueue;
 
 
 
@@ -22,7 +22,7 @@ public class Dijkstra extends Algorithm{
     double[][] distance;
     boolean[][] processed;
     int[][] maze;
-    PriorityQueue queue;
+    NodePriorityQueue queue;
     Tuple[][] predecessor;
     Node destination;
     /**
@@ -42,7 +42,7 @@ public class Dijkstra extends Algorithm{
     public void runDijkstra(Tuple origin, Tuple goal){
         this.distance = new double[maze.length][maze[0].length];
         this.processed = new boolean[maze.length][maze[0].length];
-        this.queue = new PriorityQueue();
+        this.queue = new NodePriorityQueue();
         this.predecessor = new Tuple[maze.length][maze[0].length];
         for (int i = 0; i< this.maze.length; i++){
             for (int j = 0; j<this.maze[0].length; j++){

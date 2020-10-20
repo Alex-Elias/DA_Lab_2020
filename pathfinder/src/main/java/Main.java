@@ -1,12 +1,13 @@
 
 import GUI.GUI;
 import datastructures.Node;
-import datastructures.PriorityQueue;
+import datastructures.NodePriorityQueue;
 import datastructures.Tuple;
 import datastructures.*;
 import filereader.Filereader;
 import performanceTesting.Mergesort;
-import performanceTesting.PerformanceTesting;
+import performanceTesting.PerformanceTestingAlgorithms;
+import performanceTesting.PerformanceTestingDatastructures;
 
 public class Main {
     
@@ -28,8 +29,12 @@ public class Main {
 //        
 //      uncomment to run the performance tests
 //      it is recomended to comment the gui so it does not run
-//        PerformanceTesting t = new PerformanceTesting();
-//        t.runPerformanceTests();
+//        PerformanceTestingAlgorithms pta = new PerformanceTestingAlgorithms();
+//        pta.runPerformanceTests();
+//        System.out.println(pta);
+//        PerformanceTestingDatastructures ptd = new PerformanceTestingDatastructures();
+//        ptd.runPerformanceTesting();
+//        System.out.println(ptd);
             
         
         

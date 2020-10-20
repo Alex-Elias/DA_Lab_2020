@@ -54,4 +54,17 @@ public class DijkstraTest {
         dijk.runDijkstra(new Tuple(2,2), new Tuple(511,511));
         assertTrue(Math.abs(dijk.getDistance() - 1447.241) < 0.001);
     }
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void invalidStartTest(){
+        Dijkstra dijk = new Dijkstra(fr.returnMaze());
+        dijk.runDijkstra(new Tuple(-1,0), new Tuple(5,5));
+    }
+    @Test(expected = NullPointerException.class)
+    public void invalidTestObstacleAsDestination(){
+        Dijkstra dijk = new Dijkstra(fr.returnMaze());
+        dijk.runDijkstra(new Tuple(0,0), new Tuple(1,2));
+        dijk.getShortestPath();
+    }
+    
+    
 }

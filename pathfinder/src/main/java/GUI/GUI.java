@@ -95,6 +95,9 @@ public class GUI extends Application{
     Label statsJPS;
     Label statsJPSLength;
     Label statsJPSTime;
+    
+    Label OriginCoordinatesLabel;
+    Label DestinationCoordinatesLabel;
 
     // Buttons
     Button confirmOrigin;
@@ -104,6 +107,9 @@ public class GUI extends Application{
     Button runJPSButton;
     Button mazeSelectButton;
     Button mazeResetButton;
+    
+    TextField XCoordinate;
+    TextField YCoordinate;
     
 
     
@@ -156,11 +162,10 @@ public class GUI extends Application{
         
         //the hbox containing the two textfields for the coordinates
         HBox coordinateHbox = new HBox();
-        TextField XCoordinate = new TextField("X =");
-        TextField YCoordinate = new TextField("Y =");
         
-        coordinateHbox.getChildren().add(XCoordinate);
-        coordinateHbox.getChildren().add(YCoordinate);
+        
+        coordinateHbox.getChildren().add(this.XCoordinate);
+        coordinateHbox.getChildren().add(this.YCoordinate);
         coordinateHbox.setSpacing(20);
         
         //the vbox containing all of the stats from the algoritm performance and distance of shortest path
@@ -173,8 +178,7 @@ public class GUI extends Application{
         FlowPane Destination_pane = new FlowPane();
         
         Label Directions_label = new Label("click on the maze to set a starting location then press accept!");
-        Label Origin_coordinates_label = new Label("Origin: X=  , Y=  ");
-        Label Destination_coordinates_label = new Label("Destination: X=  , Y=  ");
+        
         Direction_Origin_pane.getChildren().add(Directions_label);
         
         
@@ -184,8 +188,8 @@ public class GUI extends Application{
         
         
         
-        Direction_Origin_pane.getChildren().add(Origin_coordinates_label);
-        Destination_pane.getChildren().add(Destination_coordinates_label);
+        Direction_Origin_pane.getChildren().add(this.OriginCoordinatesLabel);
+        Destination_pane.getChildren().add(this.OriginCoordinatesLabel);
         
         /**
          * event handler which sets the coordinates of the mouse on the maze to the X and Y coordinate TextField
@@ -218,11 +222,11 @@ public class GUI extends Application{
                 if(!this.originSetAlready){
                     setOrigin(new Tuple(x,y));
                     this.originSetAlready = true;
-                    Origin_coordinates_label.setText("Origin: X= " + this.origin.getY()*this.mazeStretch + ", Y= " + this.origin.getX()*this.mazeStretch);
+                    OriginCoordinatesLabel.setText("Origin: X= " + this.origin.getY()*this.mazeStretch + ", Y= " + this.origin.getX()*this.mazeStretch);
                     this.maze.getChildren().add(new Circle(this.origin.getY()*this.mazeStretch,this.origin.getX()*this.mazeStretch,4,Color.RED));
                 }else if(!this.destinationSetAlready){
                     this.destination = new Tuple(x,y);
-                    Destination_coordinates_label.setText("Destination: X= "+ this.destination.getY()*this.mazeStretch + ", Y= " + this.destination.getX()*this.mazeStretch);
+                    DestinationCoordinatesLabel.setText("Destination: X= "+ this.destination.getY()*this.mazeStretch + ", Y= " + this.destination.getX()*this.mazeStretch);
                     this.destinationSetAlready = true;
                     this.maze.getChildren().add(new Circle(this.destination.getY()*this.mazeStretch,this.destination.getX()*this.mazeStretch,4,Color.RED));
                 }
@@ -340,7 +344,8 @@ public class GUI extends Application{
         
         //adds the top left vbox nodes
         topLeftVbox.getChildren().add(Direction_Origin_pane);
-        topLeftVbox.getChildren().add(Destination_coordinates_label);
+        topLeftVbox.getChildren().add(OriginCoordinatesLabel);
+        topLeftVbox.getChildren().add(DestinationCoordinatesLabel);
         topLeftVbox.getChildren().add(error_location_label);
         topLeftVbox.getChildren().add(coordinateHbox);
         
@@ -433,7 +438,7 @@ public class GUI extends Application{
     private long runAStar(){
         long start_time = System.nanoTime();
             
-        Astar.run_AStar(new Node(new Tuple(this.origin.getX(),this.origin.getY())), new Node(new Tuple(this.destination.getX(),this.destination.getY())));
+        Astar.runAStar(new Node(new Tuple(this.origin.getX(),this.origin.getY())), new Node(new Tuple(this.destination.getX(),this.destination.getY())));
         long end_time = System.nanoTime();
         NodeList AStar_shortestPath = Astar.getShortestPath();
 
@@ -448,7 +453,7 @@ public class GUI extends Application{
     }
     private long runJPS(){
         long start_time = System.nanoTime();
-        jps.run_JPS(new Node(new Tuple(this.origin.getX(),this.origin.getY())), new Node(new Tuple(this.destination.getX(),this.destination.getY())));
+        jps.runJPS(new Node(new Tuple(this.origin.getX(),this.origin.getY())), new Node(new Tuple(this.destination.getX(),this.destination.getY())));
         long end_time = System.nanoTime();
         for(int i = 0; i < jps.maze.length; i++){
             for (int j = 0; j < jps.maze[0].length; j++){
@@ -506,6 +511,24 @@ public class GUI extends Application{
             
             this.setAlgorithmButtonsDisabled();
             this.confirmOrigin.setDisable(false);
+            this.resetStats();
+            
+            
+    }
+    private void resetStats(){
+        this.statsBFSLength.setText("Length of path:");
+        this.statsBFSTime.setText("Length of BFS in ms:");
+        this.statsDijkLength.setText("Length of path: ");
+        this.statsDijkTime.setText("Length of Dijkstra in ms:");
+        this.statsAStarLength.setText("Length of path: ");
+        this.statsAStarTime.setText("Length of A* in ms: ");
+        this.statsJPSLength.setText("Length of path: ");
+        this.statsJPSTime.setText("Length of JPS in ms: ");
+        this.XCoordinate.setText("X =");
+        this.YCoordinate.setText("Y =");
+        
+        this.OriginCoordinatesLabel.setText("Origin: X=  , Y=  ");
+        this.DestinationCoordinatesLabel.setText("Destination: X=  , Y=  ");
     }
     private void initialize(){
         // stat Labels
@@ -522,6 +545,9 @@ public class GUI extends Application{
         this.statsJPS = new Label("JPS: ");
         this.statsJPSLength = new Label("Length of path: ");
         this.statsJPSTime = new Label("Length of JPS in ms: ");
+        
+        this.OriginCoordinatesLabel = new Label("Origin: X=  , Y=  ");
+        this.DestinationCoordinatesLabel = new Label("Destination: X=  , Y=  ");
 
         // Buttons
         this.confirmOrigin = new Button("confirm");
@@ -531,6 +557,9 @@ public class GUI extends Application{
         this.runJPSButton = new Button("Run JPS");
         this.mazeSelectButton = new Button("select");
         this.mazeResetButton = new Button("reset maze");
+        
+        this.XCoordinate = new TextField("X =");
+        this.YCoordinate = new TextField("Y =");
     }
     
     private VBox instructions(){
