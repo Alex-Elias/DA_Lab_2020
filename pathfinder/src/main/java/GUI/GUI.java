@@ -41,44 +41,80 @@ import javafx.stage.Stage;
  *           click on the button 'run JPS' to run the Jump Point Search algorithm, the shortest path will be displayed in green
  *           the button 'reset' on the bottom left of the window will reset the map, sometimes it takes a while so be patient
  *           to change the map click on the drop down menu and select a map then click on the 'select' button
- * NOTE:
- *     
- *      
- *      
- *      
- * 
- * 
- * 
+ 
  * @author alex
  */
 public class GUI extends Application{
-    
+    /**
+     * the location of the origin on the map
+     */
     private Tuple origin;
+    /**
+     * boolean variable storing whether the origin has a value
+     */
     private boolean originSetAlready = false;
+    /**
+     * boolean variable storing whether the destination has a value
+     */
     private boolean destinationSetAlready = false;
+    /**
+     * the location of the destination on the map
+     */
     private Tuple destination;
+    /**
+     * the pane that displays the maze
+     */
     private Pane maze;
+    /**
+     * the Dijkstra's algorithm class
+     */
     private Dijkstra dijk;
+    /**
+     * the AStar algorithm class
+     */
     private AStar Astar;
+    /**
+     * the Jump point search algorithm class
+     */
     private JPS jps;
     
-    
+    /**
+     * the 2d array of the maze which is read from the file
+     */
     private int[][] mazeArrayReadFromFile;
     
-    //the multiplicular amout to stretch the maze, only in int right now
+    /**
+     * the multiplicative amount the maze is stretched
+     */
     private int mazeStretch = 2;
     
-    //maps
+    
+    //location of the different maps stored as strings
+    /**
+     * the maze that has a one pixel corridor width
+     */ 
     private String m1 = "Mazes/maze512-1-0.map";
+    /**
+     * the maze with an eight pixel corridor width
+     */
     private String m8 = "Mazes/maze512-8-0.map";
+    /**
+     * the maze with a thirty two pixel corridor width
+     */
     private String m32 = "Mazes/maze512-32-0.map";
+    /**
+     * a random map with 10 percent obstacle coverage
+     */
     private String r10 = "Mazes/random512-10-0.map";
+    /**
+     * a random map with a 40 percent obstacle coverage
+     */
     private String r40 = "Mazes/random512-40-7.map";
     
     private Filereader file;
     
     
-    // stat Labels
+    // the labels that display the stats of the algorithm performance and shortest path
     Label statsTitle;
     
     Label statsDijk;
@@ -91,11 +127,11 @@ public class GUI extends Application{
     Label statsJPSLength;
     Label statsJPSTime;
     
-    // coordinanation labels
+    // the labels that display the coordinates of the origin and destination
     Label OriginCoordinatesLabel;
     Label DestinationCoordinatesLabel;
 
-    // Buttons
+    // Buttons that run the algorithms
     Button confirmOrigin;
     
     Button runDijkstraButton;
@@ -104,6 +140,7 @@ public class GUI extends Application{
     Button mazeSelectButton;
     Button mazeResetButton;
     
+    // the text field that displays the coordinates of the origin or destination
     TextField XCoordinate;
     TextField YCoordinate;
     
@@ -115,18 +152,7 @@ public class GUI extends Application{
         this.initialize();
         
         
-        //Create new Filereaderclass
-        //it takes string input of the location of a .map maze file
-        /**
-         * the tested mazes are:
-         *  Mazes/maze512-1-0.map 
-         *  Mazes/maze512-32-0.map 
-         *  Mazes/maze512-8-0.map
-         *  Mazes/random512-10-0.map  
-         *  Mazes/brc101d.map - 
-         *  Mazes/random512-40-7.map 
         
-        */
         //-------------------------------------------FILE PATH HERE--------------------------------------------------------------------
         this.file = new Filereader("Mazes/maze512-8-0.map");
         //------------------------------------------ABOVE HERE-------------------------------------------------------------------------
@@ -134,7 +160,7 @@ public class GUI extends Application{
 
         //Filereader returns a 2d array of the maze
         this.mazeArrayReadFromFile= file.returnArray();
-        // sets the class variable maze
+        // creates the maze on the pane
         createMaze(mazeArrayReadFromFile);
         
         this.dijk = new Dijkstra(mazeArrayReadFromFile);
@@ -169,22 +195,22 @@ public class GUI extends Application{
         
         statsVbox.getChildren().addAll(statsTitle, statsDijk, statsDijkLength, statsDijkTime, statsAStar, statsAStarLength, statsAStarTime, statsJPS, statsJPSLength, statsJPSTime);
         
-        FlowPane Direction_Origin_pane = new FlowPane();
-        FlowPane Destination_pane = new FlowPane();
+        FlowPane DirectionOriginPane = new FlowPane();
+        FlowPane DestinationPane = new FlowPane();
         
-        Label Directions_label = new Label("click on the maze to set a starting location then press accept!");
+        Label DirectionsLabel = new Label("click on the maze to set a starting location then press accept!");
         
-        Direction_Origin_pane.getChildren().add(Directions_label);
-        
-        
-        
-        Label error_location_label = new Label();
+        DirectionOriginPane.getChildren().add(DirectionsLabel);
         
         
         
+        Label errorLocationLabel = new Label();
         
-        Direction_Origin_pane.getChildren().add(this.OriginCoordinatesLabel);
-        Destination_pane.getChildren().add(this.OriginCoordinatesLabel);
+        
+        
+        
+        DirectionOriginPane.getChildren().add(this.OriginCoordinatesLabel);
+        DestinationPane.getChildren().add(this.OriginCoordinatesLabel);
         
         /**
          * event handler which sets the coordinates of the mouse on the maze to the X and Y coordinate TextField
@@ -211,7 +237,7 @@ public class GUI extends Application{
             int y = (int) Double.parseDouble(XCoordinate.getText())/this.mazeStretch;
             if(this.isValidLocation(x, y)){
                 
-                error_location_label.setText("");
+                errorLocationLabel.setText("");
             
             
                 if(!this.originSetAlready){
@@ -226,8 +252,8 @@ public class GUI extends Application{
                     this.maze.getChildren().add(new Circle(this.destination.getY()*this.mazeStretch,this.destination.getX()*this.mazeStretch,4,Color.RED));
                 }
             }else{
-                error_location_label.setText("Invalid location! Make sure you are not selecting a wall");
-                error_location_label.setTextFill(Color.RED);
+                errorLocationLabel.setText("Invalid location! Make sure you are not selecting a wall");
+                errorLocationLabel.setTextFill(Color.RED);
             }
             
             if(this.originSetAlready && this.destinationSetAlready){
@@ -249,7 +275,6 @@ public class GUI extends Application{
          * Runs Dijkstra algorithm
          */
         
-        
         runDijkstraButton.setOnAction((event) -> {
            
             long time_mil = this.runDijkstra();
@@ -264,32 +289,36 @@ public class GUI extends Application{
          */
         runAStarButton.setOnAction((event) -> {
             
-            long time_mil = this.runAStar();
+            long timeMil = this.runAStar();
             double distance = Astar.distance[this.destination.getX()][this.destination.getY()];
             statsAStarLength.setText("Length of path: " + distance);
-            statsAStarTime.setText("Length of A* in ms: " + time_mil);
+            statsAStarTime.setText("Length of A* in ms: " + timeMil);
             
         });
         
         
-        
+        /**
+         * button on press runs the JPS algorithm
+         */
         runJPSButton.setOnAction((event) ->{
             
             
-            long time_mil = this.runJPS();
+            long timeMil = this.runJPS();
             statsJPSLength.setText("Length of path: " + jps.getDistance());
-            statsJPSTime.setText("Length of JPS in ms: " + time_mil);
+            statsJPSTime.setText("Length of JPS in ms: " + timeMil);
         });
         
         //Bottom left buttons and drop down menu
-        String maze_options_list_array[] = {"one pixel corridor", "eight pixel corridor", "32 pixel corridor", "random map 40%", "random map 10%"};
+        String mazeOptionsListArray[] = {"one pixel corridor", "eight pixel corridor", "32 pixel corridor", "random map 40%", "random map 10%"};
         
-        ComboBox maze_options = new ComboBox(FXCollections.observableArrayList(maze_options_list_array));
+        ComboBox mazeOptions = new ComboBox(FXCollections.observableArrayList(mazeOptionsListArray));
         
-        HBox maze_options_select = new HBox();
-        
+        HBox mazeOptionsSelect = new HBox();
+        /**
+         * button on press changes the displayed maze
+         */
         mazeSelectButton.setOnAction((event) -> {
-            String map = maze_options.getValue().toString();
+            String map = mazeOptions.getValue().toString();
             if(map.equals("one pixel corridor")){
                 this.file = new Filereader(this.m1);
             }else if(map.equals("eight pixel corridor")){
@@ -308,20 +337,23 @@ public class GUI extends Application{
             
             
         });
+        /**
+         * button on press resets the maze
+         */
         mazeResetButton.setOnAction((event) -> {
             this.resetMap();
         
         });
                 
                 
-        maze_options_select.getChildren().addAll(maze_options,mazeSelectButton, mazeResetButton);
-        borderpane.setBottom(maze_options_select);
+        mazeOptionsSelect.getChildren().addAll(mazeOptions,mazeSelectButton, mazeResetButton);
+        borderpane.setBottom(mazeOptionsSelect);
         
         //adds the top left vbox nodes
-        topLeftVbox.getChildren().add(Direction_Origin_pane);
+        topLeftVbox.getChildren().add(DirectionOriginPane);
         topLeftVbox.getChildren().add(OriginCoordinatesLabel);
         topLeftVbox.getChildren().add(DestinationCoordinatesLabel);
-        topLeftVbox.getChildren().add(error_location_label);
+        topLeftVbox.getChildren().add(errorLocationLabel);
         topLeftVbox.getChildren().add(coordinateHbox);
         
         topLeftVbox.getChildren().add(confirmOrigin);
@@ -335,7 +367,7 @@ public class GUI extends Application{
         
         
         this.setAlgorithmButtonsDisabled();
-        
+        //instruction window
         Stage instructionStage = new Stage();
         instructionStage.initModality(Modality.APPLICATION_MODAL);
         instructionStage.initOwner(stage);
@@ -374,15 +406,27 @@ public class GUI extends Application{
         }
         this.maze = maze;
     }
-    
+    /**
+     * runs the class
+     */
     public void launchGUI(){
         launch(GUI.class);
     }
+    /**
+     * sets the origin class variable
+     * @param T 
+     */
     private void setOrigin(Tuple T){
         this.origin = T;
     }
+    /**
+     * returns true if the selected location is valid
+     * @param x the x value of the coordinates
+     * @param y the y value of the coordinates
+     * @return boolean value whether the location is valid or not
+     */
     private boolean isValidLocation(int x, int y){
-        if(x<0 || x >= this.mazeArrayReadFromFile.length){
+        if (x < 0 || x >= this.mazeArrayReadFromFile.length){
             return false;
         }
         if(y < 0 || y >= this.mazeArrayReadFromFile.length){
@@ -393,44 +437,56 @@ public class GUI extends Application{
         }
         return true;
     }
+    /**
+     * runs the Dijkstra algorithm
+     * @return the length of time the algorithm took in ms
+     */
     private long runDijkstra(){
-        long start_time = System.nanoTime();
+        long startTime = System.nanoTime();
         dijk.runDijkstra(this.origin,this.destination);
 
-        NodeList dijk_shortestPath = dijk.getShortestPath();
-        long end_time = System.nanoTime();
-        while(!dijk_shortestPath.isEmpty()){
-             Node n = dijk_shortestPath.remove();
+        NodeList dijkShortestPath = dijk.getShortestPath();
+        long endTime = System.nanoTime();
+        while(!dijkShortestPath.isEmpty()){
+             Node n = dijkShortestPath.remove();
              Circle redCircle = new Circle(this.mazeStretch *n.getY(),this.mazeStretch * n.getX(),1);
              redCircle.setFill(Color.RED);
              this.maze.getChildren().add(redCircle);
          }
-         long time_mil = (end_time-start_time)/1000000;
-         return time_mil;
+         long timeMil = (endTime-startTime)/1000000;
+         return timeMil;
     }
+    /**
+     * runs the A* algorithm
+     * @return the length of time the algorithm took in ms
+     */
     private long runAStar(){
-        long start_time = System.nanoTime();
+        long startTime = System.nanoTime();
             
         Astar.runAStar(new Node(new Tuple(this.origin.getX(),this.origin.getY())), new Node(new Tuple(this.destination.getX(),this.destination.getY())));
-        long end_time = System.nanoTime();
-        NodeList AStar_shortestPath = Astar.getShortestPath();
+        long endTime = System.nanoTime();
+        NodeList AStarShortestPath = Astar.getShortestPath();
 
-        while(!AStar_shortestPath.isEmpty()){
-            Node node = AStar_shortestPath.remove();
+        while(!AStarShortestPath.isEmpty()){
+            Node node = AStarShortestPath.remove();
             Circle greenCircle = new Circle(this.mazeStretch * node.getY(), this.mazeStretch * node.getX(),1);
             greenCircle.setFill(Color.GREEN);
             this.maze.getChildren().add(greenCircle);
         }
-        long time_mil = (end_time-start_time)/1000000;
-        return time_mil;
+        long timeMil = (endTime-startTime)/1000000;
+        return timeMil;
     }
+    /**
+     * runs the JPS algorithm
+     * @return the length of time the algorithm took in ms
+     */
     private long runJPS(){
-        long start_time = System.nanoTime();
+        long startTime = System.nanoTime();
         jps.runJPS(new Node(new Tuple(this.origin.getX(),this.origin.getY())), new Node(new Tuple(this.destination.getX(),this.destination.getY())));
-        long end_time = System.nanoTime();
-        for(int i = 0; i < jps.maze.length; i++){
+        long endTime = System.nanoTime();
+        for (int i = 0; i < jps.maze.length; i++){
             for (int j = 0; j < jps.maze[0].length; j++){
-                if(jps.jumpPoints[i][j]==1){
+                if (jps.jumpPoints[i][j] == 1){
                     Circle purpleCircle = new Circle(this.mazeStretch* j, this.mazeStretch * i, 1);
                     purpleCircle.setFill(Color.PURPLE);
                     this.maze.getChildren().add(purpleCircle);
@@ -440,7 +496,7 @@ public class GUI extends Application{
         }
         NodeList JPSshortestPath = jps.getShortestPath();
         
-        while(!JPSshortestPath.isEmpty()){
+        while (!JPSshortestPath.isEmpty()){
             Node node = JPSshortestPath.remove();
             Circle yellowCircle = new Circle(this.mazeStretch * node.getY(), this.mazeStretch * node.getX(),1);
             yellowCircle.setFill(Color.YELLOW);
@@ -448,20 +504,29 @@ public class GUI extends Application{
             
         }
 
-        long time_mil = (end_time-start_time)/1000000;
-        return time_mil;
+        long timeMil = (endTime-startTime)/1000000;
+        return timeMil;
     }
+    /**
+     * disables the buttons that run the algorithms
+     */
     private void setAlgorithmButtonsDisabled(){
         
         runDijkstraButton.setDisable(true);
         runAStarButton.setDisable(true);
         runJPSButton.setDisable(true);
     }
+    /**
+     * enables the buttons that run the algorithms
+     */
     private void setAlgorithmButtonsEnabled(){
         runDijkstraButton.setDisable(false);
         runAStarButton.setDisable(false);
         runJPSButton.setDisable(false);
     }
+    /**
+     * resets the maze
+     */
     private void resetMap(){
         this.maze.getChildren().clear();
             for( int i = 0; i < mazeArrayReadFromFile.length; i++){
@@ -486,6 +551,9 @@ public class GUI extends Application{
             
             
     }
+    /**
+     * resets the stats labels
+     */
     private void resetStats(){
         this.statsDijkLength.setText("Length of path: ");
         this.statsDijkTime.setText("Length of Dijkstra in ms:");
@@ -499,6 +567,9 @@ public class GUI extends Application{
         this.OriginCoordinatesLabel.setText("Origin: X=  , Y=  ");
         this.DestinationCoordinatesLabel.setText("Destination: X=  , Y=  ");
     }
+    /**
+     * initializes the labels and buttons
+     */
     private void initialize(){
         // stat Labels
         this.statsTitle = new Label("Stats:");
@@ -526,7 +597,10 @@ public class GUI extends Application{
         this.XCoordinate = new TextField("X =");
         this.YCoordinate = new TextField("Y =");
     }
-    
+    /**
+     * returns a vbox with user instructions for the program
+     * @return the vbox with user instructions
+     */
     private VBox instructions(){
         
         Label label1 = new Label("Click on the desired starting location in the maze or input manually into the text field and click the 'confirm' button to confirm your choice");
