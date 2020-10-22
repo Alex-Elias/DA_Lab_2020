@@ -277,7 +277,7 @@ public class GUI extends Application{
             
             
             long time_mil = this.runJPS();
-            statsJPSLength.setText("Length of path: " + jps.weight);
+            statsJPSLength.setText("Length of path: " + jps.getDistance());
             statsJPSTime.setText("Length of JPS in ms: " + time_mil);
         });
         
@@ -430,7 +430,7 @@ public class GUI extends Application{
         long end_time = System.nanoTime();
         for(int i = 0; i < jps.maze.length; i++){
             for (int j = 0; j < jps.maze[0].length; j++){
-                if(jps.jump_point[i][j]==1){
+                if(jps.jumpPoints[i][j]==1){
                     Circle purpleCircle = new Circle(this.mazeStretch* j, this.mazeStretch * i, 1);
                     purpleCircle.setFill(Color.PURPLE);
                     this.maze.getChildren().add(purpleCircle);

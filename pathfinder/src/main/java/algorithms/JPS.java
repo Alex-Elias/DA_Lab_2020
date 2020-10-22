@@ -12,78 +12,97 @@ import datastructures.NodePriorityQueue;
  * implementation of the Jump Point Search.
  * JPS finds the shortest path between two nodes on an evenly weighted graph.
  * JPS is an optimization of the A Star algorithm, by pruning certain nodes and creating jump points, JPS reduces A Star's running time. 
- * 
+ * the graph must be a 2d array where ones represent obstacles and zeros as open spaces
  * @author alex
  */
 public class JPS extends Algorithm{
-
+    /**
+     * the 2d array that represents the maze
+     */
     public int[][] maze;
-    public Node start;
-    public Node goal;
+   
+    
+    /**
+     * the minimum priority queue that is used in JPS
+     */
     NodePriorityQueue queue;
     
-    Node[][] predecessor;
-    public int[][] jump_point;
-    public double weight;
-    boolean[][] visited;
+    /**
+     * the array of jump point locations
+     */
+    public int[][] jumpPoints;
     
+    /**
+     * the array which stores whether the node has been processed or not
+     */
+    boolean[][] processed;
+    /**
+     * the value of root two
+     */
     private final double RootTwo = 1.4142135;
+    /**
+     * the height of the maze
+     */
+    private int mazeHeight;
+    /**
+     * the length of the maze
+     */
+    private int mazeLength;
     
     /**
      * Initializes JPS
+     * takes a 2d array as a parameter and initializes the Algorithm superclass with it and saves it to the class variable maze
      * 
      * @param maze a 2d array with ones as obstacles and zeros as open spaces
      */
     public JPS(int[][] maze){
         super(maze);
         this.maze = maze;
+        this.mazeHeight = maze.length;
+        this.mazeLength = maze[0].length;
         
         
     }
     /**
-     * Runs JPS to find the shortest path between the start and goal node.
+     * Runs the JPS algorithm
+     * finds the shortest path between the start and goal node.
      * @param start a node which stores the position of the start
      * @param goal a node which stores the position of the goal
      */
     public void runJPS( Node start, Node goal){
-        this.queue= new NodePriorityQueue();
-        this.predecessor = new Node[maze.length][maze[0].length];
+        this.queue = new NodePriorityQueue();
         
-        this.jump_point = new int[maze.length][maze[0].length];
-        this.visited = new boolean[maze.length][maze[0].length];
-        start.setF(0);
+        this.jumpPoints = new int[this.mazeHeight][this.mazeLength];
+        this.processed = new boolean[this.mazeHeight][this.mazeLength];
+        start.setF(0); // sets the priority to zero
         start.setParent(start);
         this.queue.insert(start,start.getF());
-        this.predecessor[start.getX()][start.getY()] = start;
         
 
         
-        while(!this.queue.isEmpty()){
+        while (!this.queue.isEmpty()){
             
             
             Node current = this.queue.deleteMin();
-            if(this.visited[current.getX()][current.getY()]){
+            if (this.processed[current.getX()][current.getY()]){
                continue; 
             }
-            this.visited[current.getX()][current.getY()] = true;
+            this.processed[current.getX()][current.getY()] = true;
             
             
-            if(current.getX() == goal.getX() && current.getY() == goal.getY()){
-                this.weight = current.getWeight();
-                this.goal = current;
-                super.setDestination(this.goal);
+            if (current.getX() == goal.getX() && current.getY() == goal.getY()){
+                
+                super.setDestination(current);
                 super.setDistance(current.getWeight());
                 break;
             }
-            NodeList successor = get_successors(current,start,goal);
-            while(!successor.isEmpty()){
+            NodeList successor = getSuccessors(current,start,goal);
+            while (!successor.isEmpty()){
                 Node next = successor.remove();
-                if(next== null){
-                    continue;
-                }
-                this.jump_point[next.getX()][next.getY()] = 1;
-                next.setF(next.getWeight() + heuristic(next,goal));
-                this.queue.insert(next,next.getF());
+                
+                this.jumpPoints[next.getX()][next.getY()] = 1;
+                next.setF(next.getWeight() + heuristic(next,goal)); // sets the priority
+                this.queue.insert(next, next.getF());
             }
 
 
@@ -94,30 +113,37 @@ public class JPS extends Algorithm{
         
     }
     /**
+     * returns a node of the location if it is valid
      * gets a tuple and returns a node with the tuples coordinates if the coordinates point to a valid place on the maze, otherwise returns null
      * @param T the tuple with the coordinates
      * @return a node with the coordinates of the tuple if the coordinates point to a valid place otherwise returns null
      */
-    public Node get_valid_place(Tuple T){
-        if(T.getX()< 0 || T.getY() < 0){
+    public Node getLocationIfValid(Tuple T){
+        if (T.getX() < 0 || T.getY() < 0){
             return null;
         }
-        if(T.getX()>=this.maze.length || T.getY() >= this.maze[0].length){
+        if (T.getX() >= this.mazeHeight || T.getY() >= this.mazeLength){
             return null;
         }
-        if(this.maze[T.getX()][T.getY()] == 1){
+        if (this.maze[T.getX()][T.getY()] == 1){
             return null;
         }
         return new Node(T);
     }
-    public boolean is_valid(int x, int y){
-        if(x< 0 || y < 0){
+    /**
+     * returns true if the location is valid on the maze
+     * @param x the x coordinate of the location
+     * @param y the y coordinate of the location
+     * @return true or false depending if the location is valid or not
+     */
+    public boolean isValidLocation(int x, int y){
+        if (x < 0 || y < 0){
             return false;
         }
-        if(x>=this.maze.length || y >= this.maze[0].length){
+        if (x >= this.mazeHeight || y >= this.mazeLength){
             return false;
         }
-        if(this.maze[x][y] == 1){
+        if (this.maze[x][y] == 1){
             return false;
         }
         return true;
@@ -125,75 +151,68 @@ public class JPS extends Algorithm{
     
 
     /**
-     * finds a list of successors to the current node
-     * @param node the current node
+     * returns a Nodelist of the successors to the current node
+     * finds all the jump locations to the current node
+     * @param current the current node
      * @param start the start node
      * @param goal the goal node
      * @return the list of successors to the current node
      */
-    public NodeList get_successors(Node node, Node start, Node goal){
+    public NodeList getSuccessors(Node current, Node start, Node goal){
         NodeList successors = new NodeList();
-        NodeList neighbors = get_neighbor_pruned(node);
-        while(!neighbors.isEmpty()){
+        NodeList neighbors = getNeighborsPruned(current);
+        while (!neighbors.isEmpty()){
             Node neighbor = neighbors.remove();
             
-            if(neighbor== null){
+            
+            Node jumpPoint = jump(current, getDirections(neighbor), start, goal);
+            if (jumpPoint == null){
                 continue;
             }
-            Node jump = jump(node, get_directions(neighbor),start,goal);
-            if(jump != null){
-                //need to implement distance and heuristics here or possibly in the jump method
-            }
-            successors.add(jump);
-            if(jump!= null){
-                this.predecessor[jump.getX()][jump.getY()] = node;
-
-            }
+            successors.add(jumpPoint);
+            
         }
         return successors;
     }
     /**
      * finds the jump points from the current node
-     * @param node the current node
+     * @param current the current node
      * @param direction the direction to find the next jump point
      * @param start the starting node 
      * @param goal the goal node
      * @return the jump point as a node if found otherwise returns null
      */
-    public Node jump(Node node, Tuple direction, Node start, Node goal){
+    public Node jump(Node current, Tuple direction, Node start, Node goal){
         
-        Tuple next = new Tuple(node.getX() + direction.getX(), node.getY() + direction.getY());
-        Node n = get_valid_place(next);
+        Tuple c = new Tuple(current.getX() + direction.getX(), current.getY() + direction.getY());
+        Node next = getLocationIfValid(c);
         
-        if(n == null){
+        if (next == null){
             return null;
         }
         
-        n.setParent(node);
-        if(direction.getX() !=0 && direction.getY() !=0){
-            n.setWeight(n.getParent().getWeight() + RootTwo);
-        }else{
-            n.setWeight(n.getParent().getWeight() + 1);
+        next.setParent(current);
+        // if the next node is diagonal to the current node add root two to the weight
+        if (direction.getX() != 0 && direction.getY() != 0){
+            next.setWeight(next.getParent().getWeight() + RootTwo);
+        }else{ // add 1 to the weight
+            next.setWeight(next.getParent().getWeight() + 1);
+        }
+        // if next is the goal node return next
+        if(next.getX() == goal.getX() && next.getY() == goal.getY()){
+            
+            return next;
+        }
+        // if next has a forced neighbor return next
+        getNeighborsPruned(next);
+        if (next.isForced()){
+            return next;
         }
         
-        if(n.getX() == goal.getX() && n.getY() == goal.getY()){
-            this.goal = n;
-            return n;
-        }
-        NodeList neighbors = get_neighbor_pruned(n);
-        
-        while(!neighbors.isEmpty()){
-            Node neighbor = neighbors.remove();
-            if(neighbor== null){
-                continue;
-            }
-            if(neighbor.isForced()){
-                return n;
-            }
-        }
+        // check the vertical and horizontal directions if the current direction is diagonal
         if(direction.getX() !=0 && direction.getY() !=0){
-            if( jump(n, new Tuple(direction.getX() ,0),start,goal) != null || jump(n, new Tuple(0,direction.getY() ),start,goal) != null){
-                return n;
+            if( jump(next, new Tuple(direction.getX() ,0),start,goal) != null || jump(next, new Tuple(0,direction.getY() ),start,goal) != null){
+                return next;
             } 
         }
         
@@ -201,105 +220,120 @@ public class JPS extends Algorithm{
         
         
         
-        return jump(n,direction,start,goal);
+        return jump(next,direction,start,goal);
     }
     
     
     
     /**
-     * finds the pruned list of the neighbors of a certain node
-     * @param node
+     * returns a Nodelist of the pruned neighbors to the current node
+     * finds all the valid neighbors and returns them as a list
+     * @param current the current node which the neighbors are found
      * @return a list of nodes of the pruned neighbors
      */
-    public NodeList get_neighbor_pruned(Node node){
-        int dx = node.getX() - node.getParent().getX();
-        int dy = node.getY() - node.getParent().getY();
+    public NodeList getNeighborsPruned(Node current){
+        // finds the direction from the parent to the current node
+        int dx = current.getX() - current.getParent().getX();
+        int dy = current.getY() - current.getParent().getY();
         NodeList pruned = new NodeList();
+        // if the parent is the current node return just the neighbors
         if(dx==0 && dy == 0){
-            return getNeighbors(node);
+            return getNeighbors(current);
         }
-        
+        //if the direction is horizontal
         if(dx == 0){
-            if (is_valid(node.getX(), node.getY() + dy)){
-                if(!is_valid(node.getX() +1, node.getY())){
-                    Node forced = get_valid_place(new Tuple(node.getX() +1, node.getY() + dy));
+            if (isValidLocation(current.getX(), current.getY() + dy)){
+                if(!isValidLocation(current.getX() +1, current.getY())){
+                    Node forced = getLocationIfValid(new Tuple(current.getX() +1, current.getY() + dy));
                     if(forced != null){
                         
-                        forced.setParent(node);
+                        forced.setParent(current);
+                        current.setForced(true);
                         
-                        forced.setForced(true);
                         pruned.add(forced);
                     }
                 }
-                if(!is_valid(node.getX() -1, node.getY())){
-                    Node forced = get_valid_place(new Tuple(node.getX() -1, node.getY() + dy));
+                if(!isValidLocation(current.getX() -1, current.getY())){
+                    Node forced = getLocationIfValid(new Tuple(current.getX() -1, current.getY() + dy));
                     if(forced != null){
-                        forced.setParent(node);
-                        forced.setForced(true);
+                        forced.setParent(current);
+                        
+                        current.setForced(true);
                         pruned.add(forced);
                     }
                 }
-                Node forced = get_valid_place(new Tuple(node.getX(), node.getY() + dy));
-                forced.setParent(node);;
-                pruned.add(forced);
+                Node nonForced = getLocationIfValid(new Tuple(current.getX(), current.getY() + dy));
+                if (nonForced != null){
+                    nonForced.setParent(current);
+                    pruned.add(nonForced);
+                }
+                
             }
         }
+        // if the direction is vertical
         if( dy==0){
-            if (is_valid(node.getX() + dx, node.getY())){
-                if(!is_valid(node.getX(), node.getY() + 1)){
-                    Node forced = get_valid_place(new Tuple(node.getX() +dx, node.getY() + 1));
+            if (isValidLocation(current.getX() + dx, current.getY())){
+                if(!isValidLocation(current.getX(), current.getY() + 1)){
+                    Node forced = getLocationIfValid(new Tuple(current.getX() +dx, current.getY() + 1));
                     if(forced != null){
-                        forced.setParent(node);;
-                        forced.setForced(true);
+                        forced.setParent(current);;
+                        
+                        current.setForced(true);
                         pruned.add(forced);
                     }
                 }
-                if(!is_valid(node.getX(), node.getY() - 1)){
-                    Node forced = get_valid_place(new Tuple(node.getX() +dx, node.getY() -1));
+                if(!isValidLocation(current.getX(), current.getY() - 1)){
+                    Node forced = getLocationIfValid(new Tuple(current.getX() +dx, current.getY() -1));
                     if(forced != null){
-                        forced.setParent(node);;
-                        forced.setForced(true);
+                        forced.setParent(current);
+                        
+                        current.setForced(true);
                         pruned.add(forced);
                     }
                 }
-                Node forced = get_valid_place(new Tuple(node.getX() + dx, node.getY() ));
-                forced.setParent(node);;
-                pruned.add(forced);
+                Node nonForced = getLocationIfValid(new Tuple(current.getX() + dx, current.getY() ));
+                if (nonForced != null){
+                    nonForced.setParent(current);
+                    pruned.add(nonForced);
+                }
             }
         }
+        // if the direction is diagonal
         if(dx != 0 && dy != 0){
-            if(!is_valid(node.getX(), node.getY() + (dy * -1))){
-                Node forced = get_valid_place(new Tuple(node.getX() + dx, node.getY() + (dy*-1)));
+            if(!isValidLocation(current.getX(), current.getY() + (dy * -1))){
+                Node forced = getLocationIfValid(new Tuple(current.getX() + dx, current.getY() + (dy*-1)));
                 if(forced !=null){
-                    forced.setParent(node);;
-                    forced.setForced(true);
+                    forced.setParent(current);
+                    
+                    current.setForced(true);
                     pruned.add(forced);
                 }
             }
-            if(!is_valid(node.getX() + (dx*-1),node.getY())){
-                Node forced = get_valid_place(new Tuple(node.getX() + (dx*-1), node.getY() + dy));
+            if(!isValidLocation(current.getX() + (dx*-1),current.getY())){
+                Node forced = getLocationIfValid(new Tuple(current.getX() + (dx*-1), current.getY() + dy));
                 if(forced != null){
-                    forced.setParent(node);;
-                    forced.setForced(true);
+                    forced.setParent(current);
+                   
+                    current.setForced(true);
                     pruned.add(forced);
                 }
             }
-            Node temp = get_valid_place(new Tuple(node.getX()+dx, node.getY()+dy));
-            if(temp!=null){
-            temp.setParent(node);
-            pruned.add(temp);
+            Node nonForced = getLocationIfValid(new Tuple(current.getX()+dx, current.getY()+dy));
+            if(nonForced!=null){
+                nonForced.setParent(current);
+                pruned.add(nonForced);
             }
             
-            Node temp1 = get_valid_place(new Tuple(node.getX(), node.getY()+dy));
-            if(temp1!=null){
-            temp1.setParent(node);
-            pruned.add(temp1);
+            nonForced = getLocationIfValid(new Tuple(current.getX(), current.getY()+dy));
+            if(nonForced!=null){
+                nonForced.setParent(current);
+                pruned.add(nonForced);
             }
             
-            Node temp2 = get_valid_place(new Tuple(node.getX()+dx, node.getY()));
-            if(temp2!=null){
-            temp2.setParent(node);
-            pruned.add(temp2);
+            nonForced = getLocationIfValid(new Tuple(current.getX()+dx, current.getY()));
+            if(nonForced!=null){
+                nonForced.setParent(current);
+                pruned.add(nonForced);
             }
             
         }
@@ -311,10 +345,10 @@ public class JPS extends Algorithm{
     
     /**
      * finds the direction from the parent to the node
-     * @param node 
+     * @param node the node which the direction is found
      * @return the direction as a tuple
      */
-    public Tuple get_directions(Node node){
+    public Tuple getDirections(Node node){
         int x = node.getX() -node.getParent().getX();
         int y = node.getY() -node.getParent().getY();
         return new Tuple(x,y);
