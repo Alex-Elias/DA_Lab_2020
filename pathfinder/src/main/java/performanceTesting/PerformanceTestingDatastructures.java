@@ -9,24 +9,50 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 /**
- *
+ * performance testing for the priority queue and list data structures
+ * the class tests the inserting and removing time of different amount of elements
  * @author alex
  */
 public class PerformanceTestingDatastructures {
-    
+    /**
+     * an array of the different lengths for testing the data structures
+     */
     private final int[] nums = {100, 1000, 10000, 100000, 1000000};
+    /**
+     * java priority queue median insert time array
+     */
     private final double[] priorityQueueInsert = new double[nums.length];
+    /**
+     * my own priority queue median insert time array
+     */
     private final double[] priorityQueueInsertOwn = new double[nums.length];
+    /**
+     * java priority queue median removal time array
+     */
     private final double[] priorityQueueRemove = new double[nums.length];
+    /**
+     * my own priority queue median removal time array
+     */
     private final double[] priorityQueueRemoveOwn = new double[nums.length];
-    
+    /**
+     * my own list median insert time array
+     */
     private final double[] nodelistInsert = new double[nums.length];
+    /**
+     * java array list median insert time array
+     */
     private final double[] arraylistInsert = new double[nums.length];
-    
+    /**
+     * initializes the class
+     */
     public PerformanceTestingDatastructures(){
         
     }
-    
+    /**
+     * runs the performance testing
+     * each data structure is inserted a certain amount of elements then removed fully 100 times
+     * each median run time of the data structures is stored in the appropriate array
+     */
     public void runPerformanceTesting(){
         int n = 100;
         for (int run = 0; run < nums.length; run++){
@@ -120,6 +146,10 @@ public class PerformanceTestingDatastructures {
         
         
     }
+    /**
+     * toString override which returns statistics as a string
+     * @return the string of the statistics
+     */
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
@@ -139,6 +169,13 @@ public class PerformanceTestingDatastructures {
         return sb.toString();
         
     }
+    /**
+     * 
+     * appends the results to the string builder and returns the newly appended string builder
+     * @param sb the string builder which is appended to
+     * @param array the median insert run time array
+     * @param remove the median removal run time array
+     */
     private void appendResults(StringBuilder sb, double[] array, double[] remove){
         for (int i = 0; i < nums.length; i++){
             String num = Integer.toString(nums[i]);
@@ -159,7 +196,11 @@ public class PerformanceTestingDatastructures {
             sb.append("\n");
         }
     }
-    
+    /**
+     * creates an array with random elements of certain length
+     * @param size the desired length of the array
+     * @return an array of random nodes
+     */
     private Node[] createRandomNodeArray(int size){
         Node[] array = new Node[size];
         Random r = new Random();
@@ -169,9 +210,17 @@ public class PerformanceTestingDatastructures {
         return array;
     }
 }
-
+/**
+ * custom comparator for the node class for use in the java priority queue 
+ * @author alex
+ */
 class CustomNodeComparator implements Comparator<Node> {
-
+    /**
+     * compare override for node class
+     * @param o1 first node to compare
+     * @param o2 second node to compare
+     * @return return an int value determining which node is larger
+     */
     @Override
     public int compare(Node o1, Node o2) {
         return o1.getPriority() > o2.getPriority() ? 1 : -1;

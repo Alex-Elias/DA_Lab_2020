@@ -6,47 +6,95 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- *
+ * performance testing class for Dijkstra, A* and JPS algorithms
+ * the class test the run times for the different algorithms
+ * printing the class will print the average time, median and standard deviation in milliseconds
  * @author alex
  */
 public class PerformanceTestingAlgorithms {
-   
+   /**
+     * the maze that has a one pixel corridor width
+     */ 
     private final Filereader m1 = new Filereader("Mazes/maze512-1-0.map");
+    /**
+     * the maze with an eight pixel corridor width
+     */
     private final Filereader m8 = new Filereader("Mazes/maze512-8-0.map");
+    /**
+     * the maze with a thirty two pixel corridor width
+     */
     private final Filereader m32 = new Filereader("Mazes/maze512-32-0.map");
-    private final Filereader r10 = new Filereader("Mazes/random512-10-0.map");
-    private final Filereader r40 = new Filereader("Mazes/random512-40-7.map");
     
+    /**
+     * the 2d array of the one pixel corridor maze
+     */
     private int[][] maze1;
+    /**
+     * the 2d array of the eight pixel corridor maze
+     */
     private int[][] maze8;
+    /**
+     * the 2d array of the thirty two pixel corridor maze
+     */
     private int[][] maze32;
-    private int[][] random10;
-    private int[][] random40;
     
+    /**
+     * the tuple with the start of the maze coordinates
+     */
     private final Tuple mazeStart = new Tuple(1,1);
+    /**
+     * the tuple with the end of the maze coordinates
+     */
     private final Tuple mazeFinish = new Tuple(511,511);
-    Mergesort mergesort = new Mergesort();
     
     
-    
+    /**
+     * Dijkstra's algorithm average run time array
+     */
     private final double[] dijkPathfindingAvg = new double[3];
+    /**
+     * A* average run time array
+     */
     private final double[] astarPathfindingAvg = new double[3];
+    /**
+     * JPS average run time array
+     */
     private final double[] jpsPathfindingAvg = new double[3];
-    
+    /**
+     * Dijkstra's algorithm standard deviation run time array
+     */
     private final double[] dijkPathfindingStd = new double[3];
+    /**
+     * A* standard deviation run time array
+     */
     private final double[] astarPathfindingStd = new double[3];
+    /**
+     * JPS deviation run time array
+     */
     private final double[] jpsPathfindingStd = new double[3];
-    
+    /**
+     * Dijkstra's algorithm median run time array
+     */
     private final double[] dijkPathfindingMedian = new double[3];
+    /**
+     * A* median run time array
+     */
     private final double[] astarPathfindingMedian = new double[3];
+    /**
+     * JPS median run time array
+     */
     private final double[] jpsPathfindingMedian = new double[3];
-    
+    /**
+     * initializes the class by storing the different mazes to the class variables maze1, maze8 and maze32
+     */
     public PerformanceTestingAlgorithms(){
         this.maze1 = m1.returnArray();
         this.maze8 = m8.returnArray();
         this.maze32 = m32.returnArray();
     }
-    
+    /**
+     * runs the performance tests for the different algorithms
+     */
     public void runPerformanceTests(){
 
         testAllAlgorithms();
@@ -54,14 +102,11 @@ public class PerformanceTestingAlgorithms {
         
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
+   /**
+    * runs Dijkstra's algorithm 101 times on a certain maze between the start and end points and returns a array with all the run times
+    * @param maze the maze that Dijkstra's algorithm runs on 
+    * @return the array with all the run times 
+    */
     private long[] runDijkstra(int[][] maze){
         long[] dijkstraM1 = new long[101];
         Dijkstra dijk = new Dijkstra(maze);
@@ -74,6 +119,11 @@ public class PerformanceTestingAlgorithms {
         }
         return dijkstraM1;
     }
+    /**
+     * runs A* 101 times on a certain maze between the start and end points and returns a array with all the run times
+     * @param maze the maze that A* runs on
+     * @return the array with all the run times
+     */
     private long[] runAstar(int[][] maze){
         long[] aStarM1 = new long[101];
         AStar Astar = new AStar(maze);
@@ -86,6 +136,11 @@ public class PerformanceTestingAlgorithms {
         }
         return aStarM1;
     }
+    /**
+     * runs JPS 101 times on a certain maze between the start and end points and returns a array with all the run times
+     * @param maze the maze that JPS runs on
+     * @return the array with all the run times
+     */
     private long[] runJPS(int[][] maze){
        long[] jpsM1 = new long[101];
        JPS jps = new JPS(maze);
@@ -99,7 +154,9 @@ public class PerformanceTestingAlgorithms {
         return jpsM1; 
     }
     
-    
+    /**
+     * tests all the algorithms and stores the different statistics to the correct array
+     */
     private void testAllAlgorithms(){
         long[] dijk1 = this.runDijkstra(this.maze1);
         long[] astar1 = this.runAstar(this.maze1);
@@ -161,7 +218,10 @@ public class PerformanceTestingAlgorithms {
         
         
     }
-    
+    /**
+     * toString override which returns the stats as a string
+     * @return the string with all the stats
+     */
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
@@ -178,7 +238,13 @@ public class PerformanceTestingAlgorithms {
         return sb.toString();
     }
     
-    
+    /**
+     * appends the results to the string builder and returns the newly appended string builder
+     * @param sb the string builder which is appended to
+     * @param array the average run time array
+     * @param median the median run time array
+     * @param std the standard deviation run time array
+     */
     private void appendResults(StringBuilder sb, double[] array, double[] median, double[] std){
         sb.append("one pixel width corridor:");
         sb.append(" Avg:" + array[0] / 1000000 + "ms, Median: " + median[0] + "ms, std: " + std[0] / 1000000 + "ms\n");
@@ -189,7 +255,12 @@ public class PerformanceTestingAlgorithms {
         
         sb.append("\n");
     }
-    
+    /**
+     * returns the standard deviation of a certain array
+     * @param times the array which the std will be found
+     * @param mean the mean of the values of the array
+     * @return the standard deviation of the values
+     */
     private double getStd(long[] times, double mean){
         double s = 0;
         for (long time : times){
@@ -198,7 +269,11 @@ public class PerformanceTestingAlgorithms {
         
         return Math.sqrt(s / (times.length - 1));
     }
-    
+    /**
+     * returns the average value of an array
+     * @param times the array which the average is found
+     * @return the average value of the array
+     */
     private double getAverage(long[] times){
         double s = 0;
         for (long time : times){

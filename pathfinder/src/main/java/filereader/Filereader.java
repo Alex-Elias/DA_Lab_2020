@@ -2,14 +2,20 @@ package filereader;
 
 /**
  * reads a file where '.' are open spaces and '@' are obstacles
- * returns an 2d array where 0's are open spaces and 1's are obstacles
+ * returns an 2d array where zeros are open spaces and ones are obstacles
  */
 import java.io.*;
 import java.util.Scanner;
 
 
 public class Filereader {
+    /**
+     * file data type which stores the maze file 
+     */
     File file;
+    /**
+     * the scanner which reads the file
+     */
     Scanner sc;
     
     /**
@@ -28,7 +34,7 @@ public class Filereader {
                 
     }
     /**
-     * prints a number of lines of the file
+     * prints a certain number of lines of the file
      * @param i the number of lines to be printed, must be an integer
      */
     public void printline(int i){
@@ -41,7 +47,7 @@ public class Filereader {
         
     }
     /**
-     * makes a 2d array filled with 1's and 0's
+     * returns a 512X512 array of the file where ones represent obstacles and zeros as open spaces
      * @return the 2d array of the file with open spaces and obstacles converted to 0's and 1's respectively
      */
     public int[][] returnArray(){
@@ -62,6 +68,10 @@ public class Filereader {
         return array;
         
     }
+    /**
+     * returns a 2d array of the file for any size
+     * @return a 2d array of the file for any size
+     */
     public int[][] returnMaze(){
         printline(6);
         String temp = this.sc.next();
