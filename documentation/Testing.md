@@ -14,7 +14,7 @@ The generated report can be found at `/target/site/jacoco/index.html`
 
 Current test coverage is at 97% for the algorithms and data structures
 
-![test coverage](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Screenshot_2020-10-24%20pathfinder.png) "Test coverage"
+![test coverage](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Screenshot_2020-10-24%20pathfinder.png)"Test coverage"
 
 ## Performance testing
 
@@ -62,9 +62,31 @@ All my data structures are competitive against their Java counterparts, only at 
 
 Below are the graphs comparing the different data structures with their conterparts(the lower the bar the better).
 
-![PriorityQueue insert](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Node%20Priority%20Queue%20and%20Java%20Priority%20Queue%20insert%20times.png) "Comparison between Java and Node Priority queues"
+![PriorityQueue insert](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Node%20Priority%20Queue%20and%20Java%20Priority%20Queue%20insert%20times.png)"Comparison between Java and Node Priority queues"
 
-![PriorityQueue removal](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Node%20Priority%20Queue%20and%20Java%20Priority%20Queue%20removal%20time.png) "Comparison between Java and Node Priority queues removal"
+![PriorityQueue removal](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Node%20Priority%20Queue%20and%20Java%20Priority%20Queue%20removal%20time.png)"Comparison between Java and Node Priority queues removal"
 
-![List comparison](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/NodeList%20and%20ArrayList%20insert%20times.png) "List comparison"
+![List comparison](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/NodeList%20and%20ArrayList%20insert%20times.png)"List comparison"
+
+### Algorithm performance testing
+
+Algorithm performance testing tests the average run time to find the shortest path between the start and end of different mazes.
+
+Each algorithm is run 101 times on three different maps and then the average run time is calculated for each test. Each start point is at \(1,1\) and each end point is at \(511,511\).
+
+The mazes used are:
+
+* [One pixel corridor width maze](https://github.com/Alex-Elias/Pathfinder/blob/master/pathfinder/Mazes/maze512-1-0.map)
+* [Eight pixel corridor width maze](https://github.com/Alex-Elias/Pathfinder/blob/master/pathfinder/Mazes/maze512-8-0.map)
+* [32 pixel corridor width maze](https://github.com/Alex-Elias/Pathfinder/blob/master/pathfinder/Mazes/maze512-32-0.map)
+
+The results from the performance testing are mostly expected except for A\* which is slower than expected.
+
+|Map| Dijkstra's\(ms\) | A\*\(ms\) | JPS\(ms\)|
+|---|------------|-----|----|
+|One pixel| 24.51 | 19.89 | 14.17|
+|Eight pixel| 46.12 | 30.97 | 5.02 |
+|32 pixel| 32.58 | 44.23 | 6.49|
+
+![Algorithm comparison](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Algorithm%20Performance%20Comparison.png)
 
