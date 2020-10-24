@@ -614,7 +614,7 @@ public class GUI extends Application{
         label5.setFont(new Font(20));
         Label label6 = new Label("Click on the button 'run JPS' to run the Jump Point Search algorithm, the shortest path will be displayed in green");
         label6.setFont(new Font(20));
-        Label label7 = new Label("The button 'reset' on the bottom left of the window will reset the map, sometimes it takes a while so be patient");
+        Label label7 = new Label("The button 'reset' on the bottom left of the window will reset the map");
         label7.setFont(new Font(20));
         Label label8 = new Label("to change the map click on the drop down menu and select a map then click on the 'select' button");
         label8.setFont(new Font(20));
