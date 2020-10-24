@@ -14,7 +14,7 @@ The generated report can be found at `/target/site/jacoco/index.html`
 
 Current test coverage is at 97% for the algorithms and data structures
 
-![test coverage](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Screenshot_2020-10-24%20pathfinder.png)"Test coverage"
+![test coverage](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Screenshot_2020-10-24%20pathfinder.png "Test coverage")
 
 ## Performance testing
 
@@ -62,11 +62,11 @@ All my data structures are competitive against their Java counterparts, only at 
 
 Below are the graphs comparing the different data structures with their conterparts(the lower the bar the better).
 
-![PriorityQueue insert](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Node%20Priority%20Queue%20and%20Java%20Priority%20Queue%20insert%20times.png)"Comparison between Java and Node Priority queues"
+![PriorityQueue insert](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Node%20Priority%20Queue%20and%20Java%20Priority%20Queue%20insert%20times.png "Comparison between Java and Node Priority queues")
 
-![PriorityQueue removal](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Node%20Priority%20Queue%20and%20Java%20Priority%20Queue%20removal%20time.png)"Comparison between Java and Node Priority queues removal"
+![PriorityQueue removal](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/Node%20Priority%20Queue%20and%20Java%20Priority%20Queue%20removal%20time.png "Comparison between Java and Node Priority queues removal")
 
-![List comparison](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/NodeList%20and%20ArrayList%20insert%20times.png)"List comparison"
+![List comparison](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Images/NodeList%20and%20ArrayList%20insert%20times.png "List comparison")
 
 ### Algorithm performance testing
 
