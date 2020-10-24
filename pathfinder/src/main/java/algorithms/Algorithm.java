@@ -154,8 +154,8 @@ public class Algorithm {
     public double heuristic(Node location, Node location2){
         double dx = abs(location.getX() - location2.getX());
         double dy = abs(location.getY() - location2.getY());
-        
-        return dx + dy + (1.4142135 - 2) * min(dx, dy);
+        double heuristic = dx + dy + (1.4142135 - 2) * min(dx, dy);
+        return heuristic;
         
     }
     /**
