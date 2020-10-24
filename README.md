@@ -1,6 +1,16 @@
-# DA_Lab_2020
+# Pathfinding Algorithms
+
+Project for datastructure and algorithm lab course at the University of Helsinki.
+
+This program uses Dijkstra's algorithm, A\* search algorithm and Jump point search algorithm to find the shortest path on maps from Moving AI labs.
 
 ### Documentation
+[Implementation document](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/implementation.md)
+
+[User Guide](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/UserGuide.md)
+
+[Testing documentation](https://github.com/Alex-Elias/Pathfinder/blob/master/documentation/Testing.md)
+
 [Project specification](https://github.com/Alex-Elias/DA_Lab_2020/blob/master/documentation/projectspecification.md)
 
 ### Weekly Reports
