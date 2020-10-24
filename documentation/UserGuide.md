@@ -31,6 +31,6 @@ To use the program first click on the map or input the coordinates in the text b
 
 Once the starting and ending locations have been selected, click on the different run buttons to run the different algorithms. Once clicked the shortest path should have been marked on the map as well as the text below the run algorithm buttons updated with the run time and the length of shortest path.
 
-At the left of the window there are two buttons and one drop down window. The button on the right called 'reset maze' resets the map and you are able to choose new locations and rerun the algorithms. 
+At the left of the window there are two buttons and one drop down window. The button on the right called `reset maze` resets the map and you are able to choose new locations and rerun the algorithms. 
 
-To select a different map, click on the drop down window and choose a new map. Confirm your choice by clicking on the 'select' button.
+To select a different map, click on the drop down window and choose a new map. Confirm your choice by clicking on the `select` button.
